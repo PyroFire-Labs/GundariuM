@@ -66,15 +66,20 @@ export function useStaking() {
     query: { enabled: contractReady },
   });
 
-  const balance = balanceRaw ? parseFloat(formatUnits(balanceRaw, 18)) : 0;
-  const staked = stakedRaw ? parseFloat(formatUnits(stakedRaw, 18)) : 0;
-  const totalStaked = totalStakedRaw ? parseFloat(formatUnits(totalStakedRaw, 18)) : 0;
+  const balance = balanceRaw !== undefined ? parseFloat(formatUnits(balanceRaw, 18)) : 0;
+  const staked = stakedRaw !== undefined ? parseFloat(formatUnits(stakedRaw, 18)) : 0;
+  const totalStaked = totalStakedRaw !== undefined ? parseFloat(formatUnits(totalStakedRaw, 18)) : 0;
   const tier = getTier(staked);
 
   const stake = async (amount: string) => {
     if (!contracts || !contractReady) return;
     setPhase("approving");
     setError(null);
+    if (!publicClient) {
+      setError("Wallet not connected to a supported network");
+      setPhase("error");
+      return;
+    }
     try {
       const amountWei = parseUnits(amount, 18);
       // Step 1: approve
@@ -84,7 +89,7 @@ export function useStaking() {
         functionName: "approve",
         args: [contracts.gndmStaking, amountWei],
       });
-      await publicClient!.waitForTransactionReceipt({ hash: approveTx });
+      await publicClient.waitForTransactionReceipt({ hash: approveTx });
 
       // Step 2: stake
       setPhase("staking");
@@ -94,11 +99,11 @@ export function useStaking() {
         functionName: "stake",
         args: [amountWei],
       });
-      await publicClient!.waitForTransactionReceipt({ hash: stakeTx });
+      await publicClient.waitForTransactionReceipt({ hash: stakeTx });
 
       setPhase("done");
-      refetchBalance();
-      refetchStaked();
+      void refetchBalance();
+      void refetchStaked();
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Staking failed";
       setError(msg.includes("User rejected") ? "Transaction cancelled" : msg);
@@ -110,6 +115,11 @@ export function useStaking() {
     if (!contracts || !contractReady) return;
     setPhase("unstaking");
     setError(null);
+    if (!publicClient) {
+      setError("Wallet not connected to a supported network");
+      setPhase("error");
+      return;
+    }
     try {
       const amountWei = parseUnits(amount, 18);
       const tx = await writeContractAsync({
@@ -118,10 +128,10 @@ export function useStaking() {
         functionName: "unstake",
         args: [amountWei],
       });
-      await publicClient!.waitForTransactionReceipt({ hash: tx });
+      await publicClient.waitForTransactionReceipt({ hash: tx });
       setPhase("done");
-      refetchBalance();
-      refetchStaked();
+      void refetchBalance();
+      void refetchStaked();
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Unstake failed";
       setError(msg.includes("User rejected") ? "Transaction cancelled" : msg);
