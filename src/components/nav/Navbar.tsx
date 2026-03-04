@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
+  { href: "/stake", label: "Stake" },
   { href: "/mint", label: "Mint" },
   { href: "/arena", label: "Arena" },
   { href: "/battle", label: "Battle" },
@@ -20,7 +21,7 @@ export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--surface)]/80 backdrop-blur-md">
+    <nav className="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--surface)] md:bg-[var(--surface)]/80 md:backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
         {/* Logo */}
         <Link
