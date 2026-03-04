@@ -15,7 +15,7 @@ export const CONTRACT_ADDRESSES: Record<
     gunplaCard: "0x47d0e0c160169df4bf920e6d4b47ad7de7d84d8f",
     gundaniumGame: "0x27c041d53b4cc4dbc1fdbd80eeba3c3fa4e23754",
     prizePool: "0x5209d87a920e468583042346e23564977416f67a",
-    gndmStaking: "0x0000000000000000000000000000000000000000",
+    gndmStaking: "0x4fFFF1428f49Ae73a21AA103C992533BA24E48E7",
   },
   // Base mainnet
   8453: {
