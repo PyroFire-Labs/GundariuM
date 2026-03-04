@@ -12,8 +12,17 @@ import {MockERC20} from "../src/MockERC20.sol";
  * @notice Deploys GunplaCard, GundaniumGame, and PrizePool as UUPS proxies.
  *         On testnets (GNDM_ADDRESS unset), also deploys a MockERC20 for $GNDM.
  *
+ * Key injection (two options — pick one):
+ *   A) cast wallet keystore (recommended):
+ *        cast wallet import deployer --interactive
+ *        forge script ... --account deployer
+ *      (no DEPLOYER_PRIVATE_KEY needed in .env)
+ *
+ *   B) env var fallback:
+ *        DEPLOYER_PRIVATE_KEY=0x... forge script ...
+ *      (key read from env at runtime, never stored in .env)
+ *
  * Required env vars:
- *   DEPLOYER_PRIVATE_KEY      — deployer / owner wallet
  *   USDC_ADDRESS              — USDC on the target chain
  *   BATTLE_RESOLVER_ADDRESS   — trusted off-chain resolver EOA
  *
@@ -23,6 +32,7 @@ import {MockERC20} from "../src/MockERC20.sol";
  * Usage (Base Sepolia):
  *   forge script script/Deploy.s.sol \
  *     --rpc-url $BASE_SEPOLIA_RPC \
+ *     --account deployer \
  *     --broadcast \
  *     --verify \
  *     -vvvv
@@ -40,8 +50,8 @@ contract Deploy is Script {
     uint256 constant MOCK_GNDM_SUPPLY    = 1_000_000 ether;
 
     function run() external {
-        uint256 deployerKey    = vm.envUint("DEPLOYER_PRIVATE_KEY");
-        address deployer       = vm.addr(deployerKey);
+        // Key injection: prefer --account keystore; fall back to DEPLOYER_PRIVATE_KEY env var.
+        uint256 deployerKey    = vm.envOr("DEPLOYER_PRIVATE_KEY", uint256(0));
         address usdc           = vm.envAddress("USDC_ADDRESS");
         address battleResolver = vm.envAddress("BATTLE_RESOLVER_ADDRESS");
 
@@ -55,6 +65,16 @@ contract Deploy is Script {
             deployMock = true;
         }
 
+        // Start broadcast: with key (env var) or without (--account keystore).
+        address deployer;
+        if (deployerKey != 0) {
+            deployer = vm.addr(deployerKey);
+            vm.startBroadcast(deployerKey);
+        } else {
+            vm.startBroadcast();
+            deployer = msg.sender; // populated by --account flag
+        }
+
         console.log("=== GundariuM Deploy ===");
         console.log("Deployer:         ", deployer);
         console.log("USDC:             ", usdc);
@@ -65,8 +85,6 @@ contract Deploy is Script {
         } else {
             console.log("GNDM:             ", gndm);
         }
-
-        vm.startBroadcast(deployerKey);
 
         // ── 0. MockERC20 (testnet only) ──────────────────────────────────────
         if (deployMock) {
