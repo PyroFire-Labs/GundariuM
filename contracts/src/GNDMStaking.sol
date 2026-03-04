@@ -3,7 +3,9 @@ pragma solidity ^0.8.24;
 
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 /**
  * @title GNDMStaking
@@ -14,7 +16,9 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
  *  - 7-day reward eligibility: rewards only claimable after 7 days of continuous stake. Re-staking resets the clock.
  *  - Yield: Synthetix pattern. Owner can deposit reward pools; authorized contracts can route game fees in.
  */
-contract GNDMStaking is OwnableUpgradeable, UUPSUpgradeable {
+contract GNDMStaking is OwnableUpgradeable, UUPSUpgradeable, ReentrancyGuard {
+
+    using SafeERC20 for IERC20;
 
     // ─── Errors ─────────────────────────────────────────────────────────────
 
@@ -114,7 +118,7 @@ contract GNDMStaking is OwnableUpgradeable, UUPSUpgradeable {
     /**
      * @notice Stake GNDM. Resets 24h lock and 7-day reward eligibility.
      */
-    function stake(uint256 amount) external updateReward(msg.sender) {
+    function stake(uint256 amount) external nonReentrant updateReward(msg.sender) {
         if (amount == 0) revert ZeroAmount();
 
         stakedBalance[msg.sender] += amount;
@@ -127,7 +131,7 @@ contract GNDMStaking is OwnableUpgradeable, UUPSUpgradeable {
         rewards[msg.sender] = 0;
         userRewardPerTokenPaid[msg.sender] = rewardPerTokenStored;
 
-        require(gndm.transferFrom(msg.sender, address(this), amount), "GNDMStaking: transfer failed");
+        gndm.safeTransferFrom(msg.sender, address(this), amount);
 
         emit Staked(msg.sender, amount, lockUntil[msg.sender], rewardEligibleAt[msg.sender]);
     }
@@ -135,7 +139,7 @@ contract GNDMStaking is OwnableUpgradeable, UUPSUpgradeable {
     /**
      * @notice Unstake GNDM. Reverts if within 24h lock window.
      */
-    function unstake(uint256 amount) external updateReward(msg.sender) {
+    function unstake(uint256 amount) external nonReentrant updateReward(msg.sender) {
         if (amount == 0) revert ZeroAmount();
         if (stakedBalance[msg.sender] < amount) revert NoStakeToUnstake();
         if (block.timestamp < lockUntil[msg.sender]) revert StillLocked(lockUntil[msg.sender]);
@@ -143,7 +147,7 @@ contract GNDMStaking is OwnableUpgradeable, UUPSUpgradeable {
         stakedBalance[msg.sender] -= amount;
         totalStaked -= amount;
 
-        require(gndm.transfer(msg.sender, amount), "GNDMStaking: transfer failed");
+        gndm.safeTransfer(msg.sender, amount);
 
         emit Unstaked(msg.sender, amount);
     }
@@ -151,7 +155,7 @@ contract GNDMStaking is OwnableUpgradeable, UUPSUpgradeable {
     /**
      * @notice Claim accrued rewards. Reverts if < 7 days since last stake.
      */
-    function claimRewards() external updateReward(msg.sender) {
+    function claimRewards() external nonReentrant updateReward(msg.sender) {
         if (block.timestamp < rewardEligibleAt[msg.sender]) {
             revert NotEligibleYet(rewardEligibleAt[msg.sender]);
         }
@@ -159,7 +163,7 @@ contract GNDMStaking is OwnableUpgradeable, UUPSUpgradeable {
         if (reward == 0) revert NoPendingRewards();
 
         rewards[msg.sender] = 0;
-        require(gndm.transfer(msg.sender, reward), "GNDMStaking: reward transfer failed");
+        gndm.safeTransfer(msg.sender, reward);
 
         emit RewardClaimed(msg.sender, reward);
     }
@@ -172,10 +176,13 @@ contract GNDMStaking is OwnableUpgradeable, UUPSUpgradeable {
      */
     function notifyRewardAmount(uint256 amount, uint256 duration)
         external
+        nonReentrant
         onlyOwner
         updateReward(address(0))
     {
-        require(gndm.transferFrom(msg.sender, address(this), amount), "GNDMStaking: transfer failed");
+        if (amount == 0 || duration == 0) revert ZeroAmount();
+
+        gndm.safeTransferFrom(msg.sender, address(this), amount);
 
         if (block.timestamp >= periodFinish) {
             rewardRate = amount / duration;
@@ -195,9 +202,11 @@ contract GNDMStaking is OwnableUpgradeable, UUPSUpgradeable {
      * @notice Route game fees into the reward pool.
      *         Called by authorized contracts (GundaniumGame, PrizePool).
      */
-    function receiveGameFees(uint256 amount) external updateReward(address(0)) {
+    function receiveGameFees(uint256 amount) external nonReentrant updateReward(address(0)) {
         if (!authorizedFeeRouters[msg.sender]) revert Unauthorized();
-        require(gndm.transferFrom(msg.sender, address(this), amount), "GNDMStaking: transfer failed");
+        if (amount == 0) revert ZeroAmount();
+
+        gndm.safeTransferFrom(msg.sender, address(this), amount);
 
         uint256 duration = block.timestamp >= periodFinish
             ? 30 days
@@ -228,8 +237,8 @@ contract GNDMStaking is OwnableUpgradeable, UUPSUpgradeable {
     /**
      * @notice Emergency token rescue.
      */
-    function emergencyWithdraw(address token, uint256 amount) external onlyOwner {
-        require(IERC20(token).transfer(owner(), amount), "GNDMStaking: withdraw failed");
+    function emergencyWithdraw(address token, uint256 amount) external nonReentrant onlyOwner {
+        IERC20(token).safeTransfer(owner(), amount);
     }
 
     // ─── UUPS ───────────────────────────────────────────────────────────────
