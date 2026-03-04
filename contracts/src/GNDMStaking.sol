@@ -3,6 +3,9 @@ pragma solidity ^0.8.24;
 
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+// NOTE: ReentrancyGuardUpgradeable is not available in this OZ version.
+// OZ v5 ReentrancyGuard uses a namespaced ERC-7201 storage slot (not sequential slot 0),
+// making it proxy-safe despite being the non-upgradeable variant.
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -29,6 +32,7 @@ contract GNDMStaking is OwnableUpgradeable, UUPSUpgradeable, ReentrancyGuard, Pa
     error NoStakeToUnstake();
     error Unauthorized();
     error ZeroAmount();
+    error ZeroAddress();
 
     // ─── Events ─────────────────────────────────────────────────────────────
 
@@ -134,6 +138,8 @@ contract GNDMStaking is OwnableUpgradeable, UUPSUpgradeable, ReentrancyGuard, Pa
         lockUntil[msg.sender]        = block.timestamp + LOCK_DURATION;
         rewardEligibleAt[msg.sender] = block.timestamp + REWARD_DELAY;
 
+        gndm.safeTransferFrom(msg.sender, address(this), amount);
+
         // Handle previously accrued rewards before resetting the reward checkpoint
         uint256 pendingReward = rewards[msg.sender];
         if (pendingReward > 0) {
@@ -149,8 +155,6 @@ contract GNDMStaking is OwnableUpgradeable, UUPSUpgradeable, ReentrancyGuard, Pa
             }
         }
         userRewardPerTokenPaid[msg.sender] = rewardPerTokenStored;
-
-        gndm.safeTransferFrom(msg.sender, address(this), amount);
 
         emit Staked(msg.sender, amount, lockUntil[msg.sender], rewardEligibleAt[msg.sender]);
     }
@@ -200,6 +204,7 @@ contract GNDMStaking is OwnableUpgradeable, UUPSUpgradeable, ReentrancyGuard, Pa
         updateReward(address(0))
     {
         if (amount == 0 || duration == 0) revert ZeroAmount();
+        if (duration > 365 days) revert("GNDMStaking: duration too long");
 
         gndm.safeTransferFrom(msg.sender, address(this), amount);
 
@@ -245,7 +250,7 @@ contract GNDMStaking is OwnableUpgradeable, UUPSUpgradeable, ReentrancyGuard, Pa
      * @notice Grant or revoke fee routing authorization.
      */
     function setFeeRouter(address addr, bool authorized) external onlyOwner {
-        if (addr == address(0)) revert ZeroAmount();
+        if (addr == address(0)) revert ZeroAddress();
         authorizedFeeRouters[addr] = authorized;
         emit FeeRouterSet(addr, authorized);
     }
