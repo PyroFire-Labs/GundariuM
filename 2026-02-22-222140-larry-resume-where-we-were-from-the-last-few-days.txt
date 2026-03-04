@@ -1,0 +1,1713 @@
+
+╭─── Claude Code v2.1.50 ──────────────────────────────────────────────────────╮
+│                                                    │ Tips for getting        │
+│                 Welcome back Josh!                 │ started                 │
+│                                                    │ Run /init to create a … │
+│                                                    │ ─────────────────────── │
+│                          ✻                         │ Recent activity         │
+│                          |                         │ No recent activity      │
+│                         ▟█▙                        │                         │
+│                      ▗ ▗   ▖ ▖                     │                         │
+│                                                    │                         │
+│                        ▘▘ ▝▝                       │                         │
+│                                                    │                         │
+│       Sonnet 4.6 · Claude Pro ·                    │                         │
+│       joshuagrubbs90@gmail.com's Organization      │                         │
+│               ~/basement-gunpla-next               │                         │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+❯ Larry, resume where we were from the last few days of work, and read      
+  this, https://docs.uniswap.org/assets/files/llms-0535f49abd170e69dc72fdc3 
+  7b81dff2.txt                                                              
+
+⏺ Fetch(https://docs.uniswap.org/assets/files/llms-0535f49abd170e69dc72fdc37b81d
+       ff2.txt)
+  ⎿  Received 5.4KB (200 OK)
+
+⏺ Read 4 files (ctrl+o to expand)
+
+⏺ Bash(crontab -l 2>/dev/null || echo "No crontab")
+  ⎿  */30 * * * * /Users/joshuagrubbs/antihunter_dca.sh >> /Users/joshuagru
+     bbs/antihunter_dca.log 2>&1
+
+⏺ Searched for 1 pattern, read 1 file (ctrl+o to expand)
+
+⏺ Got it. I can see the full picture. Here's the situation:
+
+  Immediate issue — DCA script has been broken since Feb 20:
+  The cron job can't find bankr because cron runs with a minimal PATH that
+  doesn't include /opt/homebrew/bin. It's been silently skipping every single
+  run. Also, log entries are doubled because the script uses tee -a to write to
+  the log AND the crontab also pipes stdout to the log.
+
+  Let me fix both issues:
+
+⏺ Read 1 file (ctrl+o to expand)
+  ⎿  Interrupted · What should Claude do instead?
+
+❯ leave the DCA and continue 
+
+⏺ Got it. Let me take a closer look at where the basement-gunpla-next project
+  stands.
+
+⏺ Read 2 files (ctrl+o to expand)
+
+⏺ This is essentially a fresh Next.js 16 + Tailwind 4 + React 19 scaffold — just
+   the boilerplate. Since I don't carry memory between sessions, I don't have
+  the context of what we were building out here.
+
+  What were we working toward? A few possibilities based on what I'm seeing:
+
+  - Basement Gunpla site — e-commerce or showcase for your Gunpla collection
+  - Uniswap integration — you shared those docs, so maybe a swap/DeFi feature
+  was being added
+  - Something else entirely
+
+  What's the goal?
+
+❯ I want to create an NFT Trading Card Game that will allow the Users to    
+  use photos of the Gundam Action Figure Model Kits that they build.(often  
+  refered to as a Gunpla because its a Gundam (GUN) that is made out of     
+  Plastic (PLA).) a Gundam is a giant science fiction robot from the hit    
+  anime show out of Japan, "Mobile Suit Gundam" which depicts a Multiverse  
+  thats generally built on humans leaving the earth to live on oribital     
+  space colonies. between the earth and the colonies, war breaks out and    
+  most of the stories are built on the tragic nature of war, as well as the 
+   greatest folly of man, destroying the one home we have due to            
+  over-population, cuppled corrupt govenment officials, greed, and the lust 
+   of finding love. I'm gonna feed you a ton of information on that, as     
+  well as, I want this to be an app built on blockchain! so I need you to   
+  help with the nessassary tools to build on the Base network, and we are   
+  going to take the token 0xFc7008F9157257a17a9Fb3c602b1CD56C27A4ba3        
+  Gundarium Beta $GNDM as well as another token if I can access mogra, to   
+  use as the in game ecconomy, upgrading the NFT mobile suits, only after   
+  the have been minted into tradeable sellable unique blockchair art        
+  peices, the NFT's traits will be retrofitted with different powers and    
+  ablilitys for the tokens to then be used on, overall, building more worth 
+   and value for that NFT. the part I am most excited about those is taking 
+   my existing collection of model kits, and using their photos to forever  
+  digitize them!                                                            
+
+⏺ This is an incredible vision. Let me make sure I fully understand the scope
+  before we architect anything — this touches NFTs, a TCG game engine,
+  photo-to-NFT minting, on-chain economy with $GNDM, and the Base network. Let
+  me enter plan mode so we can design this properly before writing a line of
+  code.
+
+⏺ Entered plan mode
+  Claude is now exploring and designing an implementation approach.
+
+⏺ 2 Explore agents finished (ctrl+o to expand)
+   ├─ Explore existing Next.js project structure · 18 tool uses · 19.6k tokens
+   │  ⎿  Done
+   └─ Research Base blockchain + OnchainKit NFT patterns · 13 tool uses · 19.2k
+   tokens
+      ⎿  Done
+
+⏺ Good. I have everything I need on the tech stack. Before I design the
+  architecture, I need to nail down a few game design decisions.
+  ⎿  Tool use rejected with user message: The user wants to clarify these 
+     questions.
+         This means they may have additional information, context or questions 
+     for you.
+         Take their response into account and then reformulate the questions if 
+     appropriate.
+         Start by asking them what they would like to clarify.
+
+         Questions asked:
+     - "What is the core gameplay loop? What do players actually DO with their 
+     Gunpla NFT cards?"
+       Answer: All of the Above
+     - "How are NFT traits and powers assigned to a Gunpla photo when it's 
+     minted?"
+       Answer: AI-Generated from Photo
+     - "What is the minting model — who can mint, and what does it cost?"
+       (No answer provided)
+     - "What is 'mogra' — the second token you mentioned wanting to use?"
+       (No answer provided)
+
+⏺ Got it — full game with AI-generated traits from photos. What did you want to
+  clarify on minting and mogra?
+
+✻ Cogitated for 1m 59s
+
+❯ anyone with USDC or $GNDM can mint. as for the gameplay loop. I am not    
+  100% sure, but what I was thinking about was an RPG, turn-based style     
+  battler. every Gundam has a unique set of weapons, a primary long range   
+  beam rifle type, a secondary Melee weapon, a tertiary low damage or       
+  utility weapon, and finally a special super attack or weapon, check out   
+  the Gundam Wiki https://gundam.fandom.com/wiki/The_Gundam_Wiki to review  
+  info and use that to apply their different powers and traits as well as,  
+  armor types, a repainting and decal cosmetic, which for anything          
+  cosmetic, the user would have to pay a premium in USDC to apply those.    
+  Since thats the way it is with the Model kits as well. as for the battle  
+  system, and chosing PVE or PVP, well, thats up to the Player. PVE should  
+  have a campaign based off of stories from the different Gundam shows      
+  universe and series. the PVP battle Arena though, thats the main event.   
+  the Players can chose their own factions or rather, allience, for         
+  example; the EFSD or the Earth Federations from the very first show       
+  MOBILE SUIT GUNDAM and their primary enemy the Pricipality of Zeon. once  
+  they chose a side, they can contest against the enemys to climb the       
+  leaderboard and win a monthly, weekly, or daily prize pack. consisting of 
+   everything from legendary rarity minted NFT, to $GNDM, or USDC. and      
+  finally, as for the coin that PyroAgent generated from the Mogra.xyz      
+  website, just forget I even mentioned it right now. I finally am talking  
+  to customer support and it doesn't look good for PyroAgent                
+
+⏺ Dropping mogra entirely. Solid vision — let me fetch the Gundam Wiki to
+  understand the lore structure, then design the full architecture.
+
+⏺ Fetch(https://gundam.fandom.com/wiki/The_Gundam_Wiki)
+  ⎿  Received 290.5KB (200 OK)
+
+⏺ Plan(Design Gunpla NFT TCG architecture on Base)
+  ⎿  Done (34 tool uses · 47.7k tokens · 5m 44s)
+  (ctrl+o to expand)
+
+⏺ Excellent plan. Let me write the final plan file now.
+
+⏺ Updated plan
+  ⎿  /plan to preview
+
+⏺ User approved Claude's plan
+  ⎿  Plan saved to: ~/.claude/plans/functional-prancing-pascal.md · /plan 
+     to edit
+     GundariuM — Gunpla NFT TCG on Base
+
+     Plan
+
+     Context
+
+     Building a blockchain-based NFT Trading Card Game on Coinbase's Base
+     network, starting from the existing basement-gunpla-next scaffold
+     (Next.js 16.1.6 / React 19 / Tailwind v4 / TypeScript). Users
+     photograph their real Gundam model kits (Gunpla), mint them as unique
+     NFT trading cards with AI-generated lore-accurate stats, then use
+     those cards in a turn-based RPG battle system (PVE campaign + PVP
+     faction arena). Economy runs on $GNDM token (upgrades/battles/prizes)
+     and USDC (minting + cosmetics).
+
+     ---
+     Tech Stack to Add
+
+     npm packages (production)
+
+     @coinbase/onchainkit   wagmi   viem   @tanstack/react-query
+     @anthropic-ai/sdk      pinata-web3   zustand
+     @radix-ui/react-dialog @radix-ui/react-toast @radix-ui/react-tabs
+     framer-motion          react-dropzone   clsx   tailwind-merge
+
+     Contracts (Foundry, in /contracts subfolder)
+
+     forge install OpenZeppelin/openzeppelin-contracts-upgradeable
+     forge install OpenZeppelin/openzeppelin-foundry-upgrades
+
+     ---
+     Smart Contracts (/contracts/src/)
+
+     1. GunplaCard.sol — ERC-721 UUPS Upgradeable NFT
+
+     Inherits: ERC721Upgradeable, ERC721URIStorageUpgradeable,
+     ERC721EnumerableUpgradeable, OwnableUpgradeable, UUPSUpgradeable
+
+     On-chain CardTraits struct:
+     - Identity: name, series, faction, pilotName
+     - Stats: rarity (uint8 0–4), hp (uint16), armorType (uint8)
+     - Weapons: primaryWeapon/Damage, secondaryWeapon/Damage,
+     tertiaryWeapon/Damage, specialAttack/Damage
+     - Cosmetics (mutable): repaintColor, decalId
+
+     Key functions: initialize(), mintCard(to, tokenUri, traits),
+     updateCosmetics(tokenId, color, decalId), getTraits(tokenId)
+
+     Minting: accepts USDC (transferFrom → contract). Cosmetics: separate
+     USDC fee, callable only by token owner.
+
+     2. GundaniumGame.sol — Battle Logic (Hybrid on/off-chain)
+
+     BattleSession struct: players, card IDs, GNDM stake, type (PVE/PVP),
+     status, arcId, winner.
+
+     Key functions: startPVE(cardId, arcId), startPVP(cardId, stakeAmount),
+      joinPVP(sessionId, cardId), settleBattle(sessionId, winner, 
+     EIP712sig), claimPVEReward(sessionId), setTrustedResolver(address)
+
+     3. PrizePool.sol — Daily/Weekly/Monthly Escrow
+
+     depositGndm(), depositUsdc(), distribute(poolType, winners[], 
+     gndmShares[], usdcShares[], adminSig)
+
+     ---
+     Key Architecture Decisions
+
+     Battle Resolution: Hybrid (Off-chain engine + On-chain settlement via 
+     EIP-712)
+
+     - Why not fully on-chain: Each turn costs gas + 2s block time →
+     unplayable
+     - Why not fully off-chain: Centralized, unverifiable, defeats
+     blockchain purpose
+     - Hybrid approach:
+       a. startPVP/startPVE locks stakes on-chain
+       b. All move resolution runs on the game server (/api/battle/resolve)
+       c. Server signs BattleResult{sessionId, winner, finalHp, timestamp}
+     with EIP-712
+       d. Client submits signed result → settleBattle() verifies sig,
+     distributes GNDM
+       e. RNG seed = keccak256(playerCommitment_A, playerCommitment_B)
+     (commit-reveal, unmanipulable)
+
+     AI Trait Generation: Claude claude-opus-4-6 Vision (server-side only)
+
+     Photo → base64 → /api/analyze-gunpla → Claude vision → structured JSON
+      traits → user reviews/edits → /api/mint-metadata → Pinata IPFS →
+     on-chain mint
+
+     Rarity Visual Treatment (Tailwind v4 CSS vars in globals.css)
+
+     - Common: silver border | Uncommon: green holo | Rare: blue metallic |
+      Ultra Rare: purple gradient | Legendary: animated gold beam
+
+     ---
+     Full Folder Structure
+
+     basement-gunpla-next/
+     ├── contracts/                          # Foundry monorepo
+     │   ├── src/
+     │   │   ├── GunplaCard.sol
+     │   │   ├── GundaniumGame.sol
+     │   │   └── PrizePool.sol
+     │   ├── script/Deploy.s.sol
+     │   └── test/*.t.sol
+     │
+     ├── src/
+     │   ├── app/
+     │   │   ├── layout.tsx                  # MODIFY: wrap with Providers,
+      add Navbar
+     │   │   ├── globals.css                 # MODIFY: add rarity CSS vars,
+      theme tokens
+     │   │   ├── page.tsx                    # MODIFY: landing/hero page
+     │   │   ├── mint/page.tsx
+     │   │   ├── collection/page.tsx
+     │   │   ├── collection/[tokenId]/page.tsx
+     │   │   ├── battle/page.tsx             # PVE campaign map
+     │   │   ├── battle/[arcId]/page.tsx
+     │   │   ├── arena/page.tsx              # PVP lobby
+     │   │   ├── leaderboard/page.tsx
+     │   │   └── api/
+     │   │       ├── analyze-gunpla/route.ts # Claude vision → traits JSON
+     │   │       ├── mint-metadata/route.ts  # Pinata IPFS upload
+     │   │       └── battle/
+     │   │           ├── submit/route.ts
+     │   │           └── resolve/route.ts    # EIP-712 signed result
+     │   │
+     │   ├── components/
+     │   │   ├── providers/Providers.tsx     # WagmiProvider +
+     QueryClientProvider + OnchainKitProvider
+     │   │   ├── wallet/ConnectButton.tsx    # OnchainKit <Wallet />
+     │   │   ├── nav/Navbar.tsx
+     │   │   ├── card/
+     │   │   │   ├── GunplaCard.tsx          # Framer Motion 3D flip card
+     │   │   │   ├── CardBadge.tsx           # Rarity badge
+     │   │   │   ├── WeaponStat.tsx
+     │   │   │   └── CardSkeleton.tsx
+     │   │   ├── mint/
+     │   │   │   ├── PhotoDropzone.tsx       # react-dropzone, 10MB limit,
+     JPEG/PNG/WebP
+     │   │   │   ├── TraitReview.tsx         # Editable form pre-filled
+     from Claude
+     │   │   │   ├── MintConfirm.tsx         # USDC approve → mint two-tx
+     flow
+     │   │   │   └── MintSuccess.tsx         # Card reveal animation
+     │   │   ├── battle/
+     │   │   │   ├── BattleArena.tsx
+     │   │   │   ├── WeaponSelector.tsx      # 4 weapon buttons per turn
+     │   │   │   ├── BattleLog.tsx
+     │   │   │   ├── HPBar.tsx
+     │   │   │   └── CampaignMap.tsx
+     │   │   ├── leaderboard/
+     │   │   │   ├── LeaderboardTable.tsx
+     │   │   │   └── PrizePoolDisplay.tsx
+     │   │   └── ui/
+     │   │       ├── Button.tsx
+     │   │       ├── Modal.tsx
+     │   │       ├── Spinner.tsx
+     │   │       └── Toast.tsx
+     │   │
+     │   ├── lib/
+     │   │   ├── wagmi/config.ts             # createConfig: base +
+     baseSepolia, coinbaseWallet connector
+     │   │   ├── utils.ts                    # cn() = clsx + twMerge
+     │   │   ├── contracts/
+     │   │   │   ├── addresses.ts            # Deployed contract addresses
+     by chainId
+     │   │   │   ├── abis/                   # Copied from contracts/out/
+     after forge build
+     │   │   │   └── hooks/
+     │   │   │       ├── useGunplaCard.ts    # useReadContract wrappers
+     │   │   │       ├── useMint.ts          # USDC approve → mintCard
+     two-tx hook
+     │   │   │       ├── useBattle.ts
+     │   │   │       └── usePrizePool.ts
+     │   │   ├── claude/analyzeGunpla.ts     # Anthropic SDK call (SERVER
+     ONLY)
+     │   │   ├── pinata/upload.ts            # Pinata SDK wrappers (SERVER
+     ONLY)
+     │   │   ├── battle/
+     │   │   │   ├── engine.ts               # Pure TS battle resolution
+     (deterministic)
+     │   │   │   ├── types.ts                # BattleState, Move,
+     TurnResult
+     │   │   │   └── lore.ts                 # CAMPAIGN_ARCS data (all
+     Gundam universes)
+     │   │   └── constants/
+     │   │       ├── tokens.ts               # GNDM + USDC addresses on
+     Base
+     │   │       ├── factions.ts             # EFSF, Zeon, ZAFT, Celestial
+     Being, etc.
+     │   │       ├── universes.ts            # Gundam universe/arc
+     definitions
+     │   │       └── prompts.ts              # Claude trait extraction
+     prompt (versioned)
+     │   │
+     │   ├── types/
+     │   │   ├── nft.ts                      # GunplaCardMetadata,
+     TraitSet, CardTraits
+     │   │   ├── battle.ts                   # BattleSession, Move,
+     TurnResult
+     │   │   └── api.ts                      # Request/response types
+     │   │
+     │   └── store/
+     │       ├── useMintStore.ts             # Zustand:
+     idle→uploading→analyzing→reviewing→confirming→success
+     │       ├── useBattleStore.ts           # Zustand: active battle state
+     │       └── useCollectionStore.ts       # Zustand: cached user NFTs
+     │
+     ├── next.config.ts                      # MODIFY: add Pinata gateway
+     to images.remotePatterns
+     └── .env.local                          # All secrets (never
+     committed)
+
+     ---
+     Environment Variables (.env.local)
+
+     NEXT_PUBLIC_ONCHAINKIT_API_KEY=...
+     NEXT_PUBLIC_GNDM_ADDRESS=0xFc7008F9157257a17a9Fb3c602b1CD56C27A4ba3
+     NEXT_PUBLIC_USDC_ADDRESS=0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
+     NEXT_PUBLIC_GUNPLA_CARD_ADDRESS=...
+     NEXT_PUBLIC_GAME_ADDRESS=...
+     NEXT_PUBLIC_PRIZE_POOL_ADDRESS=...
+     NEXT_PUBLIC_CHAIN_ID=84532              # 8453 for mainnet
+     ANTHROPIC_API_KEY=...                   # Server-side only
+     PINATA_JWT=...                          # Server-side only
+     PINATA_GATEWAY=...                      # e.g.
+     your-gateway.mypinata.cloud
+     BATTLE_RESOLVER_PRIVATE_KEY=...         # Off-chain resolver signing
+     key
+
+     ---
+     Claude Vision Prompt (in src/lib/constants/prompts.ts)
+
+     You are an expert on Gundam model kits (Gunpla) and the complete
+     Gundam franchise.
+     Analyze this photo and return ONLY valid JSON (no markdown):
+     {
+       "name": "Mobile Suit canonical name",
+       "series": "Full series name + timeline e.g. 'Mobile Suit Gundam
+     [Universal Century]'",
+       "faction": "Canonical faction e.g. 'EFSF', 'Principality of Zeon',
+     'ZAFT', 'Celestial Being'",
+       "rarity": "Common|Uncommon|Rare|Ultra Rare|Legendary",
+       "hp": <integer, Legendary=1200-2000, Common=200-400>,
+       "pilotName": "Canonical pilot name",
+       "primaryWeapon": "Long-range beam weapon name from lore",
+       "primaryDamage": <integer>,
+       "secondaryWeapon": "Melee weapon name from lore",
+       "secondaryDamage": <integer>,
+       "tertiaryWeapon": "Utility/support weapon name",
+       "tertiaryDamage": <integer>,
+       "specialAttack": "Unique super attack name",
+       "specialDamage": <integer>,
+       "armorType": "Standard|Gundanium|Phase Shift|I-Field|GN Particle",
+       "confidence": <0.0-1.0>
+     }
+     Rarity rubric: Legendary=named protagonist suits (Wing Zero, Unicorn,
+     Strike Freedom, 00 Raiser only).
+     Damage scales proportionally to HP. Use Gundam Wiki lore for all
+     weapon names.
+     If unsure, return confidence < 0.6 and your best guess.
+
+     ---
+     Battle Weapon System
+
+     Each Mobile Suit has 4 weapons:
+     1. Primary — Long-range beam rifle (highest range, moderate damage)
+     2. Secondary — Melee weapon (close range, high damage, risk/reward)
+     3. Tertiary — Low-damage utility (debuff, shield pierce, heal, etc.)
+     4. Special — Super attack (highest damage, limited uses per battle)
+
+     Armor Mitigation Rules (src/lib/battle/engine.ts)
+
+     - Phase Shift (Cosmic Era/SEED): immune to physical, 50% beam
+     resistance
+     - I-Field (Universal Century): 40% beam damage reduction
+     - GN Particle (Anno Domini/00): 20% universal mitigation
+     - Gundanium (After Colony/Wing): 35% physical resistance
+     - Standard: no mitigation
+
+     Crit Rates by Rarity
+
+     - Common: 5% | Uncommon: 8% | Rare: 12% | Ultra Rare: 18% | Legendary:
+      25%
+
+     ---
+     NFT Metadata Schema (OpenSea-compatible)
+
+     {
+       "name": "RX-78-2 Gundam",
+       "description": "RX-78-2 Gundam — Mobile Suit Gundam [Universal 
+     Century]. Piloted by Amuro Ray.",
+       "image": "ipfs://Qm...",
+       "attributes": [
+         { "trait_type": "Series", "value": "Mobile Suit Gundam [Universal 
+     Century]" },
+         { "trait_type": "Faction", "value": "EFSF" },
+         { "trait_type": "Rarity", "value": "Legendary" },
+         { "trait_type": "Pilot", "value": "Amuro Ray" },
+         { "trait_type": "Armor Type", "value": "Lunar Titanium" },
+         { "trait_type": "HP", "display_type": "number", "value": 1500 },
+         { "trait_type": "Primary Weapon", "value": "BOWA XBR-M-79-07G Beam
+      Rifle" },
+         { "trait_type": "Primary Damage", "display_type": "number",
+     "value": 320 },
+         { "trait_type": "Secondary Weapon", "value": "RX Beam Saber" },
+         { "trait_type": "Secondary Damage", "display_type": "number",
+     "value": 480 },
+         { "trait_type": "Tertiary Weapon", "value": "Hyper Bazooka" },
+         { "trait_type": "Tertiary Damage", "display_type": "number",
+     "value": 150 },
+         { "trait_type": "Special Attack", "value": "Fin Funnel Barrage" },
+         { "trait_type": "Special Damage", "display_type": "number",
+     "value": 850 }
+       ]
+     }
+
+     ---
+     Campaign Arc Structure (src/lib/battle/lore.ts)
+
+     One arc per major battle from each Gundam universe:
+
+     ┌─────┬──────────┬─────────────────────────────┬──────────────────────
+     ─────┐
+     │ ID  │ Universe │          Arc Name           │           Boss
+          │
+     ├─────┼──────────┼─────────────────────────────┼──────────────────────
+     ─────┤
+     │ 1   │ UC       │ Battle of Loum              │ MSN-02 Zeong
+          │
+     ├─────┼──────────┼─────────────────────────────┼──────────────────────
+     ─────┤
+     │ 2   │ UC       │ Attack on Jaburo            │ MSM-07 Z'Gok
+          │
+     ├─────┼──────────┼─────────────────────────────┼──────────────────────
+     ─────┤
+     │ 3   │ UC       │ Battle of A Baoa Qu         │ MA-08 Big Zam
+          │
+     ├─────┼──────────┼─────────────────────────────┼──────────────────────
+     ─────┤
+     │ 4   │ CE       │ Battle of Endymion          │ GAT-X252 Forbidden
+          │
+     ├─────┼──────────┼─────────────────────────────┼──────────────────────
+     ─────┤
+     │ 5   │ CE       │ Battle of GENESIS           │ ZGMF-X13A Providence
+          │
+     ├─────┼──────────┼─────────────────────────────┼──────────────────────
+     ─────┤
+     │ 6   │ AC       │ Operation Meteor            │ OZ-13MS Epyon
+          │
+     ├─────┼──────────┼─────────────────────────────┼──────────────────────
+     ─────┤
+     │ 7   │ AC       │ Mariemaia Uprising          │ WMS-03 Maganac Custom
+          │
+     ├─────┼──────────┼─────────────────────────────┼──────────────────────
+     ─────┤
+     │ 8   │ AD       │ Battle at Lagrange 1        │ GNW-20000 Arche
+     Gundam    │
+     ├─────┼──────────┼─────────────────────────────┼──────────────────────
+     ─────┤
+     │ 9   │ AD       │ Final Battle vs. Innovators │ CB-0000G/C Reborns
+     Gundam │
+     └─────┴──────────┴─────────────────────────────┴──────────────────────
+     ─────┘
+
+     ---
+     Faction System
+
+     // src/lib/constants/factions.ts
+     export const FACTIONS = {
+       EFSF: { name: "Earth Federation Space Force", universe: "UC", color:
+      "#3b82f6" },
+       ZEON: { name: "Principality of Zeon", universe: "UC", color:
+     "#dc2626" },
+       ZAFT: { name: "Zodiac Alliance of Freedom Treaty", universe: "CE",
+     color: "#16a34a" },
+       ALLIANCE: { name: "Earth Alliance", universe: "CE", color: "#1d4ed8"
+      },
+       OZ: { name: "Organization of the Zodiac", universe: "AC", color:
+     "#7c3aed" },
+       GUNDAM_TEAM: { name: "Gundam Meisters", universe: "AC", color:
+     "#ffffff" },
+       CELESTIAL_BEING: { name: "Celestial Being", universe: "AD", color:
+     "#f59e0b" },
+       HUMAN_REFORM_LEAGUE: { name: "Human Reform League", universe: "AD",
+     color: "#0891b2" },
+     }
+
+     ---
+     Implementation Phases
+
+     Phase 1 — Foundation (Start here)
+
+     1. npm install all packages listed above
+     2. Create src/lib/utils.ts — cn() utility
+     3. Create src/lib/wagmi/config.ts — wagmi config (Base + Sepolia,
+     coinbaseWallet connector)
+     4. Create src/components/providers/Providers.tsx — provider stack
+     5. Modify src/app/layout.tsx — wrap children in <Providers>, add
+     Navbar, update metadata title to "GundariuM"
+     6. Modify src/app/globals.css — add rarity CSS vars
+     7. Create empty route files for: /mint, /collection, /battle, /arena,
+     /leaderboard
+     8. Set up /contracts with Foundry, write + deploy contracts to Base
+     Sepolia
+     9. Copy ABIs to src/lib/contracts/abis/
+     10. Populate src/lib/constants/tokens.ts, addresses.ts
+
+     Phase 2 — Minting Flow
+
+     1. Create src/app/api/analyze-gunpla/route.ts — Claude vision
+     2. Create src/app/api/mint-metadata/route.ts — Pinata upload
+     3. Create src/store/useMintStore.ts — 6-step state machine
+     4. Create src/lib/contracts/hooks/useMint.ts — two-tx USDC approve +
+     mint
+     5. Build UI: PhotoDropzone → TraitReview → MintConfirm → MintSuccess
+     6. Wire into /mint/page.tsx
+
+     Phase 3 — Collection Display
+
+     1. Build GunplaCard.tsx (Framer Motion 3D flip card)
+     2. Build collection page — ERC721Enumerable reads, IPFS fetch, card
+     grid
+     3. Update next.config.ts with Pinata gateway image domain
+     4. Build [tokenId]/page.tsx card detail view
+
+     Phase 4 — Battle System
+
+     1. Create src/lib/battle/engine.ts — deterministic damage resolution
+     2. Create src/lib/battle/lore.ts — campaign arc data
+     3. Create src/lib/constants/factions.ts + universes.ts
+     4. Create battle API routes: /submit + /resolve (EIP-712 signing)
+     5. Build CampaignMap, BattleArena, WeaponSelector, HPBar, BattleLog
+     6. Build /battle/page.tsx (PVE) and /arena/page.tsx (PVP lobby)
+
+     Phase 5 — Economy & Prizes
+
+     1. Cosmetics shop (USDC → updateCosmetics())
+     2. PrizePool.sol deployment + distribute() admin script
+     3. Leaderboard page with live prize pool display
+     4. Mainnet deployment after Sepolia testing
+
+     ---
+     Critical Files to Modify
+
+     - src/app/layout.tsx — Add Providers + Navbar
+     - src/app/globals.css — Rarity CSS vars + dark theme
+     - next.config.ts — Pinata image domains
+
+     Critical Files to Create (Phase 1 first)
+
+     - src/lib/utils.ts
+     - src/lib/wagmi/config.ts
+     - src/components/providers/Providers.tsx
+     - src/lib/contracts/addresses.ts
+     - src/lib/constants/tokens.ts
+     - contracts/src/GunplaCard.sol
+     - contracts/src/GundaniumGame.sol
+     - contracts/src/PrizePool.sol
+
+     ---
+     Verification Plan
+
+     - Phase 1: Wallet connects on Base Sepolia, provider stack renders
+     without error
+     - Phase 2: Upload test Gunpla photo → Claude returns valid JSON traits
+      → Pinata CID generated → NFT minted on Sepolia → visible on
+     testnets.opensea.io
+     - Phase 3: Minted card appears in collection, 3D flip works, IPFS
+     image loads via Pinata gateway
+     - Phase 4: PVE battle runs full arc, EIP-712 settlement accepted by
+     contract, GNDM reward received
+     - Phase 5: Prize pool deposits visible, leaderboard populates,
+     cosmetics update reflected in metadata
+
+⏺ Let's build. Starting Phase 1 now.
+
+⏺ Bash(cd /Users/joshuagrubbs/basement-gunpla-next && npm install
+      @coinbase/onchainkit wagmi viem @tanstack/react-query @anthropic-ai/sdk
+      pinata zustand @radix-ui/reac…)
+  ⎿  added 643 packages, changed 1 package, and audited 1002 packages in 56
+     s
+     … +17 lines (ctrl+o to expand)
+  ⎿  (timeout 2m)
+
+⏺ Packages installed. Now let me create all the foundation files in parallel.
+
+⏺ Write(src/lib/utils.ts)
+  ⎿  Wrote 6 lines to src/lib/utils.ts
+      1 import { clsx, type ClassValue } from "clsx";
+      2 import { twMerge } from "tailwind-merge";
+      3 
+      4 export function cn(...inputs: ClassValue[]) {
+      5   return twMerge(clsx(inputs));
+      6 }
+
+⏺ Write(src/lib/wagmi/config.ts)
+  ⎿  Wrote 17 lines to src/lib/wagmi/config.ts
+       1 import { createConfig, http } from "wagmi";
+       2 import { base, baseSepolia } from "wagmi/chains";
+       3 import { coinbaseWallet } from "wagmi/connectors";
+       4 
+       5 export const wagmiConfig = createConfig({
+       6   chains: [base, baseSepolia],
+       7   connectors: [
+       8     coinbaseWallet({
+       9       appName: "GundariuM",
+      10     }),
+     … +7 lines (ctrl+o to expand)
+
+⏺ Write(src/lib/constants/tokens.ts)
+  ⎿  Wrote 14 lines to src/lib/constants/tokens.ts
+       1 // Token addresses on Base mainnet (chainId 8453)
+       2 export const TOKENS = {
+       3   GNDM: "0xFc7008F9157257a17a9Fb3c602b1CD56C27A4ba3" as const,
+       4   USDC: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" as const,
+       5 } as const;
+       6 
+       7 // Token addresses on Base Sepolia testnet (chainId 84532)
+       8 export const TOKENS_TESTNET = {
+       9   GNDM: "0xFc7008F9157257a17a9Fb3c602b1CD56C27A4ba3" as const, /
+         / placeholder until testnet deploy
+      10   USDC: "0x036CbD53842c5426634e7929541eC2318f3dCF7e" as const, /
+         / USDC on Base Sepolia
+     … +4 lines (ctrl+o to expand)
+
+⏺ Write(src/lib/constants/factions.ts)
+  ⎿  Wrote 103 lines to src/lib/constants/factions.ts
+       1 export type FactionKey =
+       2   | "EFSF"
+       3   | "ZEON"
+       4   | "ZAFT"
+       5   | "ALLIANCE"
+       6   | "OZ"
+       7   | "GUNDAM_WING_TEAM"
+       8   | "CELESTIAL_BEING"
+       9   | "HUMAN_REFORM_LEAGUE"
+      10   | "INNOVATION"
+     … +93 lines (ctrl+o to expand)
+
+⏺ Write(src/lib/contracts/addresses.ts)
+  ⎿  Wrote 30 lines to src/lib/contracts/addresses.ts
+       1 // Contract addresses by chainId
+       2 // Fill in after deploying with Foundry
+       3 
+       4 export const CONTRACT_ADDRESSES: Record<
+       5   number,
+       6   {
+       7     gunplaCard: `0x${string}`;
+       8     gundaniumGame: `0x${string}`;
+       9     prizePool: `0x${string}`;
+      10   }
+     … +20 lines (ctrl+o to expand)
+
+⏺ Write(src/lib/constants/prompts.ts)
+  ⎿  Wrote 37 lines to src/lib/constants/prompts.ts
+       1 // Claude vision prompt for Gunpla trait extraction
+       2 // Version this string — bump PROMPT_VERSION when changing
+       3 
+       4 export const PROMPT_VERSION = "1.0.0";
+       5 
+       6 export const GUNPLA_TRAIT_PROMPT = `You are an expert on Gundam 
+         model kits (Gunpla) and the complete Gundam franchise lore acros
+         s all timelines and series.
+       7 
+       8 Analyze this photo of a Gundam model kit and return ONLY valid J
+         SON — no markdown, no explanation, just the JSON object.
+       9 
+      10 Schema:
+     … +27 lines (ctrl+o to expand)
+
+⏺ Write(src/types/nft.ts)
+  ⎿  Wrote 97 lines to src/types/nft.ts
+      1 export type Rarity = "Common" | "Uncommon" | "Rare" | "Ultra Rare
+        " | "Legendary";
+      2 
+      3 export type ArmorType =
+      4   | "Standard"
+      5   | "Gundanium"
+      6   | "Phase Shift"
+      7   | "I-Field"
+      8   | "GN Particle"
+      9   | "Luna Titanium";
+     … +87 lines (ctrl+o to expand)
+
+⏺ Write(src/types/battle.ts)
+  ⎿  Wrote 67 lines to src/types/battle.ts
+       1 import type { TraitSet } from "./nft";
+       2 
+       3 export type WeaponSlot = "primary" | "secondary" | "tertiary" | 
+         "special";
+       4 
+       5 export type BattleType = "pve" | "pvp";
+       6 
+       7 export type BattleStatus = "pending" | "active" | "complete" | "
+         abandoned";
+       8 
+       9 export interface TurnResult {
+      10   attackerAddress: string;
+     … +57 lines (ctrl+o to expand)
+
+⏺ Write(src/types/api.ts)
+  ⎿  Wrote 28 lines to src/types/api.ts
+       1 import type { TraitSet } from "./nft";
+       2 
+       3 export interface AnalyzeGunplaRequest {
+       4   imageBase64: string;
+       5   mimeType: "image/jpeg" | "image/png" | "image/webp";
+       6 }
+       7 
+       8 export interface AnalyzeGunplaResponse {
+       9   traits: TraitSet;
+      10   promptVersion: string;
+     … +18 lines (ctrl+o to expand)
+
+⏺ Write(src/components/providers/Providers.tsx)
+  ⎿  Wrote 28 lines to src/components/providers/Providers.tsx
+       1 "use client";
+       2 
+       3 import { OnchainKitProvider } from "@coinbase/onchainkit";
+       4 import { QueryClient, QueryClientProvider } from "@tanstack/reac
+         t-query";
+       5 import { WagmiProvider } from "wagmi";
+       6 import { base, baseSepolia } from "wagmi/chains";
+       7 import { wagmiConfig } from "@/lib/wagmi/config";
+       8 import { useState, type ReactNode } from "react";
+       9 
+      10 const activeChain =
+     … +18 lines (ctrl+o to expand)
+
+⏺ Now update layout.tsx, globals.css, next.config.ts, and create the route stubs
+   all at once:
+
+⏺ Write(src/app/layout.tsx)
+  ⎿  Added 22 lines, removed 5 lines
+      1  import type { Metadata } from "next";
+      2 -import { Geist, Geist_Mono } from "next/font/google";           
+      2 +import { Geist, Geist_Mono, Orbitron } from "next/font/google"; 
+      3  import "./globals.css";
+      4 +import { Providers } from "@/components/providers/Providers";   
+      5 +import { Navbar } from "@/components/nav/Navbar";               
+      6  
+      7  const geistSans = Geist({
+      8    variable: "--font-geist-sans",
+     ...
+      14    subsets: ["latin"],
+      15  });
+      16  
+      17 +const orbitron = Orbitron({                                    
+      18 +  variable: "--font-orbitron",                                 
+      19 +  subsets: ["latin"],                                          
+      20 +  weight: ["400", "700", "900"],                               
+      21 +});                                                            
+      22 +                                                               
+      23  export const metadata: Metadata = {
+      16 -  title: "Create Next App",                                    
+      17 -  description: "Generated by create next app",                 
+      24 +  title: "GundariuM — Gunpla NFT Trading Card Game",           
+      25 +  description:                                                 
+      26 +    "Mint your Gunpla builds as NFT trading cards on Base. Batt
+         +le across the Gundam multiverse using $GNDM.",                 
+      27 +  openGraph: {                                                 
+      28 +    title: "GundariuM",                                        
+      29 +    description: "Gunpla NFT TCG on Base",                     
+      30 +    type: "website",                                           
+      31 +  },                                                           
+      32  };
+      33  
+      34  export default function RootLayout({
+     ...
+      39    return (
+      40      <html lang="en">
+      41        <body
+      28 -        className={`${geistSans.variable} ${geistMono.variable}
+         - antialiased`}                                                 
+      42 +        className={`${geistSans.variable} ${geistMono.variable}
+         + ${orbitron.variable} antialiased`}                            
+      43        >
+      30 -        {children}                                             
+      44 +        <Providers>                                            
+      45 +          <Navbar />                                           
+      46 +          <main>{children}</main>                              
+      47 +        </Providers>                                           
+      48        </body>
+      49      </html>
+      50    );
+
+⏺ Write(src/app/globals.css)
+  ⎿  Error writing file
+
+⏺ Write(next.config.ts)
+  ⎿  Error writing file
+
+⏺ Read 2 files (ctrl+o to expand)
+
+⏺ Write(src/app/globals.css)
+  ⎿  Added 86 lines, removed 10 lines
+        1  @import "tailwindcss";
+        2  
+        3  :root {
+        4 -  --background: #ffffff;                                      
+        5 -  --foreground: #171717;                                      
+        4 +  --background: #080c14;                                      
+        5 +  --foreground: #e2e8f0;                                      
+        6 +  --surface: #0f1929;                                         
+        7 +  --surface-2: #162035;                                       
+        8 +  --border: #1e3a5f;                                          
+        9 +  --accent: #00d4ff;                                          
+       10 +  --accent-2: #7c3aed;                                        
+       11  }
+       12  
+       13  @theme inline {
+       14    --color-background: var(--background);
+       15    --color-foreground: var(--foreground);
+       16 +  --color-surface: var(--surface);                            
+       17 +  --color-surface-2: var(--surface-2);                        
+       18 +  --color-border: var(--border);                              
+       19 +  --color-accent: var(--accent);                              
+       20 +  --color-accent-2: var(--accent-2);                          
+       21 +                                                              
+       22 +  /* Rarity colors */                                         
+       23 +  --color-rarity-common: #9ca3af;                             
+       24 +  --color-rarity-uncommon: #22c55e;                           
+       25 +  --color-rarity-rare: #3b82f6;                               
+       26 +  --color-rarity-ultra: #a855f7;                              
+       27 +  --color-rarity-legendary: #f59e0b;                          
+       28 +                                                              
+       29    --font-sans: var(--font-geist-sans);
+       30    --font-mono: var(--font-geist-mono);
+       31 +  --font-display: var(--font-orbitron);                       
+       32  }
+       33  
+       15 -@media (prefers-color-scheme: dark) {                         
+       16 -  :root {                                                     
+       17 -    --background: #0a0a0a;                                    
+       18 -    --foreground: #ededed;                                    
+       19 -  }                                                           
+       20 -}                                                             
+       21 -                                                              
+       34  body {
+       35    background: var(--background);
+       36    color: var(--foreground);
+       25 -  font-family: Arial, Helvetica, sans-serif;                  
+       37 +  font-family: var(--font-geist-sans), Arial, Helvetica, sans-
+          +serif;                                                        
+       38 +  min-height: 100vh;                                          
+       39  }
+       40 +                                                              
+       41 +/* Rarity glow effects */                                     
+       42 +.rarity-common {                                              
+       43 +  border-color: var(--color-rarity-common);                   
+       44 +  box-shadow: 0 0 8px color-mix(in srgb, var(--color-rarity-co
+          +mmon) 30%, transparent);                                      
+       45 +}                                                             
+       46 +.rarity-uncommon {                                            
+       47 +  border-color: var(--color-rarity-uncommon);                 
+       48 +  box-shadow: 0 0 12px color-mix(in srgb, var(--color-rarity-u
+          +ncommon) 40%, transparent);                                   
+       49 +}                                                             
+       50 +.rarity-rare {                                                
+       51 +  border-color: var(--color-rarity-rare);                     
+       52 +  box-shadow: 0 0 16px color-mix(in srgb, var(--color-rarity-r
+          +are) 50%, transparent);                                       
+       53 +}                                                             
+       54 +.rarity-ultra {                                               
+       55 +  border-color: var(--color-rarity-ultra);                    
+       56 +  box-shadow: 0 0 20px color-mix(in srgb, var(--color-rarity-u
+          +ltra) 60%, transparent);                                      
+       57 +}                                                             
+       58 +.rarity-legendary {                                           
+       59 +  border-color: var(--color-rarity-legendary);                
+       60 +  box-shadow:                                                 
+       61 +    0 0 24px color-mix(in srgb, var(--color-rarity-legendary) 
+          +70%, transparent),                                            
+       62 +    0 0 48px color-mix(in srgb, var(--color-rarity-legendary) 
+          +30%, transparent);                                            
+       63 +  animation: legendary-pulse 2s ease-in-out infinite;         
+       64 +}                                                             
+       65 +                                                              
+       66 +@keyframes legendary-pulse {                                  
+       67 +  0%, 100% {                                                  
+       68 +    box-shadow:                                               
+       69 +      0 0 24px color-mix(in srgb, var(--color-rarity-legendary
+          +) 70%, transparent),                                          
+       70 +      0 0 48px color-mix(in srgb, var(--color-rarity-legendary
+          +) 30%, transparent);                                          
+       71 +  }                                                           
+       72 +  50% {                                                       
+       73 +    box-shadow:                                               
+       74 +      0 0 36px color-mix(in srgb, var(--color-rarity-legendary
+          +) 90%, transparent),                                          
+       75 +      0 0 72px color-mix(in srgb, var(--color-rarity-legendary
+          +) 50%, transparent);                                          
+       76 +  }                                                           
+       77 +}                                                             
+       78 +                                                              
+       79 +/* Beam scan line for card hover */                           
+       80 +.beam-scan {                                                  
+       81 +  position: relative;                                         
+       82 +  overflow: hidden;                                           
+       83 +}                                                             
+       84 +.beam-scan::after {                                           
+       85 +  content: "";                                                
+       86 +  position: absolute;                                         
+       87 +  top: -30%;                                                  
+       88 +  left: 0;                                                    
+       89 +  width: 100%;                                                
+       90 +  height: 30%;                                                
+       91 +  background: linear-gradient(                                
+       92 +    to bottom,                                                
+       93 +    transparent,                                              
+       94 +    color-mix(in srgb, var(--accent) 15%, transparent),       
+       95 +    transparent                                               
+       96 +  );                                                          
+       97 +  animation: beam-sweep 3s ease-in-out infinite;              
+       98 +}                                                             
+       99 +@keyframes beam-sweep {                                       
+      100 +  0% { top: -30%; }                                           
+      101 +  100% { top: 130%; }                                         
+      102 +}                                                             
+
+⏺ Write(next.config.ts)
+  ⎿  Added 14 lines, removed 1 line
+       1  import type { NextConfig } from "next";
+       2  
+       3  const nextConfig: NextConfig = {
+       4 -  /* config options here */                                    
+       4    reactCompiler: true,
+       5 +  images: {                                                    
+       6 +    remotePatterns: [                                          
+       7 +      {                                                        
+       8 +        protocol: "https",                                     
+       9 +        hostname: "*.mypinata.cloud",                          
+      10 +        pathname: "/ipfs/**",                                  
+      11 +      },                                                       
+      12 +      {                                                        
+      13 +        protocol: "https",                                     
+      14 +        hostname: "ipfs.io",                                   
+      15 +        pathname: "/ipfs/**",                                  
+      16 +      },                                                       
+      17 +    ],                                                         
+      18 +  },                                                           
+      19  };
+      20  
+      21  export default nextConfig;
+
+⏺ Now the Navbar and route stubs:
+
+⏺ Write(src/components/nav/Navbar.tsx)
+  ⎿  Wrote 53 lines to src/components/nav/Navbar.tsx
+       1 "use client";
+       2 
+       3 import Link from "next/link";
+       4 import { usePathname } from "next/navigation";
+       5 import { ConnectButton } from "@/components/wallet/ConnectButton
+         ";
+       6 import { cn } from "@/lib/utils";
+       7 
+       8 const NAV_LINKS = [
+       9   { href: "/mint", label: "Mint" },
+      10   { href: "/collection", label: "Collection" },
+     … +43 lines (ctrl+o to expand)
+
+⏺ Write(src/components/wallet/ConnectButton.tsx)
+  ⎿  Wrote 35 lines to src/components/wallet/ConnectButton.tsx
+       1 "use client";
+       2 
+       3 import {
+       4   ConnectWallet,
+       5   Wallet,
+       6   WalletDropdown,
+       7   WalletDropdownDisconnect,
+       8 } from "@coinbase/onchainkit/wallet";
+       9 import {
+      10   Address,
+     … +25 lines (ctrl+o to expand)
+
+⏺ Now create the route stubs and the hero landing page:
+
+⏺ Write(src/app/page.tsx)
+  ⎿  Added 67 lines, removed 58 lines
+       1 -import Image from "next/image";                                
+       1 +import Link from "next/link";                                  
+       2  
+       3  export default function Home() {
+       4    return (
+       5 -    <div className="flex min-h-screen items-center justify-cent
+         -er bg-zinc-50 font-sans dark:bg-black">                        
+       6 -      <main className="flex min-h-screen w-full max-w-3xl flex-
+         -col items-center justify-between py-32 px-16 bg-white dark:bg-b
+         -lack sm:items-start">                                          
+       7 -        <Image                                                 
+       8 -          className="dark:invert"                              
+       9 -          src="/next.svg"                                      
+      10 -          alt="Next.js logo"                                   
+      11 -          width={100}                                          
+      12 -          height={20}                                          
+      13 -          priority                                             
+      14 -        />                                                     
+      15 -        <div className="flex flex-col items-center gap-6 text-c
+         -enter sm:items-start sm:text-left">                            
+      16 -          <h1 className="max-w-xs text-3xl font-semibold leadin
+         -g-10 tracking-tight text-black dark:text-zinc-50">             
+      17 -            To get started, edit the page.tsx file.            
+      18 -          </h1>                                                
+      19 -          <p className="max-w-md text-lg leading-8 text-zinc-60
+         -0 dark:text-zinc-400">                                         
+      20 -            Looking for a starting point or more instructions? 
+         -Head over to{" "}                                              
+      21 -            <a                                                 
+      22 -              href="https://vercel.com/templates?framework=next
+         -.js&utm_source=create-next-app&utm_medium=appdir-template-tw&ut
+         -m_campaign=create-next-app"                                    
+      23 -              className="font-medium text-zinc-950 dark:text-zi
+         -nc-50"                                                         
+      24 -            >                                                  
+      25 -              Templates                                        
+      26 -            </a>{" "}                                          
+      27 -            or the{" "}                                        
+      28 -            <a                                                 
+      29 -              href="https://nextjs.org/learn?utm_source=create-
+         -next-app&utm_medium=appdir-template-tw&utm_campaign=create-next
+         --app"                                                          
+      30 -              className="font-medium text-zinc-950 dark:text-zi
+         -nc-50"                                                         
+      31 -            >                                                  
+      32 -              Learning                                         
+      33 -            </a>{" "}                                          
+      34 -            center.                                            
+      35 -          </p>                                                 
+      36 -        </div>                                                 
+      37 -        <div className="flex flex-col gap-4 text-base font-medi
+         -um sm:flex-row">                                               
+      38 -          <a                                                   
+      39 -            className="flex h-12 w-full items-center justify-ce
+         -nter gap-2 rounded-full bg-foreground px-5 text-background tran
+         -sition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158
+         -px]"                                                           
+      40 -            href="https://vercel.com/new?utm_source=create-next
+         --app&utm_medium=appdir-template-tw&utm_campaign=create-next-app
+         -"                                                              
+      41 -            target="_blank"                                    
+      42 -            rel="noopener noreferrer"                          
+       5 +    <div className="flex min-h-[calc(100vh-64px)] flex-col item
+         +s-center justify-center px-4 text-center">                     
+       6 +      {/* Hero */}                                             
+       7 +      <div className="mb-6 font-[family-name:var(--font-orbitro
+         +n)] text-xs font-bold tracking-[0.3em] text-[var(--accent)]/60 
+         +uppercase">                                                    
+       8 +        Base Network · $GNDM · Gunpla NFT TCG                  
+       9 +      </div>                                                   
+      10 +                                                               
+      11 +      <h1 className="mb-4 font-[family-name:var(--font-orbitron
+         +)] text-5xl font-black leading-tight tracking-tight text-white 
+         +md:text-7xl">                                                  
+      12 +        GUNDARIU                                               
+      13 +        <span className="text-[var(--accent-2)]">M</span>      
+      14 +      </h1>                                                    
+      15 +                                                               
+      16 +      <p className="mb-2 text-lg text-[var(--foreground)]/60 md
+         +:text-xl">                                                     
+      17 +        Digitize your Gunpla. Forge your legend.               
+      18 +      </p>                                                     
+      19 +      <p className="mb-10 max-w-xl text-sm text-[var(--foregrou
+         +nd)]/40 md:text-base">                                         
+      20 +        Photograph your Mobile Suit model kits, mint them as un
+         +ique NFT trading                                               
+      21 +        cards on Base, then battle across the Gundam multiverse
+         + — Universal                                                   
+      22 +        Century, Cosmic Era, After Colony, and beyond.         
+      23 +      </p>                                                     
+      24 +                                                               
+      25 +      {/* CTA buttons */}                                      
+      26 +      <div className="flex flex-col gap-4 sm:flex-row">        
+      27 +        <Link                                                  
+      28 +          href="/mint"                                         
+      29 +          className="rounded-full bg-[var(--accent)] px-8 py-3 
+         +font-[family-name:var(--font-orbitron)] text-sm font-bold track
+         +ing-wider text-black transition-all hover:scale-105 hover:shado
+         +w-[0_0_24px_var(--accent)]"                                    
+      30 +        >                                                      
+      31 +          MINT YOUR GUNPLA                                     
+      32 +        </Link>                                                
+      33 +        <Link                                                  
+      34 +          href="/arena"                                        
+      35 +          className="rounded-full border border-[var(--accent-2
+         +)] px-8 py-3 font-[family-name:var(--font-orbitron)] text-sm fo
+         +nt-bold tracking-wider text-[var(--accent-2)] transition-all ho
+         +ver:bg-[var(--accent-2)] hover:text-white"                     
+      36 +        >                                                      
+      37 +          ENTER THE ARENA                                      
+      38 +        </Link>                                                
+      39 +      </div>                                                   
+      40 +                                                               
+      41 +      {/* Feature cards */}                                    
+      42 +      <div className="mt-20 grid max-w-4xl grid-cols-1 gap-6 md
+         +:grid-cols-3">                                                 
+      43 +        {[                                                     
+      44 +          {                                                    
+      45 +            icon: "📸",                                        
+      46 +            title: "Photo → NFT",                              
+      47 +            desc: "AI identifies your Mobile Suit and assigns l
+         +ore-accurate weapons, stats, and faction from the Gundam Wiki."
+         +,                                                              
+      48 +          },                                                   
+      49 +          {                                                    
+      50 +            icon: "⚔️",                                        
+      51 +            title: "Turn-Based Combat",                        
+      52 +            desc: "Choose from 4 weapons per turn. Armor types 
+         +counter beam and physical attacks. Rare suits hit harder and cr
+         +it more.",                                                     
+      53 +          },                                                   
+      54 +          {                                                    
+      55 +            icon: "🏆",                                        
+      56 +            title: "$GNDM Economy",                            
+      57 +            desc: "Stake $GNDM to enter PVP, upgrade your suit,
+         + and claim from daily, weekly, and monthly prize pools.",      
+      58 +          },                                                   
+      59 +        ].map((f) => (                                         
+      60 +          <div                                                 
+      61 +            key={f.title}                                      
+      62 +            className="rounded-xl border border-[var(--border)]
+         + bg-[var(--surface)] p-6 text-left transition-colors hover:bord
+         +er-[var(--accent)]/40"                                         
+      63            >
+      44 -            <Image                                             
+      45 -              className="dark:invert"                          
+      46 -              src="/vercel.svg"                                
+      47 -              alt="Vercel logomark"                            
+      48 -              width={16}                                       
+      49 -              height={16}                                      
+      50 -            />                                                 
+      51 -            Deploy Now                                         
+      52 -          </a>                                                 
+      53 -          <a                                                   
+      54 -            className="flex h-12 w-full items-center justify-ce
+         -nter rounded-full border border-solid border-black/[.08] px-5 t
+         -ransition-colors hover:border-transparent hover:bg-black/[.04] 
+         -dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]" 
+      55 -            href="https://nextjs.org/docs?utm_source=create-nex
+         -t-app&utm_medium=appdir-template-tw&utm_campaign=create-next-ap
+         -p"                                                             
+      56 -            target="_blank"                                    
+      57 -            rel="noopener noreferrer"                          
+      58 -          >                                                    
+      59 -            Documentation                                      
+      60 -          </a>                                                 
+      61 -        </div>                                                 
+      62 -      </main>                                                  
+      64 +            <div className="mb-3 text-3xl">{f.icon}</div>      
+      65 +            <h3 className="mb-2 font-[family-name:var(--font-or
+         +bitron)] text-sm font-bold text-[var(--accent)]">              
+      66 +              {f.title}                                        
+      67 +            </h3>                                              
+      68 +            <p className="text-sm text-[var(--foreground)]/60">
+         +{f.desc}</p>                                                   
+      69 +          </div>                                               
+      70 +        ))}                                                    
+      71 +      </div>                                                   
+      72      </div>
+      73    );
+      74  }
+
+⏺ Write(src/app/mint/page.tsx)
+  ⎿  Wrote 12 lines to src/app/mint/page.tsx
+       1 export default function MintPage() {
+       2   return (
+       3     <div className="flex min-h-[calc(100vh-64px)] items-center j
+         ustify-center">
+       4       <div className="text-center">
+       5         <h1 className="font-[family-name:var(--font-orbitron)] t
+         ext-3xl font-bold text-[var(--accent)]">
+       6           MINT YOUR GUNPLA
+       7         </h1>
+       8         <p className="mt-2 text-[var(--foreground)]/60">Phase 2 
+         — Coming soon</p>
+       9       </div>
+      10     </div>
+     … +2 lines (ctrl+o to expand)
+
+⏺ Write(src/app/collection/page.tsx)
+  ⎿  Wrote 12 lines to src/app/collection/page.tsx
+       1 export default function CollectionPage() {
+       2   return (
+       3     <div className="flex min-h-[calc(100vh-64px)] items-center j
+         ustify-center">
+       4       <div className="text-center">
+       5         <h1 className="font-[family-name:var(--font-orbitron)] t
+         ext-3xl font-bold text-[var(--accent)]">
+       6           YOUR COLLECTION
+       7         </h1>
+       8         <p className="mt-2 text-[var(--foreground)]/60">Phase 3 
+         — Coming soon</p>
+       9       </div>
+      10     </div>
+     … +2 lines (ctrl+o to expand)
+
+⏺ Write(src/app/battle/page.tsx)
+  ⎿  Wrote 12 lines to src/app/battle/page.tsx
+       1 export default function BattlePage() {
+       2   return (
+       3     <div className="flex min-h-[calc(100vh-64px)] items-center j
+         ustify-center">
+       4       <div className="text-center">
+       5         <h1 className="font-[family-name:var(--font-orbitron)] t
+         ext-3xl font-bold text-[var(--accent)]">
+       6           PVE CAMPAIGN
+       7         </h1>
+       8         <p className="mt-2 text-[var(--foreground)]/60">Phase 4 
+         — Coming soon</p>
+       9       </div>
+      10     </div>
+     … +2 lines (ctrl+o to expand)
+
+⏺ Write(src/app/arena/page.tsx)
+  ⎿  Wrote 12 lines to src/app/arena/page.tsx
+       1 export default function ArenaPage() {
+       2   return (
+       3     <div className="flex min-h-[calc(100vh-64px)] items-center j
+         ustify-center">
+       4       <div className="text-center">
+       5         <h1 className="font-[family-name:var(--font-orbitron)] t
+         ext-3xl font-bold text-[var(--accent-2)]">
+       6           PVP ARENA
+       7         </h1>
+       8         <p className="mt-2 text-[var(--foreground)]/60">Phase 4 
+         — Coming soon</p>
+       9       </div>
+      10     </div>
+     … +2 lines (ctrl+o to expand)
+
+⏺ Write(src/app/leaderboard/page.tsx)
+  ⎿  Wrote 12 lines to src/app/leaderboard/page.tsx
+       1 export default function LeaderboardPage() {
+       2   return (
+       3     <div className="flex min-h-[calc(100vh-64px)] items-center j
+         ustify-center">
+       4       <div className="text-center">
+       5         <h1 className="font-[family-name:var(--font-orbitron)] t
+         ext-3xl font-bold text-[var(--color-rarity-legendary)]">
+       6           LEADERBOARD
+       7         </h1>
+       8         <p className="mt-2 text-[var(--foreground)]/60">Phase 5 
+         — Coming soon</p>
+       9       </div>
+      10     </div>
+     … +2 lines (ctrl+o to expand)
+
+⏺ Now let's verify the build compiles clean:
+
+⏺ Bash(npx tsc --noEmit 2>&1)
+  ⎿  Error: Exit code 2
+     src/lib/constants/tokens.ts(13,32): error TS2737: BigInt literals are not 
+     available when targeting lower than ES2020.
+     src/lib/constants/tokens.ts(14,36): error TS2737: BigInt literals are not 
+     available when targeting lower than ES2020.
+
+     src/lib/constants/tokens.ts(13,32): error TS2737: BigInt literals are not 
+     available when targeting lower than ES2020.
+     src/lib/constants/tokens.ts(14,36): error TS2737: BigInt literals are not 
+     available when targeting lower than ES2020.
+
+⏺ Update(tsconfig.json)
+  ⎿  File must be read first
+
+⏺ Read 1 file (ctrl+o to expand)
+
+⏺ Update(tsconfig.json)
+  ⎿  Added 1 line, removed 1 line
+      1  {
+      2    "compilerOptions": {
+      3 -    "target": "ES2017",                                         
+      3 +    "target": "ES2020",                                         
+      4      "lib": ["dom", "dom.iterable", "esnext"],
+      5      "allowJs": true,
+      6      "skipLibCheck": true,
+
+⏺ Bash(npx tsc --noEmit 2>&1)
+  ⎿  Error: Exit code 2
+     src/lib/constants/tokens.ts(13,32): error TS2737: BigInt literals are not 
+     available when targeting lower than ES2020.
+     src/lib/constants/tokens.ts(14,36): error TS2737: BigInt literals are not 
+     available when targeting lower than ES2020.
+
+     src/lib/constants/tokens.ts(13,32): error TS2737: BigInt literals are not 
+     available when targeting lower than ES2020.
+     src/lib/constants/tokens.ts(14,36): error TS2737: BigInt literals are not 
+     available when targeting lower than ES2020.
+
+⏺ Bash(rm -f /Users/joshuagrubbs/basement-gunpla-next/tsconfig.tsbuildinfo &&
+      npx tsc --noEmit 2>&1)
+  ⎿  (No output)
+
+⏺ Clean. Now the Solidity contracts — set up Foundry and write all three:
+
+⏺ Searched for 1 pattern (ctrl+o to expand)
+
+⏺ Bash(curl -L https://foundry.paradigm.xyz | bash 2>&1 | tail -10)
+  ⎿    % Total    % Received % Xferd  Average Speed   Time    Time     Time
+       Current
+                                      Dload  Upload   Total   Spent    Left
+     … +16 lines (ctrl+o to expand)
+
+⏺ Bash(source /Users/joshuagrubbs/.zshenv && foundryup 2>&1 | tail -15)
+  ⎿  x forge
+     x cast
+     x anvil
+     … +18 lines (ctrl+o to expand)
+  ⎿  (timeout 2m)
+
+⏺ Bash(mkdir -p /Users/joshuagrubbs/basement-gunpla-next/contracts && export
+      PATH="$HOME/.foundry/bin:$PATH" && cd
+      /Users/joshuagrubbs/basement-gunpla-next/contracts &…)
+  ⎿  Initializing /Users/joshuagrubbs/basement-gunpla-next/contracts...
+     Installing forge-std in /Users/joshuagrubbs/basement-gunpla-next/contr
+     acts/lib/forge-std (url: https://github.com/foundry-rs/forge-std, tag:
+     … +6 lines (ctrl+o to expand)
+
+⏺ Bash(export PATH="$HOME/.foundry/bin:$PATH" && forge install
+      OpenZeppelin/openzeppelin-contracts-upgradeable --no-git 2>&1 && echo "===
+       OZ installed ===")
+  ⎿  Installing openzeppelin-contracts-upgradeable in /Users/joshuagrubbs/b
+     asement-gunpla-next/contracts/lib/openzeppelin-contracts-upgradeable (
+     url: https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeabl
+     … +40 lines (ctrl+o to expand)
+  ⎿  (timeout 2m)
+
+⏺ Now write the three contracts. First, set up the remappings:
+
+⏺ Write(contracts/remappings.txt)
+  ⎿  Wrote 3 lines to contracts/remappings.txt
+      1 @openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-u
+        pgradeable/
+      2 @openzeppelin/contracts/=lib/openzeppelin-contracts-upgradeable/l
+        ib/openzeppelin-contracts/
+      3 forge-std/=lib/forge-std/src/
+
+⏺ Write(contracts/src/GunplaCard.sol)
+  ⎿  Wrote 200 lines to contracts/src/GunplaCard.sol
+      1 // SPDX-License-Identifier: MIT
+      2 pragma solidity ^0.8.20;
+      3 
+      4 import {ERC721Upgradeable} from "@openzeppelin/contracts-upgradea
+        ble/token/ERC721/ERC721Upgradeable.sol";
+      5 import {ERC721URIStorageUpgradeable} from "@openzeppelin/contract
+        s-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable
+        .sol";
+      6 import {ERC721EnumerableUpgradeable} from "@openzeppelin/contract
+        s-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable
+        .sol";
+      7 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgrade
+        able/access/OwnableUpgradeable.sol";
+      8 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeabl
+        e/proxy/utils/UUPSUpgradeable.sol";
+      9 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.
+        sol";
+     … +190 lines (ctrl+o to expand)
+
+⏺ Write(contracts/src/GundaniumGame.sol)
+  ⎿  Wrote 304 lines to contracts/src/GundaniumGame.sol
+       1 // SPDX-License-Identifier: MIT
+       2 pragma solidity ^0.8.20;
+       3 
+       4 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgrad
+         eable/access/OwnableUpgradeable.sol";
+       5 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeab
+         le/proxy/utils/UUPSUpgradeable.sol";
+       6 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20
+         .sol";
+       7 import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/
+         ECDSA.sol";
+       8 import {EIP712Upgradeable} from "@openzeppelin/contracts-upgrade
+         able/utils/cryptography/EIP712Upgradeable.sol";
+       9 
+      10 /**
+     … +294 lines (ctrl+o to expand)
+
+⏺ Write(contracts/src/PrizePool.sol)
+  ⎿  Wrote 180 lines to contracts/src/PrizePool.sol
+       1 // SPDX-License-Identifier: MIT
+       2 pragma solidity ^0.8.20;
+       3 
+       4 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgrad
+         eable/access/OwnableUpgradeable.sol";
+       5 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeab
+         le/proxy/utils/UUPSUpgradeable.sol";
+       6 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20
+         .sol";
+       7 import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/
+         ECDSA.sol";
+       8 import {EIP712Upgradeable} from "@openzeppelin/contracts-upgrade
+         able/utils/cryptography/EIP712Upgradeable.sol";
+       9 
+      10 /**
+     … +170 lines (ctrl+o to expand)
+
+⏺ Now compile them:
+
+⏺ Bash(export PATH="$HOME/.foundry/bin:$PATH" && rm -rf src/Counter.sol
+      test/Counter.t.sol script/Counter.s.sol && forge build 2>&1)
+  ⎿  Error: Exit code 1
+     2026-02-21T14:49:39.771110Z ERROR
+     foundry_compilers_artifacts_solc::sources:
+     error="/Users/joshuagrubbs/basement-gunpla-next/contracts/lib/openzeppelin-
+     contracts-upgradeable/access/OwnableUpgradeable.sol": No such file or 
+     directory (os error 2)
+     2026-02-21T14:49:39.771188Z ERROR
+     foundry_compilers_artifacts_solc::sources:
+     error="/Users/joshuagrubbs/basement-gunpla-next/contracts/lib/openzeppelin-
+     contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol": No such file or 
+     directory (os error 2)
+     2026-02-21T14:49:39.771206Z ERROR
+     foundry_compilers_artifacts_solc::sources:
+     error="/Users/joshuagrubbs/basement-gunpla-next/contracts/lib/openzeppelin-
+     contracts-upgradeable/lib/openzeppelin-contracts/token/ERC20/IERC20.sol": 
+     No such file or directory (os error 2)
+     2026-02-21T14:49:39.771220Z ERROR
+     foundry_compilers_artifacts_solc::sources: error="/Users/joshuagrubbs/basem
+     ent-gunpla-next/contracts/lib/openzeppelin-contracts-upgradeable/lib/openze
+     ppelin-contracts/utils/cryptography/ECDSA.sol": No such file or directory 
+     (os error 2)
+     2026-02-21T14:49:39.771242Z ERROR
+     foundry_compilers_artifacts_solc::sources:
+     error="/Users/joshuagrubbs/basement-gunpla-next/contracts/lib/openzeppelin-
+     contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol": No such 
+     file or directory (os error 2)
+     2026-02-21T14:49:39.771254Z ERROR
+     foundry_compilers_artifacts_solc::sources:
+     error="/Users/joshuagrubbs/basement-gunpla-next/contracts/lib/openzeppelin-
+     contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol": No such file or 
+     directory (os error 2)
+     2026-02-21T14:49:39.771260Z ERROR
+     foundry_compilers_artifacts_solc::sources: error="/Users/joshuagrubbs/basem
+     ent-gunpla-next/contracts/lib/openzeppelin-contracts-upgradeable/token/ERC7
+     21/extensions/ERC721URIStorageUpgradeable.sol": No such file or directory 
+     (os error 2)
+     2026-02-21T14:49:39.771269Z ERROR
+     foundry_compilers_artifacts_solc::sources: error="/Users/joshuagrubbs/basem
+     ent-gunpla-next/contracts/lib/openzeppelin-contracts-upgradeable/token/ERC7
+     21/extensions/ERC721EnumerableUpgradeable.sol": No such file or directory 
+     (os error 2)
+     2026-02-21T14:49:39.771276Z ERROR
+     foundry_compilers_artifacts_solc::sources:
+     error="/Users/joshuagrubbs/basement-gunpla-next/contracts/lib/openzeppelin-
+     contracts-upgradeable/access/OwnableUpgradeable.sol": No such file or 
+     directory (os error 2)
+     … +66 lines (ctrl+o to see all)
+
+⏺ Read 3 files (ctrl+o to expand)
+
+⏺ Write(contracts/remappings.txt)
+  ⎿  Added 2 lines, removed 2 lines
+      1 -@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-
+        -upgradeable/                                                    
+      2 -@openzeppelin/contracts/=lib/openzeppelin-contracts-upgradeable/
+        -lib/openzeppelin-contracts/                                     
+      1 +@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-
+        +upgradeable/contracts/                                          
+      2 +@openzeppelin/contracts/=lib/openzeppelin-contracts-upgradeable/
+        +lib/openzeppelin-contracts/contracts/                           
+      3  forge-std/=lib/forge-std/src/
+
+⏺ Bash(export PATH="$HOME/.foundry/bin:$PATH" && forge build 2>&1)
+  ⎿  Error: Exit code 1
+     Compiling 41 files with Solc 0.8.33
+     Solc 0.8.33 finished in 41.34ms
+     Error: Compiler run failed:
+     Error (7576): Undeclared identifier.
+       --> src/GundaniumGame.sol:89:9:
+        |
+     89 |         __UUPSUpgradeable_init();
+        |         ^^^^^^^^^^^^^^^^^^^^^^
+
+     … +8 lines (ctrl+o to see all)
+
+⏺ OZ v5 removed __UUPSUpgradeable_init() — no initialization needed for UUPS.
+  Fix both contracts:
+
+⏺ Update(contracts/src/GundaniumGame.sol)
+  ⎿  Removed 1 line
+      86          uint256 pvpMinStake_
+      87      ) external initializer {
+      88          __Ownable_init(owner_);
+      89 -        __UUPSUpgradeable_init();                              
+      89          __EIP712_init("GundariuM", "1");
+      90  
+      91          gndm = IERC20(gndmAddress_);
+
+⏺ Update(contracts/src/PrizePool.sol)
+  ⎿  Removed 1 line
+      63          address usdcAddress_
+      64      ) external initializer {
+      65          __Ownable_init(owner_);
+      66 -        __UUPSUpgradeable_init();                              
+      66          __EIP712_init("GundariuM PrizePool", "1");
+      67  
+      68          gndm = IERC20(gndmAddress_);
+
+⏺ Update(contracts/src/GunplaCard.sol)
+  ⎿  Removed 1 line
+      79          __ERC721URIStorage_init();
+      80          __ERC721Enumerable_init();
+      81          __Ownable_init(owner_);
+      82 -        __UUPSUpgradeable_init();                              
+      82  
+      83          usdc = IERC20(usdcAddress_);
+      84          mintPriceUsdc = mintPriceUsdc_;
+
+⏺ Bash(export PATH="$HOME/.foundry/bin:$PATH" && forge build 2>&1)
+  ⎿  Error: Exit code 1
+     Compiling 41 files with Solc 0.8.33
+     Solc 0.8.33 finished in 135.42ms
+     Error: Compiler run failed:
+     Error: Compiler error (/solidity/libsolidity/codegen/LValue.cpp:54): Stack 
+     too deep. Try compiling with `--via-ir` (cli) or the equivalent `viaIR: 
+     true` (standard JSON) while enabling the optimizer. Otherwise, try removing
+      local variables.
+        --> src/PrizePool.sol:157:50:
+         |
+     157 |             if (gndmShares[i] > 0) gndm.transfer(winners[i], 
+     gndmShares[i]);
+         |                                                  ^^^^^^^
+
+     … +8 lines (ctrl+o to see all)
+
+⏺ Read 1 file (ctrl+o to expand)
+
+⏺ Update(contracts/foundry.toml)
+  ⎿  Added 3 lines
+      2  src = "src"
+      3  out = "out"
+      4  libs = ["lib"]
+      5 +via_ir = true                                                   
+      6 +optimizer = true                                                
+      7 +optimizer_runs = 200                                            
+      8  
+      9  # See more config options https://github.com/foundry-rs/foundry/
+         blob/master/crates/config/README.md#all-options
+
+⏺ Bash(export PATH="$HOME/.foundry/bin:$PATH" && forge build 2>&1)
+  ⎿  Compiling 41 files with Solc 0.8.33
+     Solc 0.8.33 finished in 1.42s
+     Compiler run successful!
+     … +78 lines (ctrl+o to expand)
+
+⏺ All three contracts compile clean. Just style notes and warnings — no errors.
+  Let me do a final Next.js build check:
+
+⏺ Bash(cd /Users/joshuagrubbs/basement-gunpla-next && npx tsc --noEmit 2>&1)
+  ⎿  (No output)
+
+⏺ Phase 1 is done. Here's what was built:
+
+  ---
+  Phase 1 Complete — Foundation is solid.
+
+  What's in place:
+
+  Frontend (basement-gunpla-next/src/)
+  - All npm packages installed (OnchainKit, wagmi, viem, framer-motion, Claude
+  SDK, Pinata, Zustand, etc.)
+  - globals.css — dark space-themed UI, rarity glow effects (Common →
+  Legendary), beam-scan card animation
+  - layout.tsx — Orbitron display font, Providers wrapper, Navbar mounted
+  - Providers.tsx — WagmiProvider + QueryClient + OnchainKitProvider (Base
+  Sepolia by default)
+  - Navbar.tsx — sticky nav with wallet connect and all 5 routes
+  - ConnectButton.tsx — OnchainKit wallet dropdown with address/balance
+  - page.tsx — Hero landing page with CTA buttons and feature cards
+  - Route stubs: /mint, /collection, /battle, /arena, /leaderboard
+  - Types: nft.ts, battle.ts, api.ts fully typed
+  - Constants: tokens, factions (all UC/CE/AC/AD), Claude vision prompt
+  (versioned)
+
+  Contracts (basement-gunpla-next/contracts/)
+  - GunplaCard.sol — ERC-721 UUPS upgradeable NFT, USDC minting, on-chain
+  CardTraits struct, USDC cosmetic updates
+  - GundaniumGame.sol — PVE/PVP battle sessions, GNDM staking, EIP-712
+  settlement by trusted resolver
+  - PrizePool.sol — Daily/weekly/monthly prize escrow, cadence-enforced EIP-712
+  distribution
+  - All three compile clean against Solidity 0.8.33 with OZ v5
+
+  ---
+  Next up — Phase 2: The minting flow. Claude vision API route, Pinata upload,
+  the useMintStore state machine, and the full photo → AI traits → review → mint
+   UI. You'll need your Anthropic API key, Pinata JWT, and a Coinbase Developer 
+  Platform API key before we wire those up. Do you have those ready?
+
+✻ Cogitated for 16m 36s
+
+❯ before I get those, I wanted to ask you, for accuracy, did I say that I   
+  wanted the name of the game to be "BASEMINTxGUNPLA". I'm noticing a lot   
+  of files say basement, and the name on the project says GundariuM, and    
+  actually, I kind of like that name, you know what, I think I want to use  
+  that as the public name and title of the game now "GundariuM"             
+
+⏺ No, you never said "BASEMINTxGUNPLA" — that folder name (basement-gunpla-next)
+   was already there before we touched anything. It was just the scaffold you
+  created before we started. It's only the local repo folder name, not anything
+  user-facing.
+
+  The good news: GundariuM is already the official name everywhere it counts.
+  Check what I built:
+
+  - layout.tsx → "GundariuM — Gunpla NFT Trading Card Game" (browser tab title)
+  - page.tsx → GUNDARIU + stylized M in the hero
+  - Navbar.tsx → GUNDARIU + M in purple
+  - GunplaCard.sol → "GundariuM Gunpla Card" / "GUNPLA" (NFT name/symbol)
+  - GundaniumGame.sol → EIP-712 domain: "GundariuM"
+  - PrizePool.sol → EIP-712 domain: "GundariuM PrizePool"
+
+  The only thing that says "basement" is the repo folder path on your machine
+  (/Users/joshuagrubbs/basement-gunpla-next) — which is invisible to players,
+  OpenSea, or anyone else. That's just git/filesystem.
+
+  If you want to rename the folder itself, we can do that at any time with a
+  simple mv — but it has zero impact on the game. Everything public-facing is
+  already GundariuM.
+
+  Ready to move on to the API keys and Phase 2?
+
+❯                                                                           
+                                                                            
+  >>> Uniswap V3 Position #4632480                                          
+  Error: server returned an error response: error code -32000: nonce too    
+  low: next nonce 8017, tx nonce 8016                                       
+  joshuagrubbs@Joshuas-MacBook-Pro / %                                      
+
+⏺ That's a nonce too low error — your wallet's on-chain nonce is at 8017 but the
+   transaction was submitted with 8016. A previous tx already consumed that
+  nonce (probably a pending one that just confirmed).
+
+  What were you trying to do with Uniswap V3 Position #4632480? And what tool
+  were you using — cast, a script, the Uniswap interface? That'll tell me
+  exactly how to fix the resend.
