@@ -4,6 +4,7 @@ pragma solidity ^0.8.24;
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import {PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
@@ -16,7 +17,7 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
  *  - 7-day reward eligibility: rewards only claimable after 7 days of continuous stake. Re-staking resets the clock.
  *  - Yield: Synthetix pattern. Owner can deposit reward pools; authorized contracts can route game fees in.
  */
-contract GNDMStaking is OwnableUpgradeable, UUPSUpgradeable, ReentrancyGuard {
+contract GNDMStaking is OwnableUpgradeable, UUPSUpgradeable, ReentrancyGuard, PausableUpgradeable {
 
     using SafeERC20 for IERC20;
 
@@ -36,6 +37,7 @@ contract GNDMStaking is OwnableUpgradeable, UUPSUpgradeable, ReentrancyGuard {
     event RewardClaimed(address indexed user, uint256 amount);
     event RewardAdded(uint256 amount);
     event FeeRouterSet(address indexed addr, bool authorized);
+    event RewardForfeited(address indexed user, uint256 amount);
 
     // ─── Constants ──────────────────────────────────────────────────────────
 
@@ -76,6 +78,8 @@ contract GNDMStaking is OwnableUpgradeable, UUPSUpgradeable, ReentrancyGuard {
 
     function initialize(address owner_, address gndm_) external initializer {
         __Ownable_init(owner_);
+        __Pausable_init();
+        require(gndm_ != address(0), "GNDMStaking: zero address");
         gndm = IERC20(gndm_);
     }
 
@@ -118,8 +122,11 @@ contract GNDMStaking is OwnableUpgradeable, UUPSUpgradeable, ReentrancyGuard {
     /**
      * @notice Stake GNDM. Resets 24h lock and 7-day reward eligibility.
      */
-    function stake(uint256 amount) external nonReentrant updateReward(msg.sender) {
+    function stake(uint256 amount) external nonReentrant whenNotPaused updateReward(msg.sender) {
         if (amount == 0) revert ZeroAmount();
+
+        // Save old eligibility BEFORE resetting timestamps
+        uint256 oldEligibleAt = rewardEligibleAt[msg.sender];
 
         stakedBalance[msg.sender] += amount;
         totalStaked += amount;
@@ -127,8 +134,20 @@ contract GNDMStaking is OwnableUpgradeable, UUPSUpgradeable, ReentrancyGuard {
         lockUntil[msg.sender]        = block.timestamp + LOCK_DURATION;
         rewardEligibleAt[msg.sender] = block.timestamp + REWARD_DELAY;
 
-        // Reset pending reward snapshot so they don't get credit for the new 7-day window
-        rewards[msg.sender] = 0;
+        // Handle previously accrued rewards before resetting the reward checkpoint
+        uint256 pendingReward = rewards[msg.sender];
+        if (pendingReward > 0) {
+            if (block.timestamp >= oldEligibleAt) {
+                // User was eligible — auto-pay before the window resets
+                rewards[msg.sender] = 0;
+                gndm.safeTransfer(msg.sender, pendingReward);
+                emit RewardClaimed(msg.sender, pendingReward);
+            } else {
+                // User re-staked before eligibility window — rewards forfeited by design
+                emit RewardForfeited(msg.sender, pendingReward);
+                rewards[msg.sender] = 0;
+            }
+        }
         userRewardPerTokenPaid[msg.sender] = rewardPerTokenStored;
 
         gndm.safeTransferFrom(msg.sender, address(this), amount);
@@ -139,7 +158,7 @@ contract GNDMStaking is OwnableUpgradeable, UUPSUpgradeable, ReentrancyGuard {
     /**
      * @notice Unstake GNDM. Reverts if within 24h lock window.
      */
-    function unstake(uint256 amount) external nonReentrant updateReward(msg.sender) {
+    function unstake(uint256 amount) external nonReentrant whenNotPaused updateReward(msg.sender) {
         if (amount == 0) revert ZeroAmount();
         if (stakedBalance[msg.sender] < amount) revert NoStakeToUnstake();
         if (block.timestamp < lockUntil[msg.sender]) revert StillLocked(lockUntil[msg.sender]);
@@ -155,7 +174,7 @@ contract GNDMStaking is OwnableUpgradeable, UUPSUpgradeable, ReentrancyGuard {
     /**
      * @notice Claim accrued rewards. Reverts if < 7 days since last stake.
      */
-    function claimRewards() external nonReentrant updateReward(msg.sender) {
+    function claimRewards() external nonReentrant whenNotPaused updateReward(msg.sender) {
         if (block.timestamp < rewardEligibleAt[msg.sender]) {
             revert NotEligibleYet(rewardEligibleAt[msg.sender]);
         }
@@ -205,24 +224,20 @@ contract GNDMStaking is OwnableUpgradeable, UUPSUpgradeable, ReentrancyGuard {
     function receiveGameFees(uint256 amount) external nonReentrant updateReward(address(0)) {
         if (!authorizedFeeRouters[msg.sender]) revert Unauthorized();
         if (amount == 0) revert ZeroAmount();
-
         gndm.safeTransferFrom(msg.sender, address(this), amount);
 
-        uint256 duration = block.timestamp >= periodFinish
-            ? 30 days
-            : periodFinish - block.timestamp;
-
         if (block.timestamp >= periodFinish) {
-            rewardRate = amount / duration;
+            // No active period — start a new 30-day emission
+            rewardRate = amount / 30 days;
+            periodFinish = block.timestamp + 30 days;
         } else {
+            // Mid-period: fold fees into remaining window, keep periodFinish unchanged
             uint256 remaining = periodFinish - block.timestamp;
-            uint256 leftover  = remaining * rewardRate;
-            rewardRate = (amount + leftover) / duration;
+            rewardRate = (amount + remaining * rewardRate) / remaining;
+            // periodFinish stays the same — fees are distributed over the existing period
         }
 
         lastUpdateTime = block.timestamp;
-        periodFinish   = block.timestamp + duration;
-
         emit RewardAdded(amount);
     }
 
@@ -230,16 +245,28 @@ contract GNDMStaking is OwnableUpgradeable, UUPSUpgradeable, ReentrancyGuard {
      * @notice Grant or revoke fee routing authorization.
      */
     function setFeeRouter(address addr, bool authorized) external onlyOwner {
+        if (addr == address(0)) revert ZeroAmount();
         authorizedFeeRouters[addr] = authorized;
         emit FeeRouterSet(addr, authorized);
     }
 
     /**
-     * @notice Emergency token rescue.
+     * @notice Emergency token rescue. Cannot be used to drain staked GNDM.
      */
     function emergencyWithdraw(address token, uint256 amount) external nonReentrant onlyOwner {
+        if (token == address(gndm)) revert("GNDMStaking: use unstake");
         IERC20(token).safeTransfer(owner(), amount);
     }
+
+    /**
+     * @notice Pause staking, unstaking, and reward claiming.
+     */
+    function pause() external onlyOwner { _pause(); }
+
+    /**
+     * @notice Unpause the contract.
+     */
+    function unpause() external onlyOwner { _unpause(); }
 
     // ─── UUPS ───────────────────────────────────────────────────────────────
 
