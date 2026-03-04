@@ -1,102 +1,26 @@
 @import "tailwindcss";
 
 :root {
-  --background: #080c14;
-  --foreground: #e2e8f0;
-  --surface: #0f1929;
-  --surface-2: #162035;
-  --border: #1e3a5f;
-  --accent: #00d4ff;
-  --accent-2: #7c3aed;
+  --background: #ffffff;
+  --foreground: #171717;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-surface: var(--surface);
-  --color-surface-2: var(--surface-2);
-  --color-border: var(--border);
-  --color-accent: var(--accent);
-  --color-accent-2: var(--accent-2);
-
-  /* Rarity colors */
-  --color-rarity-common: #9ca3af;
-  --color-rarity-uncommon: #22c55e;
-  --color-rarity-rare: #3b82f6;
-  --color-rarity-ultra: #a855f7;
-  --color-rarity-legendary: #f59e0b;
-
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --font-display: var(--font-orbitron);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
-  min-height: 100vh;
-}
-
-/* Rarity glow effects */
-.rarity-common {
-  border-color: var(--color-rarity-common);
-  box-shadow: 0 0 8px color-mix(in srgb, var(--color-rarity-common) 30%, transparent);
-}
-.rarity-uncommon {
-  border-color: var(--color-rarity-uncommon);
-  box-shadow: 0 0 12px color-mix(in srgb, var(--color-rarity-uncommon) 40%, transparent);
-}
-.rarity-rare {
-  border-color: var(--color-rarity-rare);
-  box-shadow: 0 0 16px color-mix(in srgb, var(--color-rarity-rare) 50%, transparent);
-}
-.rarity-ultra {
-  border-color: var(--color-rarity-ultra);
-  box-shadow: 0 0 20px color-mix(in srgb, var(--color-rarity-ultra) 60%, transparent);
-}
-.rarity-legendary {
-  border-color: var(--color-rarity-legendary);
-  box-shadow:
-    0 0 24px color-mix(in srgb, var(--color-rarity-legendary) 70%, transparent),
-    0 0 48px color-mix(in srgb, var(--color-rarity-legendary) 30%, transparent);
-  animation: legendary-pulse 2s ease-in-out infinite;
-}
-
-@keyframes legendary-pulse {
-  0%, 100% {
-    box-shadow:
-      0 0 24px color-mix(in srgb, var(--color-rarity-legendary) 70%, transparent),
-      0 0 48px color-mix(in srgb, var(--color-rarity-legendary) 30%, transparent);
-  }
-  50% {
-    box-shadow:
-      0 0 36px color-mix(in srgb, var(--color-rarity-legendary) 90%, transparent),
-      0 0 72px color-mix(in srgb, var(--color-rarity-legendary) 50%, transparent);
-  }
-}
-
-/* Beam scan line for card hover */
-.beam-scan {
-  position: relative;
-  overflow: hidden;
-}
-.beam-scan::after {
-  content: "";
-  position: absolute;
-  top: -30%;
-  left: 0;
-  width: 100%;
-  height: 30%;
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    color-mix(in srgb, var(--accent) 15%, transparent),
-    transparent
-  );
-  animation: beam-sweep 3s ease-in-out infinite;
-}
-@keyframes beam-sweep {
-  0% { top: -30%; }
-  100% { top: 130%; }
+  font-family: Arial, Helvetica, sans-serif;
 }

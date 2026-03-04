@@ -1,21 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  /* config options here */
   reactCompiler: true,
-  images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "*.mypinata.cloud",
-        pathname: "/ipfs/**",
-      },
-      {
-        protocol: "https",
-        hostname: "ipfs.io",
-        pathname: "/ipfs/**",
-      },
-    ],
-  },
 };
 
 export default nextConfig;
