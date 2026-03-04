@@ -1,8 +1,18 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ── Base palette ──────────────────────────────────────────────────────── */
+  --background:  #08080c;
+  --foreground:  #e8e8f0;
+
+  /* ── Brand accents ────────────────────────────────────────────────────── */
+  --accent:      #00e5cc;   /* teal — primary CTAs, highlights             */
+  --accent-2:    #ff6b35;   /* orange — secondary highlights (the "M")     */
+
+  /* ── Surfaces & borders ───────────────────────────────────────────────── */
+  --surface:     #0f0f16;   /* card / section background                   */
+  --surface-2:   #13131c;   /* slightly lighter surface                    */
+  --border:      #1e1e2e;   /* subtle border                               */
 }
 
 @theme inline {
@@ -12,15 +22,7 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }
