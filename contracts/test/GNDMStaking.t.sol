@@ -84,10 +84,9 @@ contract GNDMStakingTest is Test {
     function test_unstake_revertsBeforeLockExpires() public {
         _stake(alice, STAKE);
 
+        uint256 locked = staking.lockUntil(alice); // read before prank (prank consumed by view call otherwise)
         vm.prank(alice);
-        vm.expectRevert(
-            abi.encodeWithSelector(GNDMStaking.StillLocked.selector, staking.lockUntil(alice))
-        );
+        vm.expectRevert(abi.encodeWithSelector(GNDMStaking.StillLocked.selector, locked));
         staking.unstake(STAKE);
     }
 
@@ -128,10 +127,9 @@ contract GNDMStakingTest is Test {
         _stake(alice, 1 ether);              // re-stake resets clock
 
         // Should be locked again for another 24h from now
+        uint256 locked = staking.lockUntil(alice); // read before prank
         vm.prank(alice);
-        vm.expectRevert(
-            abi.encodeWithSelector(GNDMStaking.StillLocked.selector, staking.lockUntil(alice))
-        );
+        vm.expectRevert(abi.encodeWithSelector(GNDMStaking.StillLocked.selector, locked));
         staking.unstake(1 ether);
     }
 
@@ -142,10 +140,9 @@ contract GNDMStakingTest is Test {
         _notifyReward(REWARD, PERIOD);
         vm.warp(block.timestamp + 6 days);
 
+        uint256 eligibleAt = staking.rewardEligibleAt(alice); // read before prank
         vm.prank(alice);
-        vm.expectRevert(
-            abi.encodeWithSelector(GNDMStaking.NotEligibleYet.selector, staking.rewardEligibleAt(alice))
-        );
+        vm.expectRevert(abi.encodeWithSelector(GNDMStaking.NotEligibleYet.selector, eligibleAt));
         staking.claimRewards();
     }
 
@@ -272,8 +269,8 @@ contract GNDMStakingTest is Test {
         // At T+8d: alice re-stakes (auto-pays). rewardEligibleAt = now + 7d.
         _stake(alice, 1 ether);
 
-        // Warp 8 more days (alice is eligible again)
-        vm.warp(block.timestamp + 8 days);
+        // Warp past alice's new eligibility window (uses absolute value to avoid IR optimizer stale read)
+        vm.warp(staking.rewardEligibleAt(alice) + 1 days);
         assertGt(staking.earned(alice), 0);
 
         // Now alice is eligible and has rewards. Re-stake one more time:
@@ -443,9 +440,9 @@ contract GNDMStakingTest is Test {
     }
 
     function test_unequalStakers_rewardProportionalToStake() public {
-        // Alice stakes 3x more than bob
-        _stake(alice, STAKE * 3);
-        _stake(bob,   STAKE);
+        // Alice stakes 3x more than bob (use amounts within alice's 10M balance)
+        _stake(alice, 3_000_000 ether);
+        _stake(bob,   1_000_000 ether);
         _notifyReward(REWARD, PERIOD);
 
         vm.warp(block.timestamp + 8 days);
