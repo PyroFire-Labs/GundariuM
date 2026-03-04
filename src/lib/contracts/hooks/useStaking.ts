@@ -23,7 +23,7 @@ export function getTier(stakedGndm: number): TierName | null {
   return null;
 }
 
-export type StakePhase = "idle" | "approving" | "staking" | "unstaking" | "done" | "error";
+export type StakePhase = "idle" | "approving" | "staking" | "unstaking" | "claiming" | "done" | "error";
 
 export function useStaking() {
   const [phase, setPhase] = useState<StakePhase>("idle");
@@ -66,10 +66,47 @@ export function useStaking() {
     query: { enabled: contractReady },
   });
 
+  // Read earned rewards (returns 0 if before 7-day window)
+  const { data: earnedRaw, refetch: refetchEarned } = useReadContract({
+    address: stakingAddress,
+    abi: GNDM_STAKING_ABI,
+    functionName: "earned",
+    args: address ? [address] : undefined,
+    query: { enabled: contractReady && !!address },
+  });
+
+  // Read lock timestamp (unix seconds — can unstake after this)
+  const { data: lockUntilRaw } = useReadContract({
+    address: stakingAddress,
+    abi: GNDM_STAKING_ABI,
+    functionName: "lockUntil",
+    args: address ? [address] : undefined,
+    query: { enabled: contractReady && !!address },
+  });
+
+  // Read reward eligibility timestamp (unix seconds — can claim after this)
+  const { data: rewardEligibleAtRaw } = useReadContract({
+    address: stakingAddress,
+    abi: GNDM_STAKING_ABI,
+    functionName: "rewardEligibleAt",
+    args: address ? [address] : undefined,
+    query: { enabled: contractReady && !!address },
+  });
+
   const balance = balanceRaw !== undefined ? parseFloat(formatUnits(balanceRaw, 18)) : 0;
   const staked = stakedRaw !== undefined ? parseFloat(formatUnits(stakedRaw, 18)) : 0;
   const totalStaked = totalStakedRaw !== undefined ? parseFloat(formatUnits(totalStakedRaw, 18)) : 0;
+  const earned = earnedRaw !== undefined ? parseFloat(formatUnits(earnedRaw, 18)) : 0;
+  // Timestamps as JS Date (or null if not staked)
+  const lockUntil = lockUntilRaw ? new Date(Number(lockUntilRaw) * 1000) : null;
+  const rewardEligibleAt = rewardEligibleAtRaw ? new Date(Number(rewardEligibleAtRaw) * 1000) : null;
   const tier = getTier(staked);
+
+  const refetchAll = () => {
+    void refetchBalance();
+    void refetchStaked();
+    void refetchEarned();
+  };
 
   const stake = async (amount: string) => {
     if (!contracts || !contractReady) return;
@@ -102,8 +139,7 @@ export function useStaking() {
       await publicClient.waitForTransactionReceipt({ hash: stakeTx });
 
       setPhase("done");
-      void refetchBalance();
-      void refetchStaked();
+      refetchAll();
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Staking failed";
       setError(msg.includes("User rejected") ? "Transaction cancelled" : msg);
@@ -130,10 +166,35 @@ export function useStaking() {
       });
       await publicClient.waitForTransactionReceipt({ hash: tx });
       setPhase("done");
-      void refetchBalance();
-      void refetchStaked();
+      refetchAll();
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Unstake failed";
+      setError(msg.includes("User rejected") ? "Transaction cancelled" : msg);
+      setPhase("error");
+    }
+  };
+
+  const claimRewards = async () => {
+    if (!contracts || !contractReady) return;
+    setPhase("claiming");
+    setError(null);
+    if (!publicClient) {
+      setError("Wallet not connected to a supported network");
+      setPhase("error");
+      return;
+    }
+    try {
+      const tx = await writeContractAsync({
+        address: contracts.gndmStaking,
+        abi: GNDM_STAKING_ABI,
+        functionName: "claimRewards",
+        args: [],
+      });
+      await publicClient.waitForTransactionReceipt({ hash: tx });
+      setPhase("done");
+      refetchAll();
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Claim failed";
       setError(msg.includes("User rejected") ? "Transaction cancelled" : msg);
       setPhase("error");
     }
@@ -143,12 +204,16 @@ export function useStaking() {
     balance,
     staked,
     totalStaked,
+    earned,
+    lockUntil,
+    rewardEligibleAt,
     tier,
     phase,
     error,
     contractReady,
     stake,
     unstake,
+    claimRewards,
     reset: () => { setPhase("idle"); setError(null); },
   };
 }
