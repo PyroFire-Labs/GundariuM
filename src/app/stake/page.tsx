@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useAccount } from "wagmi";
+import { useAccount, useSwitchChain } from "wagmi";
+import { baseSepolia } from "wagmi/chains";
 import { useStaking, TIERS } from "@/lib/contracts/hooks/useStaking";
 
 const QUICK_AMOUNTS = ["1000000", "5000000", "25000000", "100000000"];
@@ -32,6 +33,7 @@ function isPast(date: Date | null): boolean {
 
 export default function StakePage() {
   const { isConnected } = useAccount();
+  const { switchChainAsync } = useSwitchChain();
   const {
     balance, staked, totalStaked, earned,
     lockUntil, rewardEligibleAt,
@@ -77,15 +79,23 @@ export default function StakePage() {
           </p>
         </div>
 
-        {/* Contract not deployed banner */}
-        {!contractReady && (
-          <div className="rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-center">
-            <p className="text-yellow-400 font-bold text-sm font-[family-name:var(--font-orbitron)] tracking-wider">
-              STAKING CONTRACT COMING SOON
-            </p>
-            <p className="text-xs text-yellow-400/60 mt-1">
-              The staking contract is being deployed. Check back shortly.
-            </p>
+        {/* Wrong network banner */}
+        {isConnected && !contractReady && (
+          <div className="rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4 flex items-center justify-between gap-4">
+            <div>
+              <p className="text-yellow-400 font-bold text-sm font-[family-name:var(--font-orbitron)] tracking-wider">
+                WRONG NETWORK
+              </p>
+              <p className="text-xs text-yellow-400/60 mt-1">
+                Switch to Base Sepolia to stake
+              </p>
+            </div>
+            <button
+              onClick={() => switchChainAsync({ chainId: baseSepolia.id })}
+              className="shrink-0 rounded-lg bg-yellow-500 text-black font-bold text-xs px-4 py-2 hover:brightness-110 transition-all font-[family-name:var(--font-orbitron)] tracking-wider"
+            >
+              SWITCH
+            </button>
           </div>
         )}
 

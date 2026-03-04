@@ -10,3 +10,6 @@ remappings = [
   "@openzeppelin/contracts/=lib/openzeppelin-contracts-upgradeable/lib/openzeppelin-contracts/contracts/",
   "forge-std/=lib/openzeppelin-contracts-upgradeable/lib/forge-std/src/",
 ]
+
+[etherscan]
+base = { key = "${BASESCAN_API_KEY}", url = "https://api.basescan.org/api", chain = "8453" }

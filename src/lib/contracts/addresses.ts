@@ -8,6 +8,7 @@ export const CONTRACT_ADDRESSES: Record<
     gundaniumGame: `0x${string}`;
     prizePool: `0x${string}`;
     gndmStaking: `0x${string}`;
+    gndmToken: `0x${string}`;
   }
 > = {
   // Base Sepolia (testnet)
@@ -16,16 +17,19 @@ export const CONTRACT_ADDRESSES: Record<
     gundaniumGame: "0x27c041d53b4cc4dbc1fdbd80eeba3c3fa4e23754",
     prizePool: "0x5209d87a920e468583042346e23564977416f67a",
     gndmStaking: "0x4fFFF1428f49Ae73a21AA103C992533BA24E48E7",
+    gndmToken: "0x6Add3cF424f9D2927721B13110164a3e019efFa4",
   },
   // Base mainnet
   8453: {
     gunplaCard: "0x0000000000000000000000000000000000000000",
     gundaniumGame: "0x0000000000000000000000000000000000000000",
     prizePool: "0x0000000000000000000000000000000000000000",
-    gndmStaking: "0x0000000000000000000000000000000000000000",
+    gndmStaking: "0x43b2d1ABE4086c81A1eb6679f2c7Ea238fAbbdA6",
+    gndmToken: "0xfc7008f9157257a17a9fb3c602b1cd56c27a4ba3",
   },
 };
 
+/** @deprecated use getContracts(chainId).gndmToken instead */
 export const GNDM_TOKEN_ADDRESS =
   "0xfc7008f9157257a17a9fb3c602b1cd56c27a4ba3" as const;
 

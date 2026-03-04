@@ -5,7 +5,7 @@ import { useReadContract, useWriteContract, usePublicClient, useAccount, useChai
 import { formatUnits, parseUnits } from "viem";
 import { ERC20_ABI } from "@/lib/contracts/abis/ERC20";
 import { GNDM_STAKING_ABI } from "@/lib/contracts/abis/GNDMStaking";
-import { getContracts, GNDM_TOKEN_ADDRESS, isPlaceholder } from "@/lib/contracts/addresses";
+import { getContracts, isPlaceholder } from "@/lib/contracts/addresses";
 
 export const TIERS = [
   { name: "Recruit",   min: 1_000_000,   unlocks: ["Dashboard access"] },
@@ -38,11 +38,12 @@ export function useStaking() {
   try { contracts = getContracts(chainId); } catch { /* unsupported chain */ }
 
   const stakingAddress = contracts?.gndmStaking;
+  const gndmTokenAddress = contracts?.gndmToken;
   const contractReady = !!stakingAddress && !isPlaceholder(stakingAddress);
 
   // Read GNDM balance
   const { data: balanceRaw, refetch: refetchBalance } = useReadContract({
-    address: GNDM_TOKEN_ADDRESS,
+    address: gndmTokenAddress,
     abi: ERC20_ABI,
     functionName: "balanceOf",
     args: address ? [address] : undefined,
@@ -121,7 +122,7 @@ export function useStaking() {
       const amountWei = parseUnits(amount, 18);
       // Step 1: approve
       const approveTx = await writeContractAsync({
-        address: GNDM_TOKEN_ADDRESS,
+        address: contracts.gndmToken,
         abi: ERC20_ABI,
         functionName: "approve",
         args: [contracts.gndmStaking, amountWei],
