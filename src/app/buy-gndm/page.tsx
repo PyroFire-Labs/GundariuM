@@ -11,6 +11,9 @@ import {
 import { formatUnits, parseEther } from "viem";
 import { base } from "viem/chains";
 
+const GNDM_CAIP19 = "eip155:8453/erc20:0xfc7008f9157257a17a9fb3c602b1cd56c27a4ba3";
+const ETH_CAIP19  = "eip155:8453/native";
+
 const GNDM_ADDRESS = "0xfc7008f9157257a17a9fb3c602b1cd56c27a4ba3";
 const QUICK_AMOUNTS = ["0.001", "0.01", "0.1", "1"];
 
@@ -29,6 +32,16 @@ export default function BuyGndmPage() {
   const [txHash, setTxHash] = useState<string | null>(null);
   const [receivedAmount, setReceivedAmount] = useState<bigint | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [isFarcaster, setIsFarcaster] = useState(false);
+
+  // Detect Farcaster miniapp context on mount
+  useEffect(() => {
+    import("@farcaster/miniapp-sdk").then(({ sdk }) => {
+      sdk.context.then((ctx) => {
+        if (ctx?.user?.fid) setIsFarcaster(true);
+      }).catch(() => {});
+    }).catch(() => {});
+  }, []);
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isMainnet = chainId === base.id;
@@ -85,17 +98,39 @@ export default function BuyGndmPage() {
   }, [ethAmount, isMainnet]);
 
   const handleBuy = useCallback(async () => {
-    if (!address || !ethAmount || parseFloat(ethAmount) <= 0) return;
+    if (!ethAmount || parseFloat(ethAmount) <= 0) return;
     setPhase("swapping");
     setErrorMsg(null);
     try {
-      // Switch to Base mainnet if needed (Farcaster wallet doesn't support this, but is always on Base)
+      // ── Farcaster miniapp: use native swap interface ──────────────────────
+      if (isFarcaster) {
+        const { sdk } = await import("@farcaster/miniapp-sdk");
+        const sellAmount = parseEther(ethAmount).toString();
+        const result = await sdk.actions.swapToken({
+          sellToken: ETH_CAIP19,
+          buyToken: GNDM_CAIP19,
+          sellAmount,
+        });
+        if (!result.success) {
+          if (result.reason === "rejected_by_user") {
+            setPhase("idle");
+            return;
+          }
+          throw new Error(result.error?.message ?? "Swap failed");
+        }
+        setTxHash(result.swap.transactions[0] ?? null);
+        setReceivedAmount(gndmQuote);
+        setPhase("done");
+        return;
+      }
+
+      // ── Browser: 0x swap via wagmi ────────────────────────────────────────
+      if (!address) return;
       if (chainId !== base.id) {
         await switchChainAsync({ chainId: base.id });
       }
 
       const sellAmount = parseEther(ethAmount).toString();
-      // Get firm quote with tx data from server
       const res = await fetch(
         `/api/gndm-swap?sellAmount=${sellAmount}&taker=${address}`
       );
@@ -108,7 +143,6 @@ export default function BuyGndmPage() {
         throw new Error("No liquidity available for this swap");
       }
 
-      // Execute the swap transaction
       const hash = await sendTransactionAsync({
         to: quote.to as `0x${string}`,
         data: quote.data as `0x${string}`,
@@ -116,7 +150,6 @@ export default function BuyGndmPage() {
         chainId: base.id,
       });
 
-      // Wait for confirmation
       await publicClient?.waitForTransactionReceipt({ hash });
 
       setTxHash(hash);
@@ -127,7 +160,7 @@ export default function BuyGndmPage() {
       setErrorMsg(msg.includes("User rejected") ? "Transaction cancelled" : msg);
       setPhase("error");
     }
-  }, [address, ethAmount, gndmQuote, sendTransactionAsync, publicClient, switchChainAsync]);
+  }, [address, ethAmount, gndmQuote, isFarcaster, sendTransactionAsync, publicClient, switchChainAsync, chainId]);
 
   const formatGndm = (val: bigint) => {
     const n = parseFloat(formatUnits(val, 18));
