@@ -9,10 +9,16 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.78.0",
+    "@farcaster/miniapp-sdk": "^0.2.3",
+    "@walletconnect/ethereum-provider": "^2.23.7",
     "clsx": "^2.1.1",
+    "framer-motion": "^12.35.0",
     "next": "16.1.6",
+    "pinata": "^2.5.5",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "react-dropzone": "^15.0.0",
     "tailwind-merge": "^3.5.0",
     "viem": "^2.46.3",
     "wagmi": "^3.5.0"

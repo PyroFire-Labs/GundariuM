@@ -1,7 +1,9 @@
 "use client";
 
 import { useAccount, useConnect, useDisconnect } from "wagmi";
-import { injected } from "wagmi/connectors";
+import { walletConnect } from "wagmi/connectors";
+
+const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID!;
 
 export function ConnectButton() {
   const { address, isConnected } = useAccount();
@@ -21,7 +23,7 @@ export function ConnectButton() {
 
   return (
     <button
-      onClick={() => connect({ connector: injected() })}
+      onClick={() => connect({ connector: walletConnect({ projectId }) })}
       className="rounded-lg bg-[var(--accent)] px-4 py-1.5 text-sm font-bold text-black hover:brightness-110 transition-all font-[family-name:var(--font-orbitron)] tracking-wider"
     >
       CONNECT

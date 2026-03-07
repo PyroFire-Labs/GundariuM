@@ -12,9 +12,27 @@ const orbitron = Orbitron({
   weight: ["400", "700", "900"],
 });
 
+const miniAppEmbed = {
+  version: "1",
+  imageUrl: "https://gundarium.vercel.app/og-image.png",
+  button: {
+    title: "Play GundariuM",
+    action: {
+      type: "launch_frame",
+      name: "GundariuM",
+      url: "https://gundarium.vercel.app",
+      splashImageUrl: "https://gundarium.vercel.app/icon.png",
+      splashBackgroundColor: "#080c14",
+    },
+  },
+};
+
 export const metadata: Metadata = {
   title: "GundariuM — Gunpla NFT Battle Game",
   description: "Stake GNDM. Battle with Gunpla NFTs. Earn on Base.",
+  other: {
+    "fc:miniapp": JSON.stringify(miniAppEmbed),
+  },
 };
 
 export default function RootLayout({

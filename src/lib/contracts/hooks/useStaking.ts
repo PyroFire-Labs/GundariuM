@@ -127,7 +127,7 @@ export function useStaking() {
         functionName: "approve",
         args: [contracts.gndmStaking, amountWei],
       });
-      await publicClient.waitForTransactionReceipt({ hash: approveTx });
+      await publicClient.waitForTransactionReceipt({ hash: approveTx, timeout: 60_000 * 5 });
 
       // Step 2: stake
       setPhase("staking");
@@ -137,7 +137,7 @@ export function useStaking() {
         functionName: "stake",
         args: [amountWei],
       });
-      await publicClient.waitForTransactionReceipt({ hash: stakeTx });
+      await publicClient.waitForTransactionReceipt({ hash: stakeTx, timeout: 60_000 * 5 });
 
       setPhase("done");
       refetchAll();
@@ -165,7 +165,7 @@ export function useStaking() {
         functionName: "unstake",
         args: [amountWei],
       });
-      await publicClient.waitForTransactionReceipt({ hash: tx });
+      await publicClient.waitForTransactionReceipt({ hash: tx, timeout: 60_000 * 5 });
       setPhase("done");
       refetchAll();
     } catch (e) {
@@ -191,7 +191,7 @@ export function useStaking() {
         functionName: "claimRewards",
         args: [],
       });
-      await publicClient.waitForTransactionReceipt({ hash: tx });
+      await publicClient.waitForTransactionReceipt({ hash: tx, timeout: 60_000 * 5 });
       setPhase("done");
       refetchAll();
     } catch (e) {
