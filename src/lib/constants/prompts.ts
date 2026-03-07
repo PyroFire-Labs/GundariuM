@@ -1,7 +1,7 @@
 // Claude vision prompt for Gunpla suit identification
 // Version this string — bump PROMPT_VERSION when changing
 
-export const PROMPT_VERSION = "3.1.0";
+export const PROMPT_VERSION = "3.1.1";
 
 export function buildGunplaPrompt(grade: string): string {
   return `You are a world-class expert on Gundam model kits (Gunpla) and all Gundam franchise lore across every timeline and series.
@@ -26,7 +26,8 @@ IDENTIFICATION APPROACH — work through these steps:
 4. SERIES CLUES: Background, mat, tools may reveal UC, CE, AC, or AD timeline.
 
 5. COMMONLY MISIDENTIFIED SUITS — check these first if uncertain:
-   - Astray Red Frame (MBF-P02): Slim CE frame, red/white, distinctive katana (Gerbera Straight), small head with single-blade antenna, NO wings at base config
+   - Astray Turn Red (MBF-02VV): CE frame, red/white like P02 but distinguished by massive swords that are taller than the suit itself -- blades tower over the mobile suit body, designation 02VV not P02
+   - Astray Red Frame (MBF-P02): Slim CE frame, red/white, distinctive katana (Gerbera Straight), small head with single-blade antenna, NO large back wings at base config
    - Astray Blue Frame (MBF-P03): Same frame as Red but blue/white, often holds a sword or has extra equipment
    - Strike Gundam (GAT-X105): Blocky CE frame, white/blue/red, interchangeable Striker packs — no pack = just Strike
    - Wing Gundam Zero (XXXG-00W0): Large feathered angel wings, twin buster rifle, distinctive head crest
