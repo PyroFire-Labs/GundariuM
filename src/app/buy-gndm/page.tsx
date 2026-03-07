@@ -34,11 +34,14 @@ export default function BuyGndmPage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [isFarcaster, setIsFarcaster] = useState(false);
 
-  // Detect Farcaster miniapp context on mount
+  // Detect Farcaster miniapp context and immediately launch native swap
   useEffect(() => {
     import("@farcaster/miniapp-sdk").then(({ sdk }) => {
       sdk.context.then((ctx) => {
-        if (ctx?.user?.fid) setIsFarcaster(true);
+        if (!ctx?.user?.fid) return;
+        setIsFarcaster(true);
+        // Launch native Farcaster swap immediately — no amount pre-set, user picks in Warpcast
+        sdk.actions.swapToken({ buyToken: GNDM_CAIP19 }).catch(() => {});
       }).catch(() => {});
     }).catch(() => {});
   }, []);
