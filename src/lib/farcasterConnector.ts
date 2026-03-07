@@ -27,6 +27,14 @@ export const farcasterConnector = createConnector((config) => ({
 
   async disconnect() {},
 
+  async switchChain({ chainId }: { chainId: number }) {
+    // Farcaster wallet does not support programmatic chain switching.
+    // It is always on Base mainnet (8453). Return the current chain.
+    const chain = config.chains.find((c) => c.id === chainId);
+    if (!chain) throw new Error(`Chain ${chainId} not configured`);
+    return chain;
+  },
+
   async getAccounts() {
     const provider = await getFarcasterProvider();
     return (await provider.request({

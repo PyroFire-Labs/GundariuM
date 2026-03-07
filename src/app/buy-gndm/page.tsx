@@ -89,8 +89,10 @@ export default function BuyGndmPage() {
     setPhase("swapping");
     setErrorMsg(null);
     try {
-      // Always switch to Base mainnet before swapping
-      await switchChainAsync({ chainId: base.id });
+      // Switch to Base mainnet if needed (Farcaster wallet doesn't support this, but is always on Base)
+      if (chainId !== base.id) {
+        await switchChainAsync({ chainId: base.id });
+      }
 
       const sellAmount = parseEther(ethAmount).toString();
       // Get firm quote with tx data from server
