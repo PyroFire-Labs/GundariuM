@@ -11,8 +11,33 @@ export function PhotoDropzone() {
     (accepted: File[]) => {
       const file = accepted[0];
       if (!file) return;
-      const url = URL.createObjectURL(file);
-      setImage(file, url);
+
+      const objectUrl = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        URL.revokeObjectURL(objectUrl);
+        const MAX = 1400;
+        let { width, height } = img;
+        if (width > MAX || height > MAX) {
+          if (width > height) { height = Math.round(height * MAX / width); width = MAX; }
+          else { width = Math.round(width * MAX / height); height = MAX; }
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d")!.drawImage(img, 0, 0, width, height);
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) return;
+            const compressed = new File([blob], file.name.replace(/\.[^.]+$/, ".jpg"), { type: "image/jpeg" });
+            const preview = URL.createObjectURL(compressed);
+            setImage(compressed, preview);
+          },
+          "image/jpeg",
+          0.85
+        );
+      };
+      img.src = objectUrl;
     },
     [setImage]
   );

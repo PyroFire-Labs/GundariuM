@@ -34,7 +34,6 @@ export function GradePicker() {
     setGrade(selected);
     setAnalyzing(true);
     setError(null);
-    goTo("analyzing");
 
     const form = new FormData();
     form.append("image", imageFile);
@@ -48,7 +47,6 @@ export function GradePicker() {
       goTo("reviewing");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Analysis failed");
-      goTo("grade_select");
       setAnalyzing(false);
     }
   };
@@ -94,13 +92,22 @@ export function GradePicker() {
         <p className="text-red-400 text-sm text-center">{error}</p>
       )}
 
-      <button
-        onClick={handleAnalyze}
-        disabled={!selected || analyzing}
-        className="w-full py-3 bg-[var(--accent)] text-black font-bold font-[family-name:var(--font-orbitron)] text-sm rounded-lg hover:brightness-110 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-      >
-        ANALYZE WITH AI →
-      </button>
+      {analyzing ? (
+        <div className="flex flex-col items-center gap-3 w-full py-3">
+          <div className="w-8 h-8 border-2 border-[var(--accent)] border-t-transparent rounded-full animate-spin" />
+          <p className="text-[var(--accent)] text-sm font-[family-name:var(--font-orbitron)] tracking-wider">
+            AI IDENTIFYING SUIT...
+          </p>
+        </div>
+      ) : (
+        <button
+          onClick={handleAnalyze}
+          disabled={!selected}
+          className="w-full py-3 bg-[var(--accent)] text-black font-bold font-[family-name:var(--font-orbitron)] text-sm rounded-lg hover:brightness-110 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          ANALYZE WITH AI →
+        </button>
+      )}
 
       <button
         onClick={() => goTo("idle")}
