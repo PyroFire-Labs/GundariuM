@@ -20,7 +20,7 @@ export function MintConfirm() {
     error: storeError,
   } = useMintStore();
 
-  const { phase, error: mintError, mintPrice, approveMint, executeMint } =
+  const { phase, error: mintError, mintPrice, contracts, approveMint, executeMint } =
     useMint();
 
   const chainId = useChainId();
