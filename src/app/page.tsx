@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { CountdownBanner } from "@/components/ui/CountdownTimer";
 import { useEffect, useState } from "react";
 import { formatUnits, parseEther } from "viem";
 
@@ -62,6 +63,9 @@ export default function Home() {
           </a>
         </div>
       </section>
+
+      {/* ── LAUNCH COUNTDOWN (top) ──────────────────────────────────── */}
+      <CountdownBanner />
 
       {/* ── 2. GAME LOOP ────────────────────────────────────────────── */}
       <section id="game-loop" className="px-4 py-20 bg-[var(--surface)]">
@@ -198,6 +202,9 @@ export default function Home() {
           </p>
         </div>
       </section>
+
+      {/* ── LAUNCH COUNTDOWN (bottom) ───────────────────────────────── */}
+      <CountdownBanner />
 
     </div>
   );

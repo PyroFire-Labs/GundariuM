@@ -29,7 +29,20 @@ const miniAppEmbed = {
 
 export const metadata: Metadata = {
   title: "GundariuM — Gunpla NFT Battle Game",
-  description: "Stake GNDM. Battle with Gunpla NFTs. Earn on Base.",
+  description: "Mint your Gunpla. Battle on Base. Launching May 10, 2026.",
+  metadataBase: new URL("https://gundarium.xyz"),
+  openGraph: {
+    title: "GundariuM — Gunpla NFT Battle Game",
+    description: "Mint your Gunpla. Battle on Base. Launching May 10, 2026.",
+    url: "https://gundarium.xyz",
+    siteName: "GundariuM",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "GundariuM — Gunpla NFT Battle Game",
+    description: "Mint your Gunpla. Battle on Base. Launching May 10, 2026.",
+  },
   other: {
     "fc:miniapp": JSON.stringify(miniAppEmbed),
   },

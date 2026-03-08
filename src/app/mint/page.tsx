@@ -1,6 +1,6 @@
 "use client";
 
-import { ComingSoon } from "@/components/ui/ComingSoon";
+import { CountdownPage } from "@/components/ui/CountdownTimer";
 import { useMintStore } from "@/store/useMintStore";
 import { PhotoDropzone } from "@/components/mint/PhotoDropzone";
 import { GradePicker } from "@/components/mint/GradePicker";
@@ -91,7 +91,13 @@ function MintFlow() {
 
 export default function MintPage() {
   if (!MINT_ENABLED) {
-    return <ComingSoon title="MINT" subtitle="Turn your real Gunpla into on-chain battle cards." />;
+    return (
+      <CountdownPage
+        pageTitle="MINT"
+        missionLabel="MINTING BEGINS"
+        description="Turn your real Gunpla into unique on-chain NFT battle cards."
+      />
+    );
   }
   return <MintFlow />;
 }

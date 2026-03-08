@@ -1,5 +1,11 @@
-import { ComingSoon } from "@/components/ui/ComingSoon";
+import { CountdownPage } from "@/components/ui/CountdownTimer";
 
 export default function BattlePage() {
-  return <ComingSoon title="BATTLE" subtitle="Deploy your Gunpla cards in tactical combat." />;
+  return (
+    <CountdownPage
+      pageTitle="BATTLE"
+      missionLabel="COMBAT INITIATES"
+      description="Deploy your Gunpla cards in tactical turn-based combat."
+    />
+  );
 }

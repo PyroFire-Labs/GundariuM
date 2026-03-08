@@ -1,5 +1,11 @@
-import { ComingSoon } from "@/components/ui/ComingSoon";
+import { CountdownPage } from "@/components/ui/CountdownTimer";
 
 export default function ArenaPage() {
-  return <ComingSoon title="ARENA" subtitle="Challenge other Gunpla pilots and climb the ranks." />;
+  return (
+    <CountdownPage
+      pageTitle="ARENA"
+      missionLabel="THE ARENA OPENS"
+      description="Challenge other Gunpla pilots and climb the ranks."
+    />
+  );
 }

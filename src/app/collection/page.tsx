@@ -1,5 +1,11 @@
-import { ComingSoon } from "@/components/ui/ComingSoon";
+import { CountdownPage } from "@/components/ui/CountdownTimer";
 
 export default function CollectionPage() {
-  return <ComingSoon title="COLLECTION" subtitle="View and manage your Gunpla card collection." />;
+  return (
+    <CountdownPage
+      pageTitle="COLLECTION"
+      missionLabel="COLLECTION UNLOCKS"
+      description="View and manage your Gunpla NFT card collection."
+    />
+  );
 }

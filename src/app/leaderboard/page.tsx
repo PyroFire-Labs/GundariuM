@@ -1,5 +1,11 @@
-import { ComingSoon } from "@/components/ui/ComingSoon";
+import { CountdownPage } from "@/components/ui/CountdownTimer";
 
 export default function LeaderboardPage() {
-  return <ComingSoon title="LEADERBOARD" subtitle="The top Gunpla commanders on Base." />;
+  return (
+    <CountdownPage
+      pageTitle="LEADERBOARD"
+      missionLabel="RANKINGS GO LIVE"
+      description="Daily, weekly, and monthly prize pools for the top commanders on Base."
+    />
+  );
 }
