@@ -20,7 +20,7 @@ export function MintConfirm() {
     error: storeError,
   } = useMintStore();
 
-  const { phase, error: mintError, mintPrice, contracts, approveMint, executeMint } =
+  const { phase, error: mintError, mintPrice, approveMint, executeMint } =
     useMint();
 
   const chainId = useChainId();
@@ -118,12 +118,7 @@ export function MintConfirm() {
             {metadataUri ? "IPFS ✓" : "Uploading…"}
           </span>
         </div>
-        {/* DEBUG — remove before launch */}
-        <div className="text-[10px] text-[var(--foreground)]/30 break-all">
-          USDC: {process.env.NEXT_PUBLIC_USDC_ADDRESS ?? "undefined"}<br/>
-          Chain: {process.env.NEXT_PUBLIC_CHAIN_ID ?? "undefined"}<br/>
-          GPC: {contracts?.gunplaCard ?? "no contracts"}
-        </div>
+
       </div>
 
       {/* Error */}
