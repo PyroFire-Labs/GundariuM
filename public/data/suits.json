@@ -1,0 +1,6170 @@
+[
+  {
+    "id": "rx-78-2",
+    "name": "RX-78-2 Gundam",
+    "model_number": "RX-78-2",
+    "grades": [
+      "EG",
+      "HG",
+      "RG",
+      "MG",
+      "PG"
+    ],
+    "series": "Mobile Suit Gundam",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Earth Federation",
+    "pilot": "Amuro Ray",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Hyper Bazooka",
+      "Shield",
+      "Vulcan Gun"
+    ],
+    "armor_type": "luna_titanium",
+    "kit_rarity": "common",
+    "kit_rarity_score": 2,
+    "known_print_run": "mass_production",
+    "stat_ranges": {
+      "hp": [
+        900,
+        1100
+      ],
+      "attack": [
+        78,
+        92
+      ],
+      "defense": [
+        72,
+        88
+      ],
+      "speed": [
+        68,
+        82
+      ]
+    }
+  },
+  {
+    "id": "rx-78-3-g3",
+    "name": "G-3 Gundam",
+    "model_number": "RX-78-3",
+    "grades": [
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Earth Federation",
+    "pilot": "Amuro Ray",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Hyper Bazooka",
+      "Shield"
+    ],
+    "armor_type": "luna_titanium",
+    "kit_rarity": "rare",
+    "kit_rarity_score": 55,
+    "known_print_run": "limited",
+    "stat_ranges": {
+      "hp": [
+        900,
+        1100
+      ],
+      "attack": [
+        78,
+        92
+      ],
+      "defense": [
+        72,
+        88
+      ],
+      "speed": [
+        70,
+        84
+      ]
+    }
+  },
+  {
+    "id": "rx-78-1-prototype",
+    "name": "Prototype Gundam",
+    "model_number": "RX-78-1",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam: The Origin",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Earth Federation",
+    "pilot": "Amuro Ray",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Shield"
+    ],
+    "armor_type": "luna_titanium",
+    "kit_rarity": "rare",
+    "kit_rarity_score": 52,
+    "known_print_run": "limited",
+    "stat_ranges": {
+      "hp": [
+        850,
+        1050
+      ],
+      "attack": [
+        74,
+        88
+      ],
+      "defense": [
+        68,
+        84
+      ],
+      "speed": [
+        65,
+        79
+      ]
+    }
+  },
+  {
+    "id": "rx-78-nt1-alex",
+    "name": "Gundam NT-1 Alex",
+    "model_number": "RX-78NT-1",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam 0080: War in the Pocket",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Earth Federation",
+    "pilot": "Christina Mackenzie",
+    "weapons": [
+      "90mm Gatling Gun",
+      "Beam Saber",
+      "Chobham Armor",
+      "Vulcan Pod"
+    ],
+    "armor_type": "chobham",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 35,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1000,
+        1200
+      ],
+      "attack": [
+        80,
+        95
+      ],
+      "defense": [
+        85,
+        98
+      ],
+      "speed": [
+        72,
+        86
+      ]
+    }
+  },
+  {
+    "id": "fa-78-1-full-armor",
+    "name": "Full Armor Gundam",
+    "model_number": "FA-78-1",
+    "grades": [
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam: MSV",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Earth Federation",
+    "pilot": "Amuro Ray",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Missile Pod",
+      "Vulcan Gun",
+      "Shield"
+    ],
+    "armor_type": "full_armor",
+    "kit_rarity": "rare",
+    "kit_rarity_score": 58,
+    "known_print_run": "limited",
+    "stat_ranges": {
+      "hp": [
+        1100,
+        1350
+      ],
+      "attack": [
+        82,
+        96
+      ],
+      "defense": [
+        88,
+        100
+      ],
+      "speed": [
+        55,
+        70
+      ]
+    }
+  },
+  {
+    "id": "rgm-79-gm",
+    "name": "RGM-79 GM",
+    "model_number": "RGM-79",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Earth Federation",
+    "pilot": "Various",
+    "weapons": [
+      "Beam Spray Gun",
+      "Beam Saber",
+      "Shield",
+      "Grenades"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "common",
+    "kit_rarity_score": 8,
+    "known_print_run": "mass_production",
+    "stat_ranges": {
+      "hp": [
+        600,
+        800
+      ],
+      "attack": [
+        58,
+        72
+      ],
+      "defense": [
+        55,
+        70
+      ],
+      "speed": [
+        62,
+        76
+      ]
+    }
+  },
+  {
+    "id": "rgm-79g-gm-command",
+    "name": "GM Command",
+    "model_number": "RGM-79G",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam 0080: War in the Pocket",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Earth Federation",
+    "pilot": "Various",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Shield",
+      "Missile Launcher"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 28,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        650,
+        850
+      ],
+      "attack": [
+        62,
+        76
+      ],
+      "defense": [
+        58,
+        72
+      ],
+      "speed": [
+        65,
+        79
+      ]
+    }
+  },
+  {
+    "id": "rgm-79sp-gm-sniper-ii",
+    "name": "GM Sniper II",
+    "model_number": "RGM-79SP",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam: MSV",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Earth Federation",
+    "pilot": "South Burning",
+    "weapons": [
+      "Sniper Rifle",
+      "Beam Saber",
+      "Shield",
+      "Vulcan Gun"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 32,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        620,
+        820
+      ],
+      "attack": [
+        72,
+        88
+      ],
+      "defense": [
+        56,
+        70
+      ],
+      "speed": [
+        60,
+        74
+      ]
+    }
+  },
+  {
+    "id": "rgm-79n-gm-custom",
+    "name": "GM Custom",
+    "model_number": "RGM-79N",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam 0083: Stardust Memory",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Earth Federation",
+    "pilot": "South Burning",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Shield",
+      "Grenade Launcher"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 30,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        680,
+        880
+      ],
+      "attack": [
+        65,
+        80
+      ],
+      "defense": [
+        60,
+        75
+      ],
+      "speed": [
+        68,
+        82
+      ]
+    }
+  },
+  {
+    "id": "rx-77-2-guncannon",
+    "name": "Guncannon",
+    "model_number": "RX-77-2",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Earth Federation",
+    "pilot": "Kai Shiden",
+    "weapons": [
+      "240mm Cannon",
+      "Beam Rifle",
+      "Beam Saber",
+      "Vulcan Gun"
+    ],
+    "armor_type": "heavyweight",
+    "kit_rarity": "common",
+    "kit_rarity_score": 10,
+    "known_print_run": "mass_production",
+    "stat_ranges": {
+      "hp": [
+        850,
+        1050
+      ],
+      "attack": [
+        75,
+        90
+      ],
+      "defense": [
+        78,
+        92
+      ],
+      "speed": [
+        48,
+        62
+      ]
+    }
+  },
+  {
+    "id": "rx-75-4-guntank",
+    "name": "Guntank",
+    "model_number": "RX-75-4",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Earth Federation",
+    "pilot": "Hayato Kobayashi",
+    "weapons": [
+      "120mm Cannon",
+      "Anti-Air Missile",
+      "Vulcan Gun"
+    ],
+    "armor_type": "heavyweight",
+    "kit_rarity": "common",
+    "kit_rarity_score": 12,
+    "known_print_run": "mass_production",
+    "stat_ranges": {
+      "hp": [
+        1000,
+        1200
+      ],
+      "attack": [
+        70,
+        85
+      ],
+      "defense": [
+        85,
+        98
+      ],
+      "speed": [
+        35,
+        48
+      ]
+    }
+  },
+  {
+    "id": "rgc-80-gm-cannon",
+    "name": "GM Cannon",
+    "model_number": "RGC-80",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam: MSV",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Earth Federation",
+    "pilot": "Various",
+    "weapons": [
+      "360mm Cannon",
+      "Beam Spray Gun",
+      "Beam Saber",
+      "Shield"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 25,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        750,
+        950
+      ],
+      "attack": [
+        72,
+        86
+      ],
+      "defense": [
+        68,
+        82
+      ],
+      "speed": [
+        52,
+        66
+      ]
+    }
+  },
+  {
+    "id": "ms-05b-zaku-i",
+    "name": "Zaku I",
+    "model_number": "MS-05B",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Principality of Zeon",
+    "pilot": "Various",
+    "weapons": [
+      "120mm Machine Gun",
+      "Heat Hawk",
+      "Cracker Grenade"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 22,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        580,
+        760
+      ],
+      "attack": [
+        55,
+        68
+      ],
+      "defense": [
+        52,
+        66
+      ],
+      "speed": [
+        58,
+        72
+      ]
+    }
+  },
+  {
+    "id": "ms-06f-zaku-ii",
+    "name": "Zaku II",
+    "model_number": "MS-06F",
+    "grades": [
+      "HG",
+      "RG",
+      "MG",
+      "PG"
+    ],
+    "series": "Mobile Suit Gundam",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Principality of Zeon",
+    "pilot": "Various",
+    "weapons": [
+      "120mm Machine Gun",
+      "Heat Hawk",
+      "Cracker Grenade",
+      "Bazooka"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "common",
+    "kit_rarity_score": 5,
+    "known_print_run": "mass_production",
+    "stat_ranges": {
+      "hp": [
+        650,
+        850
+      ],
+      "attack": [
+        60,
+        75
+      ],
+      "defense": [
+        58,
+        72
+      ],
+      "speed": [
+        62,
+        76
+      ]
+    }
+  },
+  {
+    "id": "ms-06s-char-zaku-ii",
+    "name": "Char's Zaku II",
+    "model_number": "MS-06S",
+    "grades": [
+      "HG",
+      "RG",
+      "MG",
+      "PG"
+    ],
+    "series": "Mobile Suit Gundam",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Principality of Zeon",
+    "pilot": "Char Aznable",
+    "weapons": [
+      "120mm Machine Gun",
+      "Heat Hawk",
+      "Cracker Grenade",
+      "Bazooka"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "common",
+    "kit_rarity_score": 6,
+    "known_print_run": "mass_production",
+    "stat_ranges": {
+      "hp": [
+        650,
+        850
+      ],
+      "attack": [
+        65,
+        80
+      ],
+      "defense": [
+        58,
+        72
+      ],
+      "speed": [
+        80,
+        95
+      ]
+    }
+  },
+  {
+    "id": "ms-06j-zaku-ii-ground",
+    "name": "Zaku II Ground Type",
+    "model_number": "MS-06J",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam: 08th MS Team",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Principality of Zeon",
+    "pilot": "Various",
+    "weapons": [
+      "120mm Machine Gun",
+      "Heat Hawk",
+      "Bazooka",
+      "Land Mine"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 20,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        660,
+        860
+      ],
+      "attack": [
+        60,
+        75
+      ],
+      "defense": [
+        60,
+        74
+      ],
+      "speed": [
+        58,
+        72
+      ]
+    }
+  },
+  {
+    "id": "ms-06r-1a-zaku-ii-high-mobility",
+    "name": "Zaku II High Mobility Type",
+    "model_number": "MS-06R-1A",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam: MSV",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Principality of Zeon",
+    "pilot": "Johnny Ridden / Shin Matsunaga",
+    "weapons": [
+      "120mm Machine Gun",
+      "Heat Hawk",
+      "Bazooka",
+      "Cracker Grenade"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 30,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        640,
+        840
+      ],
+      "attack": [
+        62,
+        78
+      ],
+      "defense": [
+        56,
+        70
+      ],
+      "speed": [
+        78,
+        92
+      ]
+    }
+  },
+  {
+    "id": "ms-06fz-zaku-ii-kai",
+    "name": "Zaku II Kai",
+    "model_number": "MS-06FZ",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam 0080: War in the Pocket",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Principality of Zeon",
+    "pilot": "Bernie Wiseman",
+    "weapons": [
+      "120mm Machine Gun",
+      "Heat Hawk",
+      "Bazooka",
+      "Cracker Grenade"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 28,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        660,
+        860
+      ],
+      "attack": [
+        64,
+        78
+      ],
+      "defense": [
+        60,
+        74
+      ],
+      "speed": [
+        70,
+        84
+      ]
+    }
+  },
+  {
+    "id": "ms-07b-gouf",
+    "name": "Gouf",
+    "model_number": "MS-07B",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Principality of Zeon",
+    "pilot": "Ramba Ral",
+    "weapons": [
+      "Heat Rod",
+      "Finger Vulcan",
+      "Heat Sword",
+      "Shield"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 22,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        700,
+        900
+      ],
+      "attack": [
+        65,
+        80
+      ],
+      "defense": [
+        62,
+        76
+      ],
+      "speed": [
+        65,
+        79
+      ]
+    }
+  },
+  {
+    "id": "ms-07b3-gouf-custom",
+    "name": "Gouf Custom",
+    "model_number": "MS-07B-3",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam: 08th MS Team",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Principality of Zeon",
+    "pilot": "Norris Packard",
+    "weapons": [
+      "3-Barrel Machine Gun",
+      "Heat Saber",
+      "Gatling Shield",
+      "Whip"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 38,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        720,
+        920
+      ],
+      "attack": [
+        72,
+        87
+      ],
+      "defense": [
+        66,
+        80
+      ],
+      "speed": [
+        70,
+        84
+      ]
+    }
+  },
+  {
+    "id": "ms-09-dom",
+    "name": "Dom",
+    "model_number": "MS-09",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Principality of Zeon",
+    "pilot": "Black Tri-Stars",
+    "weapons": [
+      "Giant Bazooka",
+      "Heat Saber",
+      "Scattering Mega Particle Gun",
+      "Mines"
+    ],
+    "armor_type": "heavyweight",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 25,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        850,
+        1050
+      ],
+      "attack": [
+        72,
+        87
+      ],
+      "defense": [
+        75,
+        90
+      ],
+      "speed": [
+        55,
+        70
+      ]
+    }
+  },
+  {
+    "id": "ms-09r-rick-dom",
+    "name": "Rick Dom",
+    "model_number": "MS-09R",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Principality of Zeon",
+    "pilot": "Various",
+    "weapons": [
+      "Giant Bazooka",
+      "Heat Saber",
+      "Scattering Mega Particle Gun"
+    ],
+    "armor_type": "heavyweight",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 24,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        830,
+        1030
+      ],
+      "attack": [
+        70,
+        85
+      ],
+      "defense": [
+        72,
+        87
+      ],
+      "speed": [
+        58,
+        72
+      ]
+    }
+  },
+  {
+    "id": "ms-14a-gelgoog",
+    "name": "Gelgoog",
+    "model_number": "MS-14A",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Principality of Zeon",
+    "pilot": "Various",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Naginata",
+      "Large Shield"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 22,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        780,
+        980
+      ],
+      "attack": [
+        75,
+        90
+      ],
+      "defense": [
+        70,
+        85
+      ],
+      "speed": [
+        68,
+        82
+      ]
+    }
+  },
+  {
+    "id": "ms-14s-chars-gelgoog",
+    "name": "Char's Gelgoog",
+    "model_number": "MS-14S",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Principality of Zeon",
+    "pilot": "Char Aznable",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Naginata",
+      "Large Shield"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 28,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        780,
+        980
+      ],
+      "attack": [
+        78,
+        93
+      ],
+      "defense": [
+        70,
+        85
+      ],
+      "speed": [
+        80,
+        95
+      ]
+    }
+  },
+  {
+    "id": "ms-14b-johnny-ridden-gelgoog",
+    "name": "Johnny Ridden's Gelgoog",
+    "model_number": "MS-14B",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam: MSV",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Principality of Zeon",
+    "pilot": "Johnny Ridden",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Naginata",
+      "Large Shield"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "rare",
+    "kit_rarity_score": 48,
+    "known_print_run": "limited",
+    "stat_ranges": {
+      "hp": [
+        780,
+        980
+      ],
+      "attack": [
+        80,
+        95
+      ],
+      "defense": [
+        70,
+        85
+      ],
+      "speed": [
+        82,
+        96
+      ]
+    }
+  },
+  {
+    "id": "ms-14jg-gelgoog-jager",
+    "name": "Gelgoog J\u00e4ger",
+    "model_number": "MS-14Jg",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam 0080: War in the Pocket",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Principality of Zeon",
+    "pilot": "Mikhail Camera",
+    "weapons": [
+      "Beam Machine Gun",
+      "Beam Saber",
+      "Large Shield"
+    ],
+    "armor_type": "lightweight",
+    "kit_rarity": "rare",
+    "kit_rarity_score": 50,
+    "known_print_run": "limited",
+    "stat_ranges": {
+      "hp": [
+        720,
+        920
+      ],
+      "attack": [
+        78,
+        93
+      ],
+      "defense": [
+        62,
+        76
+      ],
+      "speed": [
+        82,
+        96
+      ]
+    }
+  },
+  {
+    "id": "ms-18e-kampfer",
+    "name": "K\u00e4mpfer",
+    "model_number": "MS-18E",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam 0080: War in the Pocket",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Principality of Zeon",
+    "pilot": "Mikhail Camera",
+    "weapons": [
+      "Shotgun",
+      "Chain Mine",
+      "Bazookas",
+      "Beam Saber",
+      "Panzerfaust"
+    ],
+    "armor_type": "lightweight",
+    "kit_rarity": "rare",
+    "kit_rarity_score": 55,
+    "known_print_run": "limited",
+    "stat_ranges": {
+      "hp": [
+        700,
+        900
+      ],
+      "attack": [
+        85,
+        98
+      ],
+      "defense": [
+        58,
+        72
+      ],
+      "speed": [
+        88,
+        100
+      ]
+    }
+  },
+  {
+    "id": "yms-15-gyan",
+    "name": "Gyan",
+    "model_number": "YMS-15",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Principality of Zeon",
+    "pilot": "M'Quve",
+    "weapons": [
+      "Beam Saber",
+      "Missile Shield",
+      "Ring Bombs"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 30,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        750,
+        950
+      ],
+      "attack": [
+        72,
+        87
+      ],
+      "defense": [
+        70,
+        85
+      ],
+      "speed": [
+        72,
+        86
+      ]
+    }
+  },
+  {
+    "id": "msm-03-gogg",
+    "name": "Gogg",
+    "model_number": "MSM-03",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Principality of Zeon",
+    "pilot": "Various",
+    "weapons": [
+      "Torpedo",
+      "Mega Particle Cannon",
+      "Iron Nail",
+      "Vulcan Gun"
+    ],
+    "armor_type": "amphibious",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 25,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        900,
+        1100
+      ],
+      "attack": [
+        68,
+        83
+      ],
+      "defense": [
+        80,
+        95
+      ],
+      "speed": [
+        50,
+        65
+      ]
+    }
+  },
+  {
+    "id": "msm-04-acguy",
+    "name": "Acguy",
+    "model_number": "MSM-04",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Principality of Zeon",
+    "pilot": "Various",
+    "weapons": [
+      "Mega Particle Gun",
+      "Iron Nail",
+      "Torpedo"
+    ],
+    "armor_type": "amphibious",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 22,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        820,
+        1020
+      ],
+      "attack": [
+        65,
+        80
+      ],
+      "defense": [
+        75,
+        90
+      ],
+      "speed": [
+        55,
+        70
+      ]
+    }
+  },
+  {
+    "id": "msm-07-zgok",
+    "name": "Z'Gok",
+    "model_number": "MSM-07",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Principality of Zeon",
+    "pilot": "Various",
+    "weapons": [
+      "Mega Particle Cannon",
+      "Iron Nail",
+      "Torpedo",
+      "Vulcan Gun"
+    ],
+    "armor_type": "amphibious",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 20,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        880,
+        1080
+      ],
+      "attack": [
+        70,
+        85
+      ],
+      "defense": [
+        78,
+        93
+      ],
+      "speed": [
+        58,
+        72
+      ]
+    }
+  },
+  {
+    "id": "msm-07s-chars-zgok",
+    "name": "Char's Z'Gok",
+    "model_number": "MSM-07S",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Principality of Zeon",
+    "pilot": "Char Aznable",
+    "weapons": [
+      "Mega Particle Cannon",
+      "Iron Nail",
+      "Torpedo"
+    ],
+    "armor_type": "amphibious",
+    "kit_rarity": "rare",
+    "kit_rarity_score": 45,
+    "known_print_run": "limited",
+    "stat_ranges": {
+      "hp": [
+        880,
+        1080
+      ],
+      "attack": [
+        72,
+        88
+      ],
+      "defense": [
+        78,
+        93
+      ],
+      "speed": [
+        68,
+        82
+      ]
+    }
+  },
+  {
+    "id": "msn-02-zeong",
+    "name": "Zeong",
+    "model_number": "MSN-02",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Principality of Zeon",
+    "pilot": "Char Aznable",
+    "weapons": [
+      "Mega Particle Cannon",
+      "Wire-Guided Hands",
+      "Head Mega Particle Gun"
+    ],
+    "armor_type": "newtype_use",
+    "kit_rarity": "rare",
+    "kit_rarity_score": 55,
+    "known_print_run": "limited",
+    "stat_ranges": {
+      "hp": [
+        1100,
+        1350
+      ],
+      "attack": [
+        88,
+        100
+      ],
+      "defense": [
+        75,
+        90
+      ],
+      "speed": [
+        65,
+        80
+      ]
+    }
+  },
+  {
+    "id": "ma-08-big-zam",
+    "name": "Big Zam",
+    "model_number": "MA-08",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Principality of Zeon",
+    "pilot": "Dozle Zabi",
+    "weapons": [
+      "I-Field Barrier",
+      "Mega Particle Cannon",
+      "Anti-Air Missile",
+      "Sub Cannons"
+    ],
+    "armor_type": "mobile_armor",
+    "kit_rarity": "rare",
+    "kit_rarity_score": 60,
+    "known_print_run": "limited",
+    "stat_ranges": {
+      "hp": [
+        1800,
+        2200
+      ],
+      "attack": [
+        90,
+        100
+      ],
+      "defense": [
+        92,
+        100
+      ],
+      "speed": [
+        30,
+        45
+      ]
+    }
+  },
+  {
+    "id": "rx-79g-gundam-ground",
+    "name": "Gundam Ground Type",
+    "model_number": "RX-79[G]",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam: 08th MS Team",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Earth Federation",
+    "pilot": "Shiro Amada",
+    "weapons": [
+      "100mm Machine Gun",
+      "Beam Saber",
+      "Missile Pod",
+      "Shield"
+    ],
+    "armor_type": "luna_titanium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 32,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        850,
+        1050
+      ],
+      "attack": [
+        72,
+        87
+      ],
+      "defense": [
+        70,
+        85
+      ],
+      "speed": [
+        62,
+        76
+      ]
+    }
+  },
+  {
+    "id": "ez-8-gundam",
+    "name": "Gundam Ez-8",
+    "model_number": "RX-79[G]Ez-8",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam: 08th MS Team",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Earth Federation",
+    "pilot": "Shiro Amada",
+    "weapons": [
+      "100mm Machine Gun",
+      "Beam Saber",
+      "Grenade Launcher",
+      "Shield"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 35,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        820,
+        1020
+      ],
+      "attack": [
+        70,
+        85
+      ],
+      "defense": [
+        68,
+        82
+      ],
+      "speed": [
+        64,
+        78
+      ]
+    }
+  },
+  {
+    "id": "ms-06v-zaku-tank",
+    "name": "Zaku Tank",
+    "model_number": "MS-06V",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Principality of Zeon",
+    "pilot": "Various",
+    "weapons": [
+      "180mm Cannon",
+      "Vulcan Gun",
+      "Missile"
+    ],
+    "armor_type": "heavyweight",
+    "kit_rarity": "rare",
+    "kit_rarity_score": 50,
+    "known_print_run": "limited",
+    "stat_ranges": {
+      "hp": [
+        950,
+        1150
+      ],
+      "attack": [
+        68,
+        82
+      ],
+      "defense": [
+        82,
+        96
+      ],
+      "speed": [
+        30,
+        44
+      ]
+    }
+  },
+  {
+    "id": "ms-06k-zaku-cannon",
+    "name": "Zaku Cannon",
+    "model_number": "MS-06K",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam: MSV",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Principality of Zeon",
+    "pilot": "Various",
+    "weapons": [
+      "280mm Cannon",
+      "120mm Machine Gun",
+      "Cracker Grenade"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "rare",
+    "kit_rarity_score": 48,
+    "known_print_run": "limited",
+    "stat_ranges": {
+      "hp": [
+        680,
+        880
+      ],
+      "attack": [
+        70,
+        85
+      ],
+      "defense": [
+        60,
+        74
+      ],
+      "speed": [
+        52,
+        66
+      ]
+    }
+  },
+  {
+    "id": "ms-06e-zaku-recon",
+    "name": "Zaku Reconnaissance Type",
+    "model_number": "MS-06E",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam: MSV",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Principality of Zeon",
+    "pilot": "Various",
+    "weapons": [
+      "120mm Machine Gun",
+      "Cracker Grenade"
+    ],
+    "armor_type": "lightweight",
+    "kit_rarity": "very_rare",
+    "kit_rarity_score": 68,
+    "known_print_run": "p_bandai",
+    "stat_ranges": {
+      "hp": [
+        580,
+        760
+      ],
+      "attack": [
+        52,
+        66
+      ],
+      "defense": [
+        48,
+        62
+      ],
+      "speed": [
+        78,
+        92
+      ]
+    }
+  },
+  {
+    "id": "ms-05l-zaku-i-sniper",
+    "name": "Zaku I Sniper Type",
+    "model_number": "MS-05L",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam: The Origin",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Principality of Zeon",
+    "pilot": "Various",
+    "weapons": [
+      "Sniper Rifle",
+      "Heat Hawk"
+    ],
+    "armor_type": "lightweight",
+    "kit_rarity": "very_rare",
+    "kit_rarity_score": 70,
+    "known_print_run": "p_bandai",
+    "stat_ranges": {
+      "hp": [
+        550,
+        730
+      ],
+      "attack": [
+        70,
+        85
+      ],
+      "defense": [
+        45,
+        59
+      ],
+      "speed": [
+        72,
+        86
+      ]
+    }
+  },
+  {
+    "id": "msm-10-zock",
+    "name": "Zock",
+    "model_number": "MSM-10",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam",
+    "timeline": "Universal Century",
+    "era": "One Year War",
+    "faction": "Principality of Zeon",
+    "pilot": "Various",
+    "weapons": [
+      "Mega Particle Cannon x6",
+      "Torpedo"
+    ],
+    "armor_type": "mobile_armor",
+    "kit_rarity": "rare",
+    "kit_rarity_score": 58,
+    "known_print_run": "limited",
+    "stat_ranges": {
+      "hp": [
+        1400,
+        1700
+      ],
+      "attack": [
+        82,
+        96
+      ],
+      "defense": [
+        85,
+        98
+      ],
+      "speed": [
+        28,
+        42
+      ]
+    }
+  },
+  {
+    "id": "msz-006-zeta-gundam",
+    "name": "Zeta Gundam",
+    "model_number": "MSZ-006",
+    "grades": [
+      "HG",
+      "RG",
+      "MG"
+    ],
+    "series": "Mobile Suit Zeta Gundam",
+    "timeline": "Universal Century",
+    "era": "First Neo Zeon War",
+    "faction": "AEUG",
+    "pilot": "Kamille Bidan",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Grenade Launcher",
+      "Hyper Mega Launcher",
+      "Head Vulcans"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 20,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1400,
+        1900
+      ],
+      "attack": [
+        72,
+        85
+      ],
+      "defense": [
+        68,
+        80
+      ],
+      "speed": [
+        78,
+        92
+      ]
+    }
+  },
+  {
+    "id": "msz-010-zz-gundam",
+    "name": "ZZ Gundam",
+    "model_number": "MSZ-010",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam ZZ",
+    "timeline": "Universal Century",
+    "era": "First Neo Zeon War",
+    "faction": "AEUG",
+    "pilot": "Judau Ashta",
+    "weapons": [
+      "Double Beam Rifle",
+      "High Mega Cannon",
+      "Beam Saber",
+      "Missile Launcher",
+      "Head Vulcans"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 25,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1700,
+        2200
+      ],
+      "attack": [
+        80,
+        92
+      ],
+      "defense": [
+        75,
+        88
+      ],
+      "speed": [
+        60,
+        75
+      ]
+    }
+  },
+  {
+    "id": "rx-93-nu-gundam",
+    "name": "Nu Gundam",
+    "model_number": "RX-93",
+    "grades": [
+      "HG",
+      "RG",
+      "MG"
+    ],
+    "series": "Char's Counterattack",
+    "timeline": "Universal Century",
+    "era": "Second Neo Zeon War",
+    "faction": "Londo Bell",
+    "pilot": "Amuro Ray",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Fin Funnels",
+      "Hyper Bazooka",
+      "Newtype Missiles",
+      "Head Vulcans"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 22,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1800,
+        2300
+      ],
+      "attack": [
+        82,
+        94
+      ],
+      "defense": [
+        78,
+        90
+      ],
+      "speed": [
+        72,
+        85
+      ]
+    }
+  },
+  {
+    "id": "msn-04-sazabi",
+    "name": "Sazabi",
+    "model_number": "MSN-04",
+    "grades": [
+      "HG",
+      "RG",
+      "MG"
+    ],
+    "series": "Char's Counterattack",
+    "timeline": "Universal Century",
+    "era": "Second Neo Zeon War",
+    "faction": "Neo Zeon",
+    "pilot": "Char Aznable",
+    "weapons": [
+      "Beam Shot Rifle",
+      "Beam Saber",
+      "Funnels",
+      "Mega Particle Cannon",
+      "Rocket Launcher",
+      "Head Vulcans"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 24,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        2000,
+        2500
+      ],
+      "attack": [
+        85,
+        96
+      ],
+      "defense": [
+        80,
+        92
+      ],
+      "speed": [
+        68,
+        82
+      ]
+    }
+  },
+  {
+    "id": "rx-93-v2-hi-nu-gundam",
+    "name": "Hi-Nu Gundam",
+    "model_number": "RX-93-\u03bd2",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Char's Counterattack",
+    "timeline": "Universal Century",
+    "era": "Second Neo Zeon War",
+    "faction": "Londo Bell",
+    "pilot": "Amuro Ray",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Fin Funnels",
+      "Hyper Bazooka",
+      "Head Vulcans",
+      "Grenade"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "rare",
+    "kit_rarity_score": 45,
+    "known_print_run": "limited",
+    "stat_ranges": {
+      "hp": [
+        2000,
+        2500
+      ],
+      "attack": [
+        88,
+        98
+      ],
+      "defense": [
+        82,
+        94
+      ],
+      "speed": [
+        74,
+        88
+      ]
+    }
+  },
+  {
+    "id": "msn-06s-sinanju",
+    "name": "Sinanju",
+    "model_number": "MSN-06S",
+    "grades": [
+      "HG",
+      "RG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam Unicorn",
+    "timeline": "Universal Century",
+    "era": "UC 0096",
+    "faction": "Neo Zeon Remnants",
+    "pilot": "Full Frontal",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Beam Axe",
+      "Bazooka",
+      "Grenade Launcher",
+      "Head Vulcans"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 28,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1900,
+        2400
+      ],
+      "attack": [
+        86,
+        97
+      ],
+      "defense": [
+        80,
+        92
+      ],
+      "speed": [
+        82,
+        95
+      ]
+    }
+  },
+  {
+    "id": "rx-0-unicorn-gundam",
+    "name": "Unicorn Gundam",
+    "model_number": "RX-0",
+    "grades": [
+      "HG",
+      "RG",
+      "MG",
+      "PG"
+    ],
+    "series": "Mobile Suit Gundam Unicorn",
+    "timeline": "Universal Century",
+    "era": "UC 0096",
+    "faction": "Londo Bell",
+    "pilot": "Banagher Links",
+    "weapons": [
+      "Beam Magnum",
+      "Beam Saber",
+      "Shield",
+      "Hyper Bazooka",
+      "Head Vulcans",
+      "NT-D Psychoframe"
+    ],
+    "armor_type": "newtype_use",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 18,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        2000,
+        2500
+      ],
+      "attack": [
+        88,
+        99
+      ],
+      "defense": [
+        84,
+        96
+      ],
+      "speed": [
+        80,
+        94
+      ]
+    }
+  },
+  {
+    "id": "rx-0n-unicorn-banshee-norn",
+    "name": "Unicorn Gundam 02 Banshee Norn",
+    "model_number": "RX-0[N]",
+    "grades": [
+      "HG",
+      "RG",
+      "MG",
+      "PG"
+    ],
+    "series": "Mobile Suit Gundam Unicorn",
+    "timeline": "Universal Century",
+    "era": "UC 0096",
+    "faction": "ECOAS",
+    "pilot": "Marida Cruz",
+    "weapons": [
+      "Armed Armor DE",
+      "Armed Armor BS",
+      "Beam Magnum",
+      "Beam Saber",
+      "Head Vulcans"
+    ],
+    "armor_type": "newtype_use",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 22,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        2000,
+        2500
+      ],
+      "attack": [
+        88,
+        99
+      ],
+      "defense": [
+        85,
+        97
+      ],
+      "speed": [
+        78,
+        93
+      ]
+    }
+  },
+  {
+    "id": "nz-999-neo-zeong",
+    "name": "Neo Zeong",
+    "model_number": "NZ-999",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam Unicorn",
+    "timeline": "Universal Century",
+    "era": "UC 0096",
+    "faction": "Neo Zeon Remnants",
+    "pilot": "Full Frontal",
+    "weapons": [
+      "Psycho Jammer",
+      "Funnels",
+      "Mega Cannon",
+      "Psyco Beam",
+      "Arm Unit Weapons"
+    ],
+    "armor_type": "newtype_use",
+    "kit_rarity": "very_rare",
+    "kit_rarity_score": 70,
+    "known_print_run": "limited",
+    "stat_ranges": {
+      "hp": [
+        2300,
+        2500
+      ],
+      "attack": [
+        90,
+        100
+      ],
+      "defense": [
+        88,
+        100
+      ],
+      "speed": [
+        40,
+        58
+      ]
+    }
+  },
+  {
+    "id": "msn-001a1-delta-plus",
+    "name": "Delta Plus",
+    "model_number": "MSN-001A1",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam Unicorn",
+    "timeline": "Universal Century",
+    "era": "UC 0096",
+    "faction": "Londo Bell",
+    "pilot": "Riddhe Marcenas",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Hyper Mega Bazooka Launcher",
+      "Shield",
+      "Head Vulcans"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 30,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1500,
+        2000
+      ],
+      "attack": [
+        75,
+        88
+      ],
+      "defense": [
+        70,
+        83
+      ],
+      "speed": [
+        80,
+        93
+      ]
+    }
+  },
+  {
+    "id": "rgz-95-rezel",
+    "name": "ReZEL",
+    "model_number": "RGZ-95",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam Unicorn",
+    "timeline": "Universal Century",
+    "era": "UC 0096",
+    "faction": "Londo Bell",
+    "pilot": "Various",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Grenade Launcher",
+      "Shield",
+      "Head Vulcans"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 32,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1300,
+        1800
+      ],
+      "attack": [
+        68,
+        80
+      ],
+      "defense": [
+        65,
+        78
+      ],
+      "speed": [
+        76,
+        90
+      ]
+    }
+  },
+  {
+    "id": "rx-178-gundam-mk2-aeug",
+    "name": "Gundam Mk-II (AEUG)",
+    "model_number": "RX-178",
+    "grades": [
+      "HG",
+      "MG",
+      "PG"
+    ],
+    "series": "Mobile Suit Zeta Gundam",
+    "timeline": "Universal Century",
+    "era": "First Neo Zeon War",
+    "faction": "AEUG",
+    "pilot": "Kamille Bidan",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Hyper Bazooka",
+      "Head Vulcans",
+      "Shield"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 20,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1400,
+        1900
+      ],
+      "attack": [
+        70,
+        82
+      ],
+      "defense": [
+        68,
+        80
+      ],
+      "speed": [
+        72,
+        85
+      ]
+    }
+  },
+  {
+    "id": "rx-178-gundam-mk2-titans",
+    "name": "Gundam Mk-II (Titans)",
+    "model_number": "RX-178",
+    "grades": [
+      "HG",
+      "MG",
+      "PG"
+    ],
+    "series": "Mobile Suit Zeta Gundam",
+    "timeline": "Universal Century",
+    "era": "First Neo Zeon War",
+    "faction": "Titans",
+    "pilot": "Jerid Messa",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Hyper Bazooka",
+      "Head Vulcans",
+      "Shield"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 22,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1400,
+        1900
+      ],
+      "attack": [
+        70,
+        82
+      ],
+      "defense": [
+        68,
+        80
+      ],
+      "speed": [
+        72,
+        85
+      ]
+    }
+  },
+  {
+    "id": "amx-004-qubeley",
+    "name": "Qubeley",
+    "model_number": "AMX-004",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Zeta Gundam",
+    "timeline": "Universal Century",
+    "era": "First Neo Zeon War",
+    "faction": "Neo Zeon",
+    "pilot": "Haman Karn",
+    "weapons": [
+      "Beam Saber",
+      "Funnels",
+      "Head Vulcans"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 28,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1600,
+        2100
+      ],
+      "attack": [
+        78,
+        90
+      ],
+      "defense": [
+        72,
+        85
+      ],
+      "speed": [
+        74,
+        88
+      ]
+    }
+  },
+  {
+    "id": "pmx-003-the-o",
+    "name": "The-O",
+    "model_number": "PMX-003",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Zeta Gundam",
+    "timeline": "Universal Century",
+    "era": "First Neo Zeon War",
+    "faction": "Titans",
+    "pilot": "Paptimus Scirocco",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Sub-Arms",
+      "Head Vulcans"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 30,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1900,
+        2400
+      ],
+      "attack": [
+        82,
+        94
+      ],
+      "defense": [
+        85,
+        96
+      ],
+      "speed": [
+        55,
+        70
+      ]
+    }
+  },
+  {
+    "id": "rms-099-rick-dias",
+    "name": "Rick Dias",
+    "model_number": "RMS-099",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Zeta Gundam",
+    "timeline": "Universal Century",
+    "era": "First Neo Zeon War",
+    "faction": "AEUG",
+    "pilot": "Quattro Bajeena",
+    "weapons": [
+      "Beam Pistol",
+      "Beam Saber",
+      "Clay Bazooka",
+      "Head Vulcans"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 32,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1200,
+        1600
+      ],
+      "attack": [
+        65,
+        78
+      ],
+      "defense": [
+        62,
+        75
+      ],
+      "speed": [
+        72,
+        86
+      ]
+    }
+  },
+  {
+    "id": "mrx-009-psyco-gundam",
+    "name": "Psyco Gundam",
+    "model_number": "MRX-009",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Zeta Gundam",
+    "timeline": "Universal Century",
+    "era": "First Neo Zeon War",
+    "faction": "Titans",
+    "pilot": "Four Murasame",
+    "weapons": [
+      "Diffuse Mega Particle Cannon",
+      "Mega Beam Cannon",
+      "Head Vulcans"
+    ],
+    "armor_type": "mobile_armor",
+    "kit_rarity": "rare",
+    "kit_rarity_score": 48,
+    "known_print_run": "limited",
+    "stat_ranges": {
+      "hp": [
+        2200,
+        2500
+      ],
+      "attack": [
+        85,
+        96
+      ],
+      "defense": [
+        90,
+        100
+      ],
+      "speed": [
+        40,
+        55
+      ]
+    }
+  },
+  {
+    "id": "amx-107-bawoo",
+    "name": "Bawoo",
+    "model_number": "AMX-107",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam ZZ",
+    "timeline": "Universal Century",
+    "era": "First Neo Zeon War",
+    "faction": "Neo Zeon",
+    "pilot": "Glemy Toto",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Head Vulcans",
+      "Missile Pod"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "rare",
+    "kit_rarity_score": 44,
+    "known_print_run": "limited",
+    "stat_ranges": {
+      "hp": [
+        1400,
+        1900
+      ],
+      "attack": [
+        72,
+        85
+      ],
+      "defense": [
+        68,
+        80
+      ],
+      "speed": [
+        74,
+        88
+      ]
+    }
+  },
+  {
+    "id": "rx-104ff-penelope",
+    "name": "Penelope",
+    "model_number": "RX-104FF",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam Hathaway",
+    "timeline": "Universal Century",
+    "era": "UC 0105",
+    "faction": "Earth Federation",
+    "pilot": "Lane Aim",
+    "weapons": [
+      "Mega Beam Cannon",
+      "Beam Rifle",
+      "Beam Saber",
+      "Missile Launcher"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 26,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        2000,
+        2500
+      ],
+      "attack": [
+        85,
+        97
+      ],
+      "defense": [
+        88,
+        99
+      ],
+      "speed": [
+        60,
+        75
+      ]
+    }
+  },
+  {
+    "id": "messer-type-f01",
+    "name": "Messer Type-F01",
+    "model_number": "Messer Type-F01",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam Hathaway",
+    "timeline": "Universal Century",
+    "era": "UC 0105",
+    "faction": "Mafty",
+    "pilot": "Gawman Nobile",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Head Vulcans",
+      "Shield"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 28,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1300,
+        1800
+      ],
+      "attack": [
+        68,
+        82
+      ],
+      "defense": [
+        65,
+        78
+      ],
+      "speed": [
+        78,
+        92
+      ]
+    }
+  },
+  {
+    "id": "msn-001x-xi-gundam",
+    "name": "Xi Gundam",
+    "model_number": "MSN-001X",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam Hathaway",
+    "timeline": "Universal Century",
+    "era": "UC 0105",
+    "faction": "Mafty",
+    "pilot": "Hathaway Noa",
+    "weapons": [
+      "Mega Beam Cannon",
+      "Beam Saber",
+      "Funnel Missiles",
+      "Head Vulcans",
+      "Beam Rifle"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 24,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        2000,
+        2500
+      ],
+      "attack": [
+        87,
+        98
+      ],
+      "defense": [
+        85,
+        97
+      ],
+      "speed": [
+        72,
+        86
+      ]
+    }
+  },
+  {
+    "id": "amx-004g-qubeley-mass-production",
+    "name": "Qubeley Mass Production Type",
+    "model_number": "AMX-004G",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam ZZ",
+    "timeline": "Universal Century",
+    "era": "First Neo Zeon War",
+    "faction": "Neo Zeon",
+    "pilot": "Glemy Toto's Troops",
+    "weapons": [
+      "Beam Saber",
+      "Funnels",
+      "Head Vulcans"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "rare",
+    "kit_rarity_score": 52,
+    "known_print_run": "p_bandai",
+    "stat_ranges": {
+      "hp": [
+        1400,
+        1900
+      ],
+      "attack": [
+        72,
+        85
+      ],
+      "defense": [
+        68,
+        82
+      ],
+      "speed": [
+        70,
+        84
+      ]
+    }
+  },
+  {
+    "id": "xxxg-01w-wing-gundam",
+    "name": "Wing Gundam",
+    "model_number": "XXXG-01W",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Gundam Wing",
+    "timeline": "After Colony",
+    "era": "After Colony 195",
+    "faction": "Gundam Pilots",
+    "pilot": "Heero Yuy",
+    "weapons": [
+      "Buster Rifle",
+      "Beam Saber",
+      "Machine Cannon",
+      "Shield"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 20,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1400,
+        1900
+      ],
+      "attack": [
+        78,
+        90
+      ],
+      "defense": [
+        70,
+        83
+      ],
+      "speed": [
+        78,
+        92
+      ]
+    }
+  },
+  {
+    "id": "xxxg-00w0-wing-zero-custom",
+    "name": "Wing Gundam Zero Custom",
+    "model_number": "XXXG-00W0",
+    "grades": [
+      "HG",
+      "RG",
+      "MG",
+      "PG"
+    ],
+    "series": "Gundam Wing Endless Waltz",
+    "timeline": "After Colony",
+    "era": "After Colony 196",
+    "faction": "Gundam Pilots",
+    "pilot": "Heero Yuy",
+    "weapons": [
+      "Twin Buster Rifle",
+      "Beam Saber",
+      "Machine Cannon",
+      "Shield"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 15,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1700,
+        2200
+      ],
+      "attack": [
+        88,
+        99
+      ],
+      "defense": [
+        80,
+        92
+      ],
+      "speed": [
+        85,
+        98
+      ]
+    }
+  },
+  {
+    "id": "xxxg-01d-deathscythe",
+    "name": "Gundam Deathscythe",
+    "model_number": "XXXG-01D",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Gundam Wing",
+    "timeline": "After Colony",
+    "era": "After Colony 195",
+    "faction": "Gundam Pilots",
+    "pilot": "Duo Maxwell",
+    "weapons": [
+      "Beam Scythe",
+      "Buster Shield",
+      "Machine Cannon"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 22,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1300,
+        1800
+      ],
+      "attack": [
+        75,
+        88
+      ],
+      "defense": [
+        65,
+        78
+      ],
+      "speed": [
+        82,
+        95
+      ]
+    }
+  },
+  {
+    "id": "xxxg-01d2-deathscythe-hell-custom",
+    "name": "Gundam Deathscythe Hell Custom",
+    "model_number": "XXXG-01D2",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Gundam Wing Endless Waltz",
+    "timeline": "After Colony",
+    "era": "After Colony 196",
+    "faction": "Gundam Pilots",
+    "pilot": "Duo Maxwell",
+    "weapons": [
+      "Dual Beam Scythe",
+      "Buster Shield",
+      "Machine Cannon",
+      "Active Cloak"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 18,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1400,
+        1900
+      ],
+      "attack": [
+        80,
+        92
+      ],
+      "defense": [
+        70,
+        83
+      ],
+      "speed": [
+        85,
+        97
+      ]
+    }
+  },
+  {
+    "id": "xxxg-01h-heavyarms",
+    "name": "Gundam Heavyarms",
+    "model_number": "XXXG-01H",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Gundam Wing",
+    "timeline": "After Colony",
+    "era": "After Colony 195",
+    "faction": "Gundam Pilots",
+    "pilot": "Trowa Barton",
+    "weapons": [
+      "Gatling Gun",
+      "Homing Missile",
+      "Army Knife",
+      "Micro Missile"
+    ],
+    "armor_type": "heavyweight",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 22,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1600,
+        2100
+      ],
+      "attack": [
+        82,
+        94
+      ],
+      "defense": [
+        78,
+        90
+      ],
+      "speed": [
+        60,
+        74
+      ]
+    }
+  },
+  {
+    "id": "xxxg-01h2-heavyarms-custom",
+    "name": "Gundam Heavyarms Custom",
+    "model_number": "XXXG-01H2",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Gundam Wing Endless Waltz",
+    "timeline": "After Colony",
+    "era": "After Colony 196",
+    "faction": "Gundam Pilots",
+    "pilot": "Trowa Barton",
+    "weapons": [
+      "Double Gatling Gun",
+      "Homing Missile",
+      "Army Knife",
+      "Micro Missile"
+    ],
+    "armor_type": "heavyweight",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 18,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1700,
+        2200
+      ],
+      "attack": [
+        85,
+        97
+      ],
+      "defense": [
+        80,
+        92
+      ],
+      "speed": [
+        58,
+        72
+      ]
+    }
+  },
+  {
+    "id": "xxxg-01sr-sandrock",
+    "name": "Gundam Sandrock",
+    "model_number": "XXXG-01SR",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Gundam Wing",
+    "timeline": "After Colony",
+    "era": "After Colony 195",
+    "faction": "Gundam Pilots",
+    "pilot": "Quatre Raberba Winner",
+    "weapons": [
+      "Heat Shotels",
+      "Homing Missile",
+      "Shield",
+      "Head Vulcans"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 24,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1500,
+        2000
+      ],
+      "attack": [
+        76,
+        89
+      ],
+      "defense": [
+        74,
+        87
+      ],
+      "speed": [
+        68,
+        82
+      ]
+    }
+  },
+  {
+    "id": "xxxg-01sr2-sandrock-custom",
+    "name": "Gundam Sandrock Custom",
+    "model_number": "XXXG-01SR2",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Gundam Wing Endless Waltz",
+    "timeline": "After Colony",
+    "era": "After Colony 196",
+    "faction": "Gundam Pilots",
+    "pilot": "Quatre Raberba Winner",
+    "weapons": [
+      "Heat Shotels",
+      "Homing Missile",
+      "Shield",
+      "Head Vulcans"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 20,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1600,
+        2100
+      ],
+      "attack": [
+        78,
+        91
+      ],
+      "defense": [
+        76,
+        89
+      ],
+      "speed": [
+        70,
+        84
+      ]
+    }
+  },
+  {
+    "id": "xxxg-01s-shenlong",
+    "name": "Shenlong Gundam",
+    "model_number": "XXXG-01S",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Gundam Wing",
+    "timeline": "After Colony",
+    "era": "After Colony 195",
+    "faction": "Gundam Pilots",
+    "pilot": "Chang Wufei",
+    "weapons": [
+      "Dragon Fang",
+      "Beam Trident",
+      "Head Vulcans",
+      "Flamethrower"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 26,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1400,
+        1900
+      ],
+      "attack": [
+        78,
+        91
+      ],
+      "defense": [
+        68,
+        81
+      ],
+      "speed": [
+        78,
+        92
+      ]
+    }
+  },
+  {
+    "id": "xxxg-01s2-altron",
+    "name": "Altron Gundam",
+    "model_number": "XXXG-01S2",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Gundam Wing Endless Waltz",
+    "timeline": "After Colony",
+    "era": "After Colony 196",
+    "faction": "Gundam Pilots",
+    "pilot": "Chang Wufei",
+    "weapons": [
+      "Dragon Fang",
+      "Beam Trident",
+      "Head Vulcans",
+      "Flamethrower",
+      "Extensional Arrestor"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 22,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1500,
+        2000
+      ],
+      "attack": [
+        80,
+        93
+      ],
+      "defense": [
+        70,
+        83
+      ],
+      "speed": [
+        80,
+        94
+      ]
+    }
+  },
+  {
+    "id": "oz-13ms-epyon",
+    "name": "Gundam Epyon",
+    "model_number": "OZ-13MS",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Gundam Wing",
+    "timeline": "After Colony",
+    "era": "After Colony 195",
+    "faction": "OZ",
+    "pilot": "Zechs Merquise",
+    "weapons": [
+      "Beam Sword",
+      "Heat Rod",
+      "Shield"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 24,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1700,
+        2200
+      ],
+      "attack": [
+        85,
+        97
+      ],
+      "defense": [
+        75,
+        88
+      ],
+      "speed": [
+        85,
+        98
+      ]
+    }
+  },
+  {
+    "id": "oz-00ms-tallgeese",
+    "name": "Tallgeese",
+    "model_number": "OZ-00MS",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Gundam Wing",
+    "timeline": "After Colony",
+    "era": "After Colony 195",
+    "faction": "OZ",
+    "pilot": "Zechs Merquise",
+    "weapons": [
+      "Dober Gun",
+      "Beam Saber",
+      "Shield"
+    ],
+    "armor_type": "heavyweight",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 26,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1500,
+        2000
+      ],
+      "attack": [
+        78,
+        90
+      ],
+      "defense": [
+        80,
+        92
+      ],
+      "speed": [
+        72,
+        86
+      ]
+    }
+  },
+  {
+    "id": "oz-00ms2b-tallgeese-iii",
+    "name": "Tallgeese III",
+    "model_number": "OZ-00MS2B",
+    "grades": [
+      "HG"
+    ],
+    "series": "Gundam Wing Endless Waltz",
+    "timeline": "After Colony",
+    "era": "After Colony 196",
+    "faction": "White Fang",
+    "pilot": "Treize Khushrenada",
+    "weapons": [
+      "Mega Beam Cannon",
+      "Beam Saber",
+      "Shield"
+    ],
+    "armor_type": "heavyweight",
+    "kit_rarity": "rare",
+    "kit_rarity_score": 40,
+    "known_print_run": "limited",
+    "stat_ranges": {
+      "hp": [
+        1700,
+        2200
+      ],
+      "attack": [
+        84,
+        96
+      ],
+      "defense": [
+        82,
+        94
+      ],
+      "speed": [
+        70,
+        84
+      ]
+    }
+  },
+  {
+    "id": "oz-06ms-leo",
+    "name": "Leo",
+    "model_number": "OZ-06MS",
+    "grades": [
+      "HG"
+    ],
+    "series": "Gundam Wing",
+    "timeline": "After Colony",
+    "era": "After Colony 195",
+    "faction": "OZ",
+    "pilot": "Various",
+    "weapons": [
+      "Leo Rifle",
+      "Beam Saber",
+      "Shield"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 28,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        800,
+        1200
+      ],
+      "attack": [
+        52,
+        65
+      ],
+      "defense": [
+        50,
+        63
+      ],
+      "speed": [
+        60,
+        74
+      ]
+    }
+  },
+  {
+    "id": "gat-x105-strike-gundam",
+    "name": "Strike Gundam",
+    "model_number": "GAT-X105",
+    "grades": [
+      "HG",
+      "MG",
+      "PG"
+    ],
+    "series": "Gundam SEED",
+    "timeline": "Cosmic Era",
+    "era": "Cosmic Era 71",
+    "faction": "Earth Alliance",
+    "pilot": "Kira Yamato",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Launcher Striker",
+      "Sword Striker",
+      "Aile Striker",
+      "Head Vulcans"
+    ],
+    "armor_type": "chobham",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 18,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1500,
+        2000
+      ],
+      "attack": [
+        80,
+        92
+      ],
+      "defense": [
+        78,
+        90
+      ],
+      "speed": [
+        76,
+        90
+      ]
+    }
+  },
+  {
+    "id": "zgmf-x10a-freedom-gundam",
+    "name": "Freedom Gundam",
+    "model_number": "ZGMF-X10A",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Gundam SEED",
+    "timeline": "Cosmic Era",
+    "era": "Cosmic Era 71",
+    "faction": "ZAFT",
+    "pilot": "Kira Yamato",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Railguns",
+      "Fatum-00",
+      "High Energy Beam Cannons"
+    ],
+    "armor_type": "gn_particles",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 18,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1700,
+        2200
+      ],
+      "attack": [
+        85,
+        97
+      ],
+      "defense": [
+        80,
+        92
+      ],
+      "speed": [
+        82,
+        96
+      ]
+    }
+  },
+  {
+    "id": "zgmf-x20a-strike-freedom",
+    "name": "Strike Freedom Gundam",
+    "model_number": "ZGMF-X20A",
+    "grades": [
+      "HG",
+      "RG",
+      "MG",
+      "PG"
+    ],
+    "series": "Gundam SEED Destiny",
+    "timeline": "Cosmic Era",
+    "era": "Cosmic Era 73",
+    "faction": "Three Ships Alliance",
+    "pilot": "Kira Yamato",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Railguns",
+      "Fatum-01",
+      "Dragoon System",
+      "High Energy Beam Cannons"
+    ],
+    "armor_type": "dragoon_system",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 14,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1900,
+        2500
+      ],
+      "attack": [
+        90,
+        100
+      ],
+      "defense": [
+        85,
+        97
+      ],
+      "speed": [
+        88,
+        100
+      ]
+    }
+  },
+  {
+    "id": "zgmf-x09a-justice",
+    "name": "Justice Gundam",
+    "model_number": "ZGMF-X09A",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Gundam SEED",
+    "timeline": "Cosmic Era",
+    "era": "Cosmic Era 71",
+    "faction": "ZAFT",
+    "pilot": "Athrun Zala",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Fatum-00",
+      "Fortis Beam Cannons"
+    ],
+    "armor_type": "gn_particles",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 22,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1600,
+        2100
+      ],
+      "attack": [
+        82,
+        94
+      ],
+      "defense": [
+        78,
+        90
+      ],
+      "speed": [
+        80,
+        94
+      ]
+    }
+  },
+  {
+    "id": "zgmf-x19a-infinite-justice",
+    "name": "Infinite Justice Gundam",
+    "model_number": "ZGMF-X19A",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Gundam SEED Destiny",
+    "timeline": "Cosmic Era",
+    "era": "Cosmic Era 73",
+    "faction": "Three Ships Alliance",
+    "pilot": "Athrun Zala",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Fatum-01",
+      "Lacerta Beam Sabers",
+      "Fortis Beam Cannons"
+    ],
+    "armor_type": "dragoon_system",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 20,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1800,
+        2300
+      ],
+      "attack": [
+        85,
+        97
+      ],
+      "defense": [
+        82,
+        94
+      ],
+      "speed": [
+        82,
+        96
+      ]
+    }
+  },
+  {
+    "id": "zgmf-x42s-destiny",
+    "name": "Destiny Gundam",
+    "model_number": "ZGMF-X42S",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Gundam SEED Destiny",
+    "timeline": "Cosmic Era",
+    "era": "Cosmic Era 73",
+    "faction": "ZAFT",
+    "pilot": "Shinn Asuka",
+    "weapons": [
+      "Flash Edge 2 Beam Boomerang",
+      "Arondight",
+      "Palma Fiocina",
+      "Beam Rifle",
+      "High Energy Cannons"
+    ],
+    "armor_type": "dragoon_system",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 18,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1900,
+        2400
+      ],
+      "attack": [
+        88,
+        99
+      ],
+      "defense": [
+        83,
+        95
+      ],
+      "speed": [
+        86,
+        99
+      ]
+    }
+  },
+  {
+    "id": "zgmf-x56s-impulse",
+    "name": "Impulse Gundam",
+    "model_number": "ZGMF-X56S",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Gundam SEED Destiny",
+    "timeline": "Cosmic Era",
+    "era": "Cosmic Era 73",
+    "faction": "ZAFT",
+    "pilot": "Shinn Asuka",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Excalibur",
+      "Slash Silhouette",
+      "Blast Silhouette"
+    ],
+    "armor_type": "chobham",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 22,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1600,
+        2100
+      ],
+      "attack": [
+        80,
+        92
+      ],
+      "defense": [
+        76,
+        88
+      ],
+      "speed": [
+        80,
+        94
+      ]
+    }
+  },
+  {
+    "id": "gat-x303-aegis",
+    "name": "Aegis Gundam",
+    "model_number": "GAT-X303",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Gundam SEED",
+    "timeline": "Cosmic Era",
+    "era": "Cosmic Era 71",
+    "faction": "ZAFT",
+    "pilot": "Athrun Zala",
+    "weapons": [
+      "Scylla Multi-phase Energy Cannon",
+      "Beam Saber",
+      "Beam Rifle",
+      "Igelstellung Vulcans"
+    ],
+    "armor_type": "chobham",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 26,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1500,
+        2000
+      ],
+      "attack": [
+        80,
+        92
+      ],
+      "defense": [
+        75,
+        88
+      ],
+      "speed": [
+        76,
+        90
+      ]
+    }
+  },
+  {
+    "id": "gat-x102-duel",
+    "name": "Duel Gundam",
+    "model_number": "GAT-X102",
+    "grades": [
+      "HG"
+    ],
+    "series": "Gundam SEED",
+    "timeline": "Cosmic Era",
+    "era": "Cosmic Era 71",
+    "faction": "ZAFT",
+    "pilot": "Yzak Joule",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Head Vulcans",
+      "Assault Shroud"
+    ],
+    "armor_type": "chobham",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 28,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1400,
+        1900
+      ],
+      "attack": [
+        72,
+        85
+      ],
+      "defense": [
+        72,
+        85
+      ],
+      "speed": [
+        72,
+        86
+      ]
+    }
+  },
+  {
+    "id": "gat-x207-blitz",
+    "name": "Blitz Gundam",
+    "model_number": "GAT-X207",
+    "grades": [
+      "HG"
+    ],
+    "series": "Gundam SEED",
+    "timeline": "Cosmic Era",
+    "era": "Cosmic Era 71",
+    "faction": "ZAFT",
+    "pilot": "Nicol Amalfi",
+    "weapons": [
+      "Trikeros Offence Shield System",
+      "Gleipnir Lancer Dart",
+      "Beam Rifle",
+      "Beam Saber"
+    ],
+    "armor_type": "chobham",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 28,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1300,
+        1800
+      ],
+      "attack": [
+        72,
+        85
+      ],
+      "defense": [
+        68,
+        80
+      ],
+      "speed": [
+        78,
+        92
+      ]
+    }
+  },
+  {
+    "id": "mbf-p02-astray-red-frame",
+    "name": "Gundam Astray Red Frame",
+    "model_number": "MBF-P02",
+    "grades": [
+      "HG",
+      "MG",
+      "PG"
+    ],
+    "series": "Gundam SEED Astray",
+    "timeline": "Cosmic Era",
+    "era": "Cosmic Era 71",
+    "faction": "Junk Guild",
+    "pilot": "Lowe Guele",
+    "weapons": [
+      "Gerbera Straight",
+      "Beam Saber",
+      "150m Gerbera Straight",
+      "Beam Rifle",
+      "Head Vulcans"
+    ],
+    "armor_type": "lightweight",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 20,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1400,
+        1900
+      ],
+      "attack": [
+        78,
+        92
+      ],
+      "defense": [
+        68,
+        80
+      ],
+      "speed": [
+        84,
+        97
+      ]
+    }
+  },
+  {
+    "id": "mbf-p03-astray-blue-frame",
+    "name": "Gundam Astray Blue Frame",
+    "model_number": "MBF-P03",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Gundam SEED Astray",
+    "timeline": "Cosmic Era",
+    "era": "Cosmic Era 71",
+    "faction": "Serpent Tail",
+    "pilot": "Gai Murakumo",
+    "weapons": [
+      "Beam Saber",
+      "Beam Rifle",
+      "Tactical Arms",
+      "Head Vulcans"
+    ],
+    "armor_type": "lightweight",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 22,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1400,
+        1900
+      ],
+      "attack": [
+        76,
+        90
+      ],
+      "defense": [
+        66,
+        79
+      ],
+      "speed": [
+        84,
+        97
+      ]
+    }
+  },
+  {
+    "id": "zgmf-x88s-gaia",
+    "name": "Gaia Gundam",
+    "model_number": "ZGMF-X88S",
+    "grades": [
+      "HG"
+    ],
+    "series": "Gundam SEED Destiny",
+    "timeline": "Cosmic Era",
+    "era": "Cosmic Era 73",
+    "faction": "ZAFT",
+    "pilot": "Stella Loussier",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Superluminal Cannon",
+      "Claw"
+    ],
+    "armor_type": "chobham",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 30,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1400,
+        1900
+      ],
+      "attack": [
+        76,
+        89
+      ],
+      "defense": [
+        72,
+        85
+      ],
+      "speed": [
+        80,
+        94
+      ]
+    }
+  },
+  {
+    "id": "zgmf-1000-zaku-warrior",
+    "name": "ZAKU Warrior",
+    "model_number": "ZGMF-1000",
+    "grades": [
+      "HG"
+    ],
+    "series": "Gundam SEED Destiny",
+    "timeline": "Cosmic Era",
+    "era": "Cosmic Era 73",
+    "faction": "ZAFT",
+    "pilot": "Various",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Tomahawk",
+      "Heat Hawk",
+      "Shield"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "common",
+    "kit_rarity_score": 12,
+    "known_print_run": "mass_production",
+    "stat_ranges": {
+      "hp": [
+        900,
+        1400
+      ],
+      "attack": [
+        58,
+        72
+      ],
+      "defense": [
+        55,
+        68
+      ],
+      "speed": [
+        64,
+        78
+      ]
+    }
+  },
+  {
+    "id": "gat-x131-calamity",
+    "name": "Calamity Gundam",
+    "model_number": "GAT-X131",
+    "grades": [
+      "HG"
+    ],
+    "series": "Gundam SEED",
+    "timeline": "Cosmic Era",
+    "era": "Cosmic Era 71",
+    "faction": "Earth Alliance",
+    "pilot": "Orga Sabnak",
+    "weapons": [
+      "Schlag Beam Cannon",
+      "Scylla Cannon",
+      "Todesblock Shield Boomerang",
+      "Mjolnir Cannon"
+    ],
+    "armor_type": "heavyweight",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 30,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1800,
+        2300
+      ],
+      "attack": [
+        84,
+        96
+      ],
+      "defense": [
+        82,
+        94
+      ],
+      "speed": [
+        55,
+        68
+      ]
+    }
+  },
+  {
+    "id": "zgmf-x23s-saviour",
+    "name": "Saviour Gundam",
+    "model_number": "ZGMF-X23S",
+    "grades": [
+      "HG"
+    ],
+    "series": "Gundam SEED Destiny",
+    "timeline": "Cosmic Era",
+    "era": "Cosmic Era 73",
+    "faction": "ZAFT",
+    "pilot": "Athrun Zala",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Cannons",
+      "Beam Claws"
+    ],
+    "armor_type": "chobham",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 30,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1600,
+        2100
+      ],
+      "attack": [
+        80,
+        92
+      ],
+      "defense": [
+        76,
+        89
+      ],
+      "speed": [
+        80,
+        94
+      ]
+    }
+  },
+  {
+    "id": "zgmf-x24s-chaos",
+    "name": "Chaos Gundam",
+    "model_number": "ZGMF-X24S",
+    "grades": [
+      "HG"
+    ],
+    "series": "Gundam SEED Destiny",
+    "timeline": "Cosmic Era",
+    "era": "Cosmic Era 73",
+    "faction": "ZAFT",
+    "pilot": "Sting Oakley",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "MA-7B Super DRAGOON",
+      "Beam Cannons"
+    ],
+    "armor_type": "dragoon_system",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 30,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1500,
+        2000
+      ],
+      "attack": [
+        78,
+        91
+      ],
+      "defense": [
+        74,
+        87
+      ],
+      "speed": [
+        80,
+        94
+      ]
+    }
+  },
+  {
+    "id": "zgmf-2000-gouf-ignited",
+    "name": "GOUF Ignited",
+    "model_number": "ZGMF-2000",
+    "grades": [
+      "HG"
+    ],
+    "series": "Gundam SEED Destiny",
+    "timeline": "Cosmic Era",
+    "era": "Cosmic Era 73",
+    "faction": "ZAFT",
+    "pilot": "Heine Westenfluss",
+    "weapons": [
+      "Slayer Whip",
+      "Beam Sword",
+      "Shield",
+      "Beam Rifle"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 28,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1200,
+        1700
+      ],
+      "attack": [
+        70,
+        83
+      ],
+      "defense": [
+        66,
+        79
+      ],
+      "speed": [
+        72,
+        86
+      ]
+    }
+  },
+  {
+    "id": "gn-001-exia",
+    "name": "Gundam Exia",
+    "model_number": "GN-001",
+    "grades": [
+      "HG",
+      "RG",
+      "MG",
+      "PG"
+    ],
+    "series": "Mobile Suit Gundam 00",
+    "timeline": "Anno Domini",
+    "era": "Anno Domini 2307",
+    "faction": "Celestial Being",
+    "pilot": "Setsuna F. Seiei",
+    "weapons": [
+      "GN Sword",
+      "GN Long Blade",
+      "GN Short Blade",
+      "GN Beam Saber",
+      "GN Shield",
+      "GN Vulcan"
+    ],
+    "armor_type": "gn_particles",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 16,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1500,
+        2000
+      ],
+      "attack": [
+        84,
+        96
+      ],
+      "defense": [
+        72,
+        85
+      ],
+      "speed": [
+        88,
+        100
+      ]
+    }
+  },
+  {
+    "id": "gn-0000-00-gundam",
+    "name": "00 Gundam",
+    "model_number": "GN-0000",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam 00 Season 2",
+    "timeline": "Anno Domini",
+    "era": "Anno Domini 2312",
+    "faction": "Celestial Being",
+    "pilot": "Setsuna F. Seiei",
+    "weapons": [
+      "GN Sword II",
+      "GN Beam Saber",
+      "GN Shield",
+      "Twin Drive System"
+    ],
+    "armor_type": "gn_particles",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 24,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1700,
+        2200
+      ],
+      "attack": [
+        86,
+        97
+      ],
+      "defense": [
+        76,
+        88
+      ],
+      "speed": [
+        88,
+        100
+      ]
+    }
+  },
+  {
+    "id": "gn-0000-gnr-010-00-raiser",
+    "name": "00 Raiser",
+    "model_number": "GN-0000+GNR-010",
+    "grades": [
+      "HG",
+      "RG",
+      "MG",
+      "PG"
+    ],
+    "series": "Mobile Suit Gundam 00 Season 2",
+    "timeline": "Anno Domini",
+    "era": "Anno Domini 2312",
+    "faction": "Celestial Being",
+    "pilot": "Setsuna F. Seiei",
+    "weapons": [
+      "GN Sword III",
+      "GN Sword II",
+      "GN Buster Sword",
+      "Twin Drive System",
+      "GN Missiles"
+    ],
+    "armor_type": "gn_particles",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 16,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        2000,
+        2500
+      ],
+      "attack": [
+        90,
+        100
+      ],
+      "defense": [
+        82,
+        94
+      ],
+      "speed": [
+        90,
+        100
+      ]
+    }
+  },
+  {
+    "id": "gn-002-dynames",
+    "name": "Gundam Dynames",
+    "model_number": "GN-002",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam 00",
+    "timeline": "Anno Domini",
+    "era": "Anno Domini 2307",
+    "faction": "Celestial Being",
+    "pilot": "Lockon Stratos",
+    "weapons": [
+      "GN Sniper Rifle",
+      "GN Beam Pistol",
+      "GN Beam Saber",
+      "GN Shield",
+      "GN Full Shield"
+    ],
+    "armor_type": "gn_particles",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 22,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1400,
+        1900
+      ],
+      "attack": [
+        82,
+        94
+      ],
+      "defense": [
+        68,
+        80
+      ],
+      "speed": [
+        76,
+        90
+      ]
+    }
+  },
+  {
+    "id": "gn-003-kyrios",
+    "name": "Gundam Kyrios",
+    "model_number": "GN-003",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam 00",
+    "timeline": "Anno Domini",
+    "era": "Anno Domini 2307",
+    "faction": "Celestial Being",
+    "pilot": "Allelujah Haptism",
+    "weapons": [
+      "GN Beam Submachine Gun",
+      "GN Beam Saber",
+      "GN Shield",
+      "GN Hand Missile Unit"
+    ],
+    "armor_type": "gn_particles",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 24,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1300,
+        1800
+      ],
+      "attack": [
+        76,
+        89
+      ],
+      "defense": [
+        66,
+        78
+      ],
+      "speed": [
+        88,
+        100
+      ]
+    }
+  },
+  {
+    "id": "gn-005-virtue",
+    "name": "Gundam Virtue",
+    "model_number": "GN-005",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam 00",
+    "timeline": "Anno Domini",
+    "era": "Anno Domini 2307",
+    "faction": "Celestial Being",
+    "pilot": "Tieria Erde",
+    "weapons": [
+      "GN Bazooka",
+      "GN Beam Saber",
+      "GN Field",
+      "GN Cannons"
+    ],
+    "armor_type": "gn_particles",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 24,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1900,
+        2400
+      ],
+      "attack": [
+        84,
+        96
+      ],
+      "defense": [
+        88,
+        100
+      ],
+      "speed": [
+        58,
+        72
+      ]
+    }
+  },
+  {
+    "id": "gn-006-cherudim",
+    "name": "Cherudim Gundam",
+    "model_number": "GN-006",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam 00 Season 2",
+    "timeline": "Anno Domini",
+    "era": "Anno Domini 2312",
+    "faction": "Celestial Being",
+    "pilot": "Lockon Stratos",
+    "weapons": [
+      "GN Sniper Rifle II",
+      "GN Pistol II",
+      "GN Beam Saber",
+      "GN Shield Bit"
+    ],
+    "armor_type": "gn_particles",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 26,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1400,
+        1900
+      ],
+      "attack": [
+        84,
+        96
+      ],
+      "defense": [
+        70,
+        82
+      ],
+      "speed": [
+        78,
+        92
+      ]
+    }
+  },
+  {
+    "id": "gn-007-arios",
+    "name": "Arios Gundam",
+    "model_number": "GN-007",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam 00 Season 2",
+    "timeline": "Anno Domini",
+    "era": "Anno Domini 2312",
+    "faction": "Celestial Being",
+    "pilot": "Allelujah Haptism",
+    "weapons": [
+      "GN Beam Rifle",
+      "GN Beam Saber",
+      "GN Shield",
+      "GN Vulcan"
+    ],
+    "armor_type": "gn_particles",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 26,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1300,
+        1800
+      ],
+      "attack": [
+        78,
+        91
+      ],
+      "defense": [
+        68,
+        80
+      ],
+      "speed": [
+        88,
+        100
+      ]
+    }
+  },
+  {
+    "id": "gn-008-seravee",
+    "name": "Seravee Gundam",
+    "model_number": "GN-008",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam 00 Season 2",
+    "timeline": "Anno Domini",
+    "era": "Anno Domini 2312",
+    "faction": "Celestial Being",
+    "pilot": "Tieria Erde",
+    "weapons": [
+      "GN Bazooka II",
+      "GN Beam Saber",
+      "GN Cannon",
+      "Face Burst Mode"
+    ],
+    "armor_type": "gn_particles",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 26,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1900,
+        2400
+      ],
+      "attack": [
+        85,
+        97
+      ],
+      "defense": [
+        88,
+        100
+      ],
+      "speed": [
+        58,
+        72
+      ]
+    }
+  },
+  {
+    "id": "gnt-0000-00-qant",
+    "name": "00 Qan[T]",
+    "model_number": "GNT-0000",
+    "grades": [
+      "HG",
+      "RG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam 00 The Movie",
+    "timeline": "Anno Domini",
+    "era": "Anno Domini 2314",
+    "faction": "Celestial Being",
+    "pilot": "Setsuna F. Seiei",
+    "weapons": [
+      "GN Sword V",
+      "GN Sword Bits",
+      "GN Shield Bits",
+      "Quantum Burst"
+    ],
+    "armor_type": "gn_particles",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 18,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        2000,
+        2500
+      ],
+      "attack": [
+        92,
+        100
+      ],
+      "defense": [
+        85,
+        97
+      ],
+      "speed": [
+        90,
+        100
+      ]
+    }
+  },
+  {
+    "id": "gn-010-zabanya",
+    "name": "Gundam Zabanya",
+    "model_number": "GN-010",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam 00 The Movie",
+    "timeline": "Anno Domini",
+    "era": "Anno Domini 2314",
+    "faction": "Celestial Being",
+    "pilot": "Lockon Stratos",
+    "weapons": [
+      "GN Rifle Bit",
+      "GN Pistol Bit",
+      "GN Holster Shield Bit",
+      "GN Beam Saber"
+    ],
+    "armor_type": "gn_particles",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 30,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1600,
+        2100
+      ],
+      "attack": [
+        86,
+        98
+      ],
+      "defense": [
+        74,
+        87
+      ],
+      "speed": [
+        78,
+        92
+      ]
+    }
+  },
+  {
+    "id": "gn-011-harute",
+    "name": "Gundam Harute",
+    "model_number": "GN-011",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam 00 The Movie",
+    "timeline": "Anno Domini",
+    "era": "Anno Domini 2314",
+    "faction": "Celestial Being",
+    "pilot": "Allelujah Haptism",
+    "weapons": [
+      "GN Sword",
+      "GN Beam Saber",
+      "GN Scissor Blade",
+      "GN Vulcan"
+    ],
+    "armor_type": "gn_particles",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 30,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1500,
+        2000
+      ],
+      "attack": [
+        80,
+        93
+      ],
+      "defense": [
+        70,
+        83
+      ],
+      "speed": [
+        88,
+        100
+      ]
+    }
+  },
+  {
+    "id": "gnx-603t-gn-x",
+    "name": "GN-X",
+    "model_number": "GNX-603T",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam 00",
+    "timeline": "Anno Domini",
+    "era": "Anno Domini 2307",
+    "faction": "UN Forces",
+    "pilot": "Various",
+    "weapons": [
+      "GN Beam Rifle",
+      "GN Beam Saber",
+      "GN Shield"
+    ],
+    "armor_type": "gn_particles",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 28,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1100,
+        1600
+      ],
+      "attack": [
+        62,
+        75
+      ],
+      "defense": [
+        60,
+        73
+      ],
+      "speed": [
+        70,
+        84
+      ]
+    }
+  },
+  {
+    "id": "gnx-704t-ahead",
+    "name": "Ahead",
+    "model_number": "GNX-704T",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam 00 Season 2",
+    "timeline": "Anno Domini",
+    "era": "Anno Domini 2312",
+    "faction": "A-Laws",
+    "pilot": "Various",
+    "weapons": [
+      "GN Beam Rifle",
+      "GN Beam Saber",
+      "GN Shield"
+    ],
+    "armor_type": "gn_particles",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 30,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1300,
+        1800
+      ],
+      "attack": [
+        68,
+        82
+      ],
+      "defense": [
+        65,
+        78
+      ],
+      "speed": [
+        74,
+        88
+      ]
+    }
+  },
+  {
+    "id": "gnz-003-gadessa",
+    "name": "Gadessa",
+    "model_number": "GNZ-003",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam 00 Season 2",
+    "timeline": "Anno Domini",
+    "era": "Anno Domini 2312",
+    "faction": "Innovators",
+    "pilot": "Revive Revival",
+    "weapons": [
+      "GN Mega Launcher",
+      "GN Beam Saber",
+      "GN Vulcan"
+    ],
+    "armor_type": "gn_particles",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 32,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1600,
+        2100
+      ],
+      "attack": [
+        82,
+        94
+      ],
+      "defense": [
+        72,
+        85
+      ],
+      "speed": [
+        74,
+        88
+      ]
+    }
+  },
+  {
+    "id": "gnma-xcvii-alvaaron",
+    "name": "Alvaaron",
+    "model_number": "GNMA-XCVII",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam 00",
+    "timeline": "Anno Domini",
+    "era": "Anno Domini 2307",
+    "faction": "Innovators",
+    "pilot": "Alejandro Corner",
+    "weapons": [
+      "GN Mega Cannon",
+      "GN Beam Saber",
+      "GN Shield"
+    ],
+    "armor_type": "mobile_armor",
+    "kit_rarity": "rare",
+    "kit_rarity_score": 42,
+    "known_print_run": "limited",
+    "stat_ranges": {
+      "hp": [
+        2100,
+        2500
+      ],
+      "attack": [
+        86,
+        98
+      ],
+      "defense": [
+        85,
+        97
+      ],
+      "speed": [
+        50,
+        65
+      ]
+    }
+  },
+  {
+    "id": "gn-001re-exia-repair",
+    "name": "Gundam Exia Repair",
+    "model_number": "GN-001RE",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam 00 Season 2",
+    "timeline": "Anno Domini",
+    "era": "Anno Domini 2312",
+    "faction": "Celestial Being",
+    "pilot": "Setsuna F. Seiei",
+    "weapons": [
+      "GN Sword",
+      "GN Long Blade",
+      "GN Short Blade",
+      "GN Beam Saber"
+    ],
+    "armor_type": "gn_particles",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 30,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1300,
+        1800
+      ],
+      "attack": [
+        80,
+        92
+      ],
+      "defense": [
+        64,
+        76
+      ],
+      "speed": [
+        84,
+        97
+      ]
+    }
+  },
+  {
+    "id": "asw-g-08-barbatos",
+    "name": "Gundam Barbatos",
+    "model_number": "ASW-G-08",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam Iron-Blooded Orphans",
+    "timeline": "Post Disaster",
+    "era": "Post Disaster 323",
+    "faction": "Tekkadan",
+    "pilot": "Mikazuki Augus",
+    "weapons": [
+      "Mace",
+      "Sword",
+      "Smoothbore Gun",
+      "Alaya-Vijnana System"
+    ],
+    "armor_type": "alaya_vijnana",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 16,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1600,
+        2100
+      ],
+      "attack": [
+        84,
+        96
+      ],
+      "defense": [
+        78,
+        90
+      ],
+      "speed": [
+        80,
+        94
+      ]
+    }
+  },
+  {
+    "id": "asw-g-08-barbatos-lupus",
+    "name": "Gundam Barbatos Lupus",
+    "model_number": "ASW-G-08",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam Iron-Blooded Orphans Season 2",
+    "timeline": "Post Disaster",
+    "era": "Post Disaster 325",
+    "faction": "Tekkadan",
+    "pilot": "Mikazuki Augus",
+    "weapons": [
+      "Sword Mace",
+      "Long Sword",
+      "Smoothbore Gun",
+      "Alaya-Vijnana System"
+    ],
+    "armor_type": "alaya_vijnana",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 18,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1800,
+        2300
+      ],
+      "attack": [
+        88,
+        99
+      ],
+      "defense": [
+        82,
+        94
+      ],
+      "speed": [
+        84,
+        97
+      ]
+    }
+  },
+  {
+    "id": "asw-g-08-barbatos-lupus-rex",
+    "name": "Gundam Barbatos Lupus Rex",
+    "model_number": "ASW-G-08",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam Iron-Blooded Orphans Season 2",
+    "timeline": "Post Disaster",
+    "era": "Post Disaster 325",
+    "faction": "Tekkadan",
+    "pilot": "Mikazuki Augus",
+    "weapons": [
+      "Giant Mace",
+      "Claws",
+      "Tail Blade",
+      "Smoothbore Gun",
+      "Alaya-Vijnana System"
+    ],
+    "armor_type": "alaya_vijnana",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 16,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        2000,
+        2500
+      ],
+      "attack": [
+        92,
+        100
+      ],
+      "defense": [
+        84,
+        96
+      ],
+      "speed": [
+        85,
+        98
+      ]
+    }
+  },
+  {
+    "id": "asw-g-11-gusion-rebake-full-city",
+    "name": "Gundam Gusion Rebake Full City",
+    "model_number": "ASW-G-11",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam Iron-Blooded Orphans",
+    "timeline": "Post Disaster",
+    "era": "Post Disaster 325",
+    "faction": "Tekkadan",
+    "pilot": "Akihiro Altland",
+    "weapons": [
+      "Giant Battle Axe",
+      "Shield",
+      "Claw",
+      "Smoothbore Gun"
+    ],
+    "armor_type": "alaya_vijnana",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 22,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        2000,
+        2500
+      ],
+      "attack": [
+        84,
+        96
+      ],
+      "defense": [
+        88,
+        100
+      ],
+      "speed": [
+        58,
+        72
+      ]
+    }
+  },
+  {
+    "id": "asw-g-66-kimaris-vidar",
+    "name": "Gundam Kimaris Vidar",
+    "model_number": "ASW-G-66",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam Iron-Blooded Orphans Season 2",
+    "timeline": "Post Disaster",
+    "era": "Post Disaster 325",
+    "faction": "Gjallarhorn",
+    "pilot": "McGillis Fareed",
+    "weapons": [
+      "Vidan Stike",
+      "Drill Lance",
+      "Beam Cannon"
+    ],
+    "armor_type": "alaya_vijnana",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 26,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1800,
+        2300
+      ],
+      "attack": [
+        86,
+        98
+      ],
+      "defense": [
+        80,
+        92
+      ],
+      "speed": [
+        82,
+        95
+      ]
+    }
+  },
+  {
+    "id": "eb-06-graze",
+    "name": "Graze",
+    "model_number": "EB-06",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam Iron-Blooded Orphans",
+    "timeline": "Post Disaster",
+    "era": "Post Disaster 323",
+    "faction": "Gjallarhorn",
+    "pilot": "Various",
+    "weapons": [
+      "Graze Rifle",
+      "Battle Axe",
+      "Shield"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "common",
+    "kit_rarity_score": 10,
+    "known_print_run": "mass_production",
+    "stat_ranges": {
+      "hp": [
+        900,
+        1400
+      ],
+      "attack": [
+        55,
+        68
+      ],
+      "defense": [
+        55,
+        68
+      ],
+      "speed": [
+        62,
+        76
+      ]
+    }
+  },
+  {
+    "id": "eb-06r-graze-ritter",
+    "name": "Graze Ritter",
+    "model_number": "EB-06r",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam Iron-Blooded Orphans",
+    "timeline": "Post Disaster",
+    "era": "Post Disaster 323",
+    "faction": "Gjallarhorn",
+    "pilot": "Various",
+    "weapons": [
+      "Graze Rifle",
+      "Lance",
+      "Shield"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 28,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1000,
+        1500
+      ],
+      "attack": [
+        58,
+        72
+      ],
+      "defense": [
+        58,
+        72
+      ],
+      "speed": [
+        65,
+        79
+      ]
+    }
+  },
+  {
+    "id": "sth-16-shiden",
+    "name": "Shiden",
+    "model_number": "STH-16",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam Iron-Blooded Orphans Season 2",
+    "timeline": "Post Disaster",
+    "era": "Post Disaster 325",
+    "faction": "Tekkadan",
+    "pilot": "Various",
+    "weapons": [
+      "Smoothbore Gun",
+      "Sword",
+      "Shield"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 28,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1100,
+        1600
+      ],
+      "attack": [
+        62,
+        75
+      ],
+      "defense": [
+        62,
+        75
+      ],
+      "speed": [
+        70,
+        84
+      ]
+    }
+  },
+  {
+    "id": "v08-1228-grimgerde",
+    "name": "Grimgerde",
+    "model_number": "V08-1228",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam Iron-Blooded Orphans",
+    "timeline": "Post Disaster",
+    "era": "Post Disaster 323",
+    "faction": "Gjallarhorn",
+    "pilot": "McGillis Fareed",
+    "weapons": [
+      "Folding Razor",
+      "Flail",
+      "Sword"
+    ],
+    "armor_type": "lightweight",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 28,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1200,
+        1700
+      ],
+      "attack": [
+        72,
+        85
+      ],
+      "defense": [
+        62,
+        75
+      ],
+      "speed": [
+        84,
+        97
+      ]
+    }
+  },
+  {
+    "id": "asw-g-xx-gundam-vidar",
+    "name": "Gundam Vidar",
+    "model_number": "ASW-G-XX",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam Iron-Blooded Orphans Season 2",
+    "timeline": "Post Disaster",
+    "era": "Post Disaster 325",
+    "faction": "Gjallarhorn",
+    "pilot": "McGillis Fareed",
+    "weapons": [
+      "Beam Cannon",
+      "Sword",
+      "Claw"
+    ],
+    "armor_type": "alaya_vijnana",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 26,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1600,
+        2100
+      ],
+      "attack": [
+        82,
+        94
+      ],
+      "defense": [
+        76,
+        88
+      ],
+      "speed": [
+        82,
+        95
+      ]
+    }
+  },
+  {
+    "id": "asw-g-64-flauros",
+    "name": "Gundam Flauros",
+    "model_number": "ASW-G-64",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam Iron-Blooded Orphans Season 2",
+    "timeline": "Post Disaster",
+    "era": "Post Disaster 325",
+    "faction": "Tekkadan",
+    "pilot": "Dante Mogro",
+    "weapons": [
+      "Dainsleif Rail Cannons",
+      "Smoothbore Gun",
+      "Shield"
+    ],
+    "armor_type": "alaya_vijnana",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 28,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1600,
+        2100
+      ],
+      "attack": [
+        84,
+        96
+      ],
+      "defense": [
+        76,
+        88
+      ],
+      "speed": [
+        68,
+        82
+      ]
+    }
+  },
+  {
+    "id": "reginlaze-julia",
+    "name": "Reginlaze Julia",
+    "model_number": "Reginlaze Julia",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam Iron-Blooded Orphans Season 2",
+    "timeline": "Post Disaster",
+    "era": "Post Disaster 325",
+    "faction": "Gjallarhorn",
+    "pilot": "Julieta Juris",
+    "weapons": [
+      "Sword",
+      "Shield",
+      "Lance"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 28,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1400,
+        1900
+      ],
+      "attack": [
+        74,
+        87
+      ],
+      "defense": [
+        70,
+        83
+      ],
+      "speed": [
+        80,
+        94
+      ]
+    }
+  },
+  {
+    "id": "sth-20-hekija",
+    "name": "Hekija",
+    "model_number": "STH-20",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam Iron-Blooded Orphans Season 2",
+    "timeline": "Post Disaster",
+    "era": "Post Disaster 325",
+    "faction": "Tekkadan",
+    "pilot": "Various",
+    "weapons": [
+      "Smoothbore Gun",
+      "Sword",
+      "Shield"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 30,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1000,
+        1500
+      ],
+      "attack": [
+        60,
+        73
+      ],
+      "defense": [
+        60,
+        73
+      ],
+      "speed": [
+        68,
+        82
+      ]
+    }
+  },
+  {
+    "id": "xvx-016-aerial",
+    "name": "Gundam Aerial",
+    "model_number": "XVX-016",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Suit Gundam The Witch from Mercury",
+    "timeline": "Correct Century",
+    "era": "Ad Stella 122",
+    "faction": "Asticassia",
+    "pilot": "Suletta Mercury",
+    "weapons": [
+      "Beam Rifle",
+      "Shield Bit Staves",
+      "GUND-BIT System",
+      "Aerial Bits"
+    ],
+    "armor_type": "permet",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 14,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1700,
+        2200
+      ],
+      "attack": [
+        84,
+        96
+      ],
+      "defense": [
+        80,
+        92
+      ],
+      "speed": [
+        82,
+        95
+      ]
+    }
+  },
+  {
+    "id": "xvx-016rn-aerial-rebuild",
+    "name": "Gundam Aerial Rebuild",
+    "model_number": "XVX-016RN",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam The Witch from Mercury",
+    "timeline": "Correct Century",
+    "era": "Ad Stella 122",
+    "faction": "Asticassia",
+    "pilot": "Suletta Mercury",
+    "weapons": [
+      "Beam Rifle",
+      "Shield Bit Staves",
+      "GUND-BIT System",
+      "Enhanced Aerial Bits"
+    ],
+    "armor_type": "permet",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 18,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1900,
+        2400
+      ],
+      "attack": [
+        88,
+        99
+      ],
+      "defense": [
+        84,
+        96
+      ],
+      "speed": [
+        84,
+        97
+      ]
+    }
+  },
+  {
+    "id": "y2501-lfrith",
+    "name": "Gundam Lfrith",
+    "model_number": "Y2501",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam The Witch from Mercury",
+    "timeline": "Correct Century",
+    "era": "Ad Stella 96",
+    "faction": "Ochs Earth",
+    "pilot": "Elnora Samaya",
+    "weapons": [
+      "Beam Rifle",
+      "Bit Stave",
+      "GUND-BIT System"
+    ],
+    "armor_type": "permet",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 20,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1600,
+        2100
+      ],
+      "attack": [
+        82,
+        94
+      ],
+      "defense": [
+        78,
+        90
+      ],
+      "speed": [
+        80,
+        94
+      ]
+    }
+  },
+  {
+    "id": "md-0032g-pharact",
+    "name": "Gundam Pharact",
+    "model_number": "MD-0032G",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam The Witch from Mercury",
+    "timeline": "Correct Century",
+    "era": "Ad Stella 122",
+    "faction": "Peil Technologies",
+    "pilot": "Chuatury Panlunch",
+    "weapons": [
+      "Long Range Beam Rifle",
+      "Bit Stave",
+      "GUND-BIT System",
+      "Shield"
+    ],
+    "armor_type": "permet",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 22,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1500,
+        2000
+      ],
+      "attack": [
+        80,
+        92
+      ],
+      "defense": [
+        72,
+        85
+      ],
+      "speed": [
+        80,
+        94
+      ]
+    }
+  },
+  {
+    "id": "ce-t016-calibarn",
+    "name": "Gundam Calibarn",
+    "model_number": "CE-T016",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam The Witch from Mercury",
+    "timeline": "Correct Century",
+    "era": "Ad Stella 122",
+    "faction": "Dawn of Fold",
+    "pilot": "Ericht Samaya",
+    "weapons": [
+      "Calibarn Bits",
+      "Beam Saber",
+      "Bit Stave",
+      "GUND-BIT System"
+    ],
+    "armor_type": "permet",
+    "kit_rarity": "rare",
+    "kit_rarity_score": 38,
+    "known_print_run": "limited",
+    "stat_ranges": {
+      "hp": [
+        2000,
+        2500
+      ],
+      "attack": [
+        90,
+        100
+      ],
+      "defense": [
+        85,
+        97
+      ],
+      "speed": [
+        85,
+        98
+      ]
+    }
+  },
+  {
+    "id": "md-0064-schwarzette",
+    "name": "Gundam Schwarzette",
+    "model_number": "MD-0064",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam The Witch from Mercury",
+    "timeline": "Correct Century",
+    "era": "Ad Stella 122",
+    "faction": "Peil Technologies",
+    "pilot": "Norea Du Noc",
+    "weapons": [
+      "Beam Rifle",
+      "Bit Stave",
+      "GUND-BIT System",
+      "Shield"
+    ],
+    "armor_type": "permet",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 22,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1600,
+        2100
+      ],
+      "attack": [
+        82,
+        94
+      ],
+      "defense": [
+        76,
+        89
+      ],
+      "speed": [
+        82,
+        95
+      ]
+    }
+  },
+  {
+    "id": "mdx-0003-shaddiq",
+    "name": "Gundam Shaddiq",
+    "model_number": "MDX-0003",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam The Witch from Mercury",
+    "timeline": "Correct Century",
+    "era": "Ad Stella 122",
+    "faction": "Grassley Defense Systems",
+    "pilot": "Shaddiq Zenelli",
+    "weapons": [
+      "Beam Rifle",
+      "Shaddiq Bits",
+      "GUND-BIT System",
+      "Shield"
+    ],
+    "armor_type": "permet",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 24,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1700,
+        2200
+      ],
+      "attack": [
+        84,
+        96
+      ],
+      "defense": [
+        78,
+        91
+      ],
+      "speed": [
+        80,
+        94
+      ]
+    }
+  },
+  {
+    "id": "dilanza",
+    "name": "Dilanza",
+    "model_number": "Dilanza",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam The Witch from Mercury",
+    "timeline": "Correct Century",
+    "era": "Ad Stella 122",
+    "faction": "Benerit Group",
+    "pilot": "Guel Jeturk",
+    "weapons": [
+      "Lance",
+      "Shield",
+      "Beam Cannon"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 20,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1300,
+        1800
+      ],
+      "attack": [
+        68,
+        82
+      ],
+      "defense": [
+        70,
+        84
+      ],
+      "speed": [
+        72,
+        86
+      ]
+    }
+  },
+  {
+    "id": "beguir-beu",
+    "name": "Beguir-Beu",
+    "model_number": "Beguir-Beu",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam The Witch from Mercury",
+    "timeline": "Correct Century",
+    "era": "Ad Stella 122",
+    "faction": "Dawn of Fold",
+    "pilot": "Lauda Nardi",
+    "weapons": [
+      "Beam Rifle",
+      "Blade",
+      "Shield"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 22,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1200,
+        1700
+      ],
+      "attack": [
+        68,
+        81
+      ],
+      "defense": [
+        66,
+        79
+      ],
+      "speed": [
+        74,
+        88
+      ]
+    }
+  },
+  {
+    "id": "darilbalde",
+    "name": "Darilbalde",
+    "model_number": "Darilbalde",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam The Witch from Mercury",
+    "timeline": "Correct Century",
+    "era": "Ad Stella 122",
+    "faction": "Grassley Defense Systems",
+    "pilot": "Shaddiq Zenelli",
+    "weapons": [
+      "Beam Rifle",
+      "Shield",
+      "Bit Stave"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 22,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1300,
+        1800
+      ],
+      "attack": [
+        70,
+        83
+      ],
+      "defense": [
+        68,
+        81
+      ],
+      "speed": [
+        76,
+        90
+      ]
+    }
+  },
+  {
+    "id": "michaelis",
+    "name": "Michaelis",
+    "model_number": "Michaelis",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam The Witch from Mercury",
+    "timeline": "Correct Century",
+    "era": "Ad Stella 122",
+    "faction": "Dawn of Fold",
+    "pilot": "Shaddiq Zenelli",
+    "weapons": [
+      "Multi-Bit Weapons",
+      "Beam Saber",
+      "Shield"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 24,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1600,
+        2100
+      ],
+      "attack": [
+        82,
+        94
+      ],
+      "defense": [
+        80,
+        92
+      ],
+      "speed": [
+        76,
+        90
+      ]
+    }
+  },
+  {
+    "id": "zowort-heavy",
+    "name": "Zowort Heavy",
+    "model_number": "Zowort Heavy",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam The Witch from Mercury",
+    "timeline": "Correct Century",
+    "era": "Ad Stella 122",
+    "faction": "Peil Technologies",
+    "pilot": "Various",
+    "weapons": [
+      "Heavy Cannon",
+      "Beam Rifle",
+      "Shield"
+    ],
+    "armor_type": "heavyweight",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 24,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1700,
+        2200
+      ],
+      "attack": [
+        78,
+        90
+      ],
+      "defense": [
+        84,
+        96
+      ],
+      "speed": [
+        60,
+        74
+      ]
+    }
+  },
+  {
+    "id": "gundam-gquuuuuux",
+    "name": "Gundam GQuuuuuuX",
+    "model_number": "Gundam GQuuuuuuX",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam GQuuuuuuX",
+    "timeline": "After Colony",
+    "era": "After Colony AU",
+    "faction": "Unknown",
+    "pilot": "Amate Yuzuriha",
+    "weapons": [
+      "GX Buster Rifle",
+      "Beam Saber",
+      "Shield",
+      "Satellite System"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 16,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1900,
+        2400
+      ],
+      "attack": [
+        88,
+        99
+      ],
+      "defense": [
+        80,
+        92
+      ],
+      "speed": [
+        82,
+        95
+      ]
+    }
+  },
+  {
+    "id": "gquuuuuux-beginning",
+    "name": "GQuuuuuuX Beginning",
+    "model_number": "GQuuuuuuX Beginning",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam GQuuuuuuX",
+    "timeline": "After Colony",
+    "era": "After Colony AU",
+    "faction": "Unknown",
+    "pilot": "Amate Yuzuriha",
+    "weapons": [
+      "GX Buster Rifle Enhanced",
+      "Beam Saber",
+      "Shield",
+      "Satellite System Kai"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 18,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        2000,
+        2500
+      ],
+      "attack": [
+        90,
+        100
+      ],
+      "defense": [
+        82,
+        94
+      ],
+      "speed": [
+        84,
+        97
+      ]
+    }
+  },
+  {
+    "id": "lfrith-ur",
+    "name": "Gundam Lfrith Ur",
+    "model_number": "Lfrith Ur",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam GQuuuuuuX",
+    "timeline": "Correct Century",
+    "era": "Ad Stella AU",
+    "faction": "Unknown",
+    "pilot": "Unknown",
+    "weapons": [
+      "Bit Stave",
+      "GUND-BIT System",
+      "Beam Rifle"
+    ],
+    "armor_type": "permet",
+    "kit_rarity": "rare",
+    "kit_rarity_score": 38,
+    "known_print_run": "limited",
+    "stat_ranges": {
+      "hp": [
+        1800,
+        2300
+      ],
+      "attack": [
+        86,
+        98
+      ],
+      "defense": [
+        80,
+        92
+      ],
+      "speed": [
+        82,
+        95
+      ]
+    }
+  },
+  {
+    "id": "gf13-017nj-shining-gundam",
+    "name": "Shining Gundam",
+    "model_number": "GF13-017NJ",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Fighter G Gundam",
+    "timeline": "Correct Century",
+    "era": "Future Century 60",
+    "faction": "Neo Japan",
+    "pilot": "Domon Kasshu",
+    "weapons": [
+      "Shining Finger",
+      "Beam Sword",
+      "Head Vulcans",
+      "Shining Finger Sword"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 24,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1500,
+        2000
+      ],
+      "attack": [
+        82,
+        94
+      ],
+      "defense": [
+        72,
+        85
+      ],
+      "speed": [
+        80,
+        94
+      ]
+    }
+  },
+  {
+    "id": "gf13-017njii-god-gundam",
+    "name": "God Gundam",
+    "model_number": "GF13-017NJII",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Fighter G Gundam",
+    "timeline": "Correct Century",
+    "era": "Future Century 60",
+    "faction": "Neo Japan",
+    "pilot": "Domon Kasshu",
+    "weapons": [
+      "God Finger",
+      "Beam Sword",
+      "Head Vulcans",
+      "God Shadow",
+      "Hyper Mode"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 18,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1800,
+        2300
+      ],
+      "attack": [
+        90,
+        100
+      ],
+      "defense": [
+        80,
+        92
+      ],
+      "speed": [
+        88,
+        100
+      ]
+    }
+  },
+  {
+    "id": "gf13-001nhii-master-gundam",
+    "name": "Master Gundam",
+    "model_number": "GF13-001NHII",
+    "grades": [
+      "HG",
+      "MG"
+    ],
+    "series": "Mobile Fighter G Gundam",
+    "timeline": "Correct Century",
+    "era": "Future Century 60",
+    "faction": "Devil Gundam",
+    "pilot": "Master Asia",
+    "weapons": [
+      "Master Cloth",
+      "Beam Saber",
+      "Head Vulcans",
+      "DG Cells"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 22,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1700,
+        2200
+      ],
+      "attack": [
+        88,
+        99
+      ],
+      "defense": [
+        82,
+        94
+      ],
+      "speed": [
+        86,
+        99
+      ]
+    }
+  },
+  {
+    "id": "zgmf-x56s-a-force-impulse",
+    "name": "Force Impulse Gundam",
+    "model_number": "ZGMF-X56S/a",
+    "grades": [
+      "HG"
+    ],
+    "series": "Gundam SEED Destiny",
+    "timeline": "Cosmic Era",
+    "era": "Cosmic Era 73",
+    "faction": "ZAFT",
+    "pilot": "Shinn Asuka",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Excalibur",
+      "Force Silhouette"
+    ],
+    "armor_type": "chobham",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 26,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1500,
+        2000
+      ],
+      "attack": [
+        78,
+        91
+      ],
+      "defense": [
+        74,
+        87
+      ],
+      "speed": [
+        80,
+        94
+      ]
+    }
+  },
+  {
+    "id": "rgm-96x-jesta",
+    "name": "Jesta",
+    "model_number": "RGM-96X",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam Unicorn",
+    "timeline": "Universal Century",
+    "era": "UC 0096",
+    "faction": "Londo Bell",
+    "pilot": "Various",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Head Vulcans",
+      "Shield"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 30,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1200,
+        1700
+      ],
+      "attack": [
+        65,
+        78
+      ],
+      "defense": [
+        65,
+        78
+      ],
+      "speed": [
+        74,
+        88
+      ]
+    }
+  },
+  {
+    "id": "ams-129-geara-zulu",
+    "name": "Geara Zulu",
+    "model_number": "AMS-129",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam Unicorn",
+    "timeline": "Universal Century",
+    "era": "UC 0096",
+    "faction": "Neo Zeon Remnants",
+    "pilot": "Various",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Axe",
+      "Shield",
+      "Rocket Launcher"
+    ],
+    "armor_type": "standard",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 28,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1000,
+        1500
+      ],
+      "attack": [
+        58,
+        72
+      ],
+      "defense": [
+        58,
+        72
+      ],
+      "speed": [
+        66,
+        80
+      ]
+    }
+  },
+  {
+    "id": "msn-06s-2-sinanju-stein",
+    "name": "Sinanju Stein",
+    "model_number": "MSN-06S-2",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam Narrative",
+    "timeline": "Universal Century",
+    "era": "UC 0097",
+    "faction": "Earth Federation",
+    "pilot": "Zoltan Akkanen",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Shield",
+      "Beam Axe"
+    ],
+    "armor_type": "gundarium",
+    "kit_rarity": "rare",
+    "kit_rarity_score": 44,
+    "known_print_run": "p_bandai",
+    "stat_ranges": {
+      "hp": [
+        1800,
+        2300
+      ],
+      "attack": [
+        84,
+        96
+      ],
+      "defense": [
+        78,
+        90
+      ],
+      "speed": [
+        82,
+        95
+      ]
+    }
+  },
+  {
+    "id": "rx-9a-narrative-a-packs",
+    "name": "Narrative Gundam A-Packs",
+    "model_number": "RX-9/A",
+    "grades": [
+      "HG"
+    ],
+    "series": "Mobile Suit Gundam Narrative",
+    "timeline": "Universal Century",
+    "era": "UC 0097",
+    "faction": "Earth Federation",
+    "pilot": "Jona Basta",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Funnel Missiles",
+      "Head Vulcans"
+    ],
+    "armor_type": "newtype_use",
+    "kit_rarity": "uncommon",
+    "kit_rarity_score": 28,
+    "known_print_run": "standard",
+    "stat_ranges": {
+      "hp": [
+        1600,
+        2100
+      ],
+      "attack": [
+        82,
+        94
+      ],
+      "defense": [
+        76,
+        88
+      ],
+      "speed": [
+        78,
+        92
+      ]
+    }
+  }
+]
