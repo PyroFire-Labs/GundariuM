@@ -2,6 +2,7 @@
 
 import { CountdownPage } from "@/components/ui/CountdownTimer";
 import { useMintStore } from "@/store/useMintStore";
+import { SuitSearch } from "@/components/mint/SuitSearch";
 import { PhotoDropzone } from "@/components/mint/PhotoDropzone";
 import { GradePicker } from "@/components/mint/GradePicker";
 import { TraitReview } from "@/components/mint/TraitReview";
@@ -11,8 +12,9 @@ import { MintSuccess } from "@/components/mint/MintSuccess";
 const MINT_ENABLED = process.env.NEXT_PUBLIC_MINT_ENABLED === "true";
 
 const STEP_LABELS: Record<string, string> = {
-  idle: "Upload your Gunpla photo",
+  suit_search: "Find your mobile suit",
   grade_select: "Select your kit's grade",
+  idle: "Upload your Gunpla photo",
   uploading: "Uploading…",
   analyzing: "AI is identifying your Gunpla…",
   reviewing: "Review & edit your card traits",
@@ -20,17 +22,18 @@ const STEP_LABELS: Record<string, string> = {
   success: "Your card is live!",
 };
 
-const PROGRESS_STEPS = ["idle", "grade_select", "reviewing", "confirming", "success"] as const;
+const PROGRESS_STEPS = ["suit_search", "grade_select", "idle", "reviewing", "confirming", "success"] as const;
 
 function MintFlow() {
   const { step } = useMintStore();
 
   const currentProgressIndex = (() => {
-    if (step === "idle") return 0;
-    if (step === "grade_select" || step === "uploading" || step === "analyzing") return 1;
-    if (step === "reviewing") return 2;
-    if (step === "confirming") return 3;
-    return 4;
+    if (step === "suit_search") return 0;
+    if (step === "grade_select") return 1;
+    if (step === "idle" || step === "uploading" || step === "analyzing") return 2;
+    if (step === "reviewing") return 3;
+    if (step === "confirming") return 4;
+    return 5;
   })();
 
   return (
@@ -72,8 +75,9 @@ function MintFlow() {
       </div>
 
       {/* Step content */}
+      {step === "suit_search" && <SuitSearch />}
+      {step === "grade_select" && <GradePicker />}
       {step === "idle" && <PhotoDropzone />}
-      {(step === "grade_select" || step === "analyzing") && <GradePicker />}
       {step === "uploading" && (
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 border-2 border-[var(--accent)] border-t-transparent rounded-full animate-spin" />
@@ -82,6 +86,7 @@ function MintFlow() {
           </p>
         </div>
       )}
+      {(step === "analyzing") && <GradePicker />}
       {step === "reviewing" && <TraitReview />}
       {step === "confirming" && <MintConfirm />}
       {step === "success" && <MintSuccess />}

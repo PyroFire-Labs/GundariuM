@@ -1,3 +1,26 @@
+export interface SuitData {
+  id: string;
+  name: string;
+  model_number: string;
+  grades: string[];
+  series: string;
+  timeline: string;
+  era: string;
+  faction: string;
+  pilot: string;
+  weapons: string[];
+  armor_type: string;
+  kit_rarity: string;
+  kit_rarity_score: number;
+  known_print_run: string;
+  stat_ranges: {
+    hp: [number, number];
+    attack: [number, number];
+    defense: [number, number];
+    speed: [number, number];
+  };
+}
+
 export type Rarity = "Common" | "Uncommon" | "Rare" | "Ultra Rare" | "Legendary";
 
 export type ArmorType =

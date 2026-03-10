@@ -1,10 +1,11 @@
 import { create } from "zustand";
-import type { TraitSet } from "@/types/nft";
+import type { TraitSet, SuitData } from "@/types/nft";
 import type { KitGrade } from "@/types/nft";
 
 export type MintStep =
-  | "idle"
+  | "suit_search"
   | "grade_select"
+  | "idle"
   | "uploading"
   | "analyzing"
   | "reviewing"
@@ -13,6 +14,7 @@ export type MintStep =
 
 interface MintState {
   step: MintStep;
+  selectedSuit: SuitData | null;
   imageFile: File | null;
   imagePreviewUrl: string | null;
   imageIpfsHash: string | null;
@@ -22,6 +24,7 @@ interface MintState {
   mintedTokenId: bigint | null;
   error: string | null;
 
+  setSelectedSuit: (suit: SuitData) => void;
   setImage: (file: File, previewUrl: string) => void;
   setGrade: (grade: KitGrade) => void;
   setTraits: (traits: TraitSet) => void;
@@ -34,7 +37,8 @@ interface MintState {
 }
 
 const initialState = {
-  step: "idle" as MintStep,
+  step: "suit_search" as MintStep,
+  selectedSuit: null,
   imageFile: null,
   imagePreviewUrl: null,
   imageIpfsHash: null,
@@ -48,6 +52,7 @@ const initialState = {
 export const useMintStore = create<MintState>((set) => ({
   ...initialState,
 
+  setSelectedSuit: (suit) => set({ selectedSuit: suit }),
   setImage: (file, previewUrl) =>
     set({ imageFile: file, imagePreviewUrl: previewUrl }),
   setGrade: (grade) => set({ grade }),
