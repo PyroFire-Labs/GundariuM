@@ -206,6 +206,25 @@ export default function Home() {
       {/* ── LAUNCH COUNTDOWN (bottom) ───────────────────────────────── */}
       <CountdownBanner />
 
+      {/* ── FOOTER ─────────────────────────────────────────────────── */}
+      <footer className="border-t border-[var(--border)] bg-[var(--surface)] px-4 py-8">
+        <div className="mx-auto flex max-w-4xl flex-col items-center gap-4 sm:flex-row sm:justify-between">
+          <div className="font-[family-name:var(--font-orbitron)] text-xs font-bold tracking-wider text-[var(--foreground)]/40">
+            PyroFire Labs · 2026
+          </div>
+          <div className="flex gap-6">
+            <a
+              href="/GundariuMwhitepaper.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-[family-name:var(--font-orbitron)] text-xs font-bold tracking-wider text-[var(--accent-2)] transition-colors hover:text-[var(--accent)]"
+            >
+              WHITEPAPER
+            </a>
+          </div>
+        </div>
+      </footer>
+
     </div>
   );
 }
