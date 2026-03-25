@@ -15,10 +15,7 @@ export function CardPreview() {
       {/* Card preview with frame */}
       <CardFrame
         imageUrl={imagePreviewUrl}
-        suitName={traits.name}
-        rarity={traits.rarity}
-        pilotName={traits.pilotName}
-        hp={traits.hp}
+        traits={traits}
       />
 
       {/* Info text */}

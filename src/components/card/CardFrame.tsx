@@ -2,14 +2,11 @@
 
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import type { Rarity } from "@/types/nft";
+import type { Rarity, TraitSet } from "@/types/nft";
 
 interface CardFrameProps {
   imageUrl: string;
-  suitName: string;
-  rarity: Rarity;
-  pilotName: string;
-  hp: number;
+  traits: TraitSet;
 }
 
 const RARITY_COLOR: Record<Rarity, string> = {
@@ -29,7 +26,6 @@ const RARITY_CLASS: Record<Rarity, string> = {
 };
 
 function hexGridSvg(color: string): string {
-  // Hex tile pattern via inline SVG data URI
   const hex = `<svg xmlns='http://www.w3.org/2000/svg' width='56' height='100'>
     <polygon points='28,2 54,17 54,47 28,62 2,47 2,17' fill='none' stroke='${color}' stroke-width='1' opacity='0.12'/>
     <polygon points='28,52 54,67 54,97 28,112 2,97 2,67' fill='none' stroke='${color}' stroke-width='1' opacity='0.12'/>
@@ -37,14 +33,21 @@ function hexGridSvg(color: string): string {
   return `url("data:image/svg+xml,${encodeURIComponent(hex)}")`;
 }
 
-export function CardFrame({ imageUrl, suitName, rarity, pilotName, hp }: CardFrameProps) {
-  const color = RARITY_COLOR[rarity];
-  const rarityClass = RARITY_CLASS[rarity];
+export function CardFrame({ imageUrl, traits }: CardFrameProps) {
+  const color = RARITY_COLOR[traits.rarity];
+  const rarityClass = RARITY_CLASS[traits.rarity];
+
+  const weapons = [
+    { label: "PRI", name: traits.primaryWeapon, dmg: traits.primaryDamage },
+    { label: "SEC", name: traits.secondaryWeapon, dmg: traits.secondaryDamage },
+    { label: "TER", name: traits.tertiaryWeapon, dmg: traits.tertiaryDamage },
+    { label: "SPL", name: traits.specialAttack, dmg: traits.specialDamage },
+  ];
 
   return (
     <div
       className={cn(
-        "relative w-full max-w-[300px] aspect-[2/3] border-2 rounded-sm overflow-hidden select-none",
+        "relative w-full max-w-[300px] border-2 rounded-sm overflow-hidden select-none flex flex-col",
         rarityClass
       )}
       style={{ background: "rgba(8,12,20,0.98)" }}
@@ -58,11 +61,10 @@ export function CardFrame({ imageUrl, suitName, rarity, pilotName, hp }: CardFra
         }}
       />
 
-      {/* Header bar — top ~8% */}
+      {/* Header bar */}
       <div
-        className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-2"
+        className="relative z-10 flex items-center justify-between px-2 py-1.5 shrink-0"
         style={{
-          height: "8%",
           background: "rgba(15,25,41,0.95)",
           borderBottom: `1px solid ${color}`,
         }}
@@ -81,15 +83,11 @@ export function CardFrame({ imageUrl, suitName, rarity, pilotName, hp }: CardFra
         </span>
       </div>
 
-      {/* Photo area — from 8% to 73% */}
-      <div
-        className="absolute left-0 right-0 overflow-hidden"
-        style={{ top: "8%", height: "65%" }}
-      >
-        {/* Photo */}
+      {/* Photo area — fixed aspect ratio */}
+      <div className="relative z-0 w-full shrink-0" style={{ aspectRatio: "4/3" }}>
         <Image
           src={imageUrl}
-          alt={suitName}
+          alt={traits.name}
           fill
           className="object-cover"
           sizes="300px"
@@ -110,33 +108,12 @@ export function CardFrame({ imageUrl, suitName, rarity, pilotName, hp }: CardFra
           className="absolute inset-0 flex items-center justify-center pointer-events-none z-10"
           style={{ opacity: 0.15 }}
         >
-          {/* Circle */}
           <div
             className="absolute rounded-full"
-            style={{
-              width: "40%",
-              height: "60%",
-              border: `1px solid ${color}`,
-            }}
+            style={{ width: "40%", height: "60%", border: `1px solid ${color}` }}
           />
-          {/* Horizontal line */}
-          <div
-            className="absolute"
-            style={{
-              width: "70%",
-              height: "1px",
-              background: color,
-            }}
-          />
-          {/* Vertical line */}
-          <div
-            className="absolute"
-            style={{
-              width: "1px",
-              height: "70%",
-              background: color,
-            }}
-          />
+          <div className="absolute" style={{ width: "70%", height: "1px", background: color }} />
+          <div className="absolute" style={{ width: "1px", height: "70%", background: color }} />
         </div>
 
         {/* HUD readouts */}
@@ -144,62 +121,31 @@ export function CardFrame({ imageUrl, suitName, rarity, pilotName, hp }: CardFra
           className="absolute inset-0 pointer-events-none z-20 font-mono"
           style={{ fontSize: "7px", color, lineHeight: 1.4 }}
         >
-          {/* Top-left */}
-          <div className="absolute top-1 left-1 flex flex-col gap-0">
+          <div className="absolute top-1 left-1 flex flex-col">
             <span style={{ opacity: 0.6 }}>SYS ONLINE</span>
             <span style={{ opacity: 0.6 }}>TGT LOCK</span>
           </div>
-          {/* Top-right */}
-          <div className="absolute top-1 right-1 flex flex-col items-end gap-0">
+          <div className="absolute top-1 right-1 flex flex-col items-end">
             <span style={{ opacity: 0.6 }}>FRAME 00</span>
             <span style={{ opacity: 0.6 }}>SCAN OK</span>
           </div>
         </div>
 
         {/* Corner brackets */}
-        {/* Top-left */}
-        <div
-          className="absolute top-1 left-1 w-4 h-4 pointer-events-none z-20"
-          style={{
-            borderTop: `2px solid ${color}`,
-            borderLeft: `2px solid ${color}`,
-            opacity: 0.7,
-          }}
-        />
-        {/* Top-right */}
-        <div
-          className="absolute top-1 right-1 w-4 h-4 pointer-events-none z-20"
-          style={{
-            borderTop: `2px solid ${color}`,
-            borderRight: `2px solid ${color}`,
-            opacity: 0.7,
-          }}
-        />
-        {/* Bottom-left */}
-        <div
-          className="absolute bottom-1 left-1 w-4 h-4 pointer-events-none z-20"
-          style={{
-            borderBottom: `2px solid ${color}`,
-            borderLeft: `2px solid ${color}`,
-            opacity: 0.7,
-          }}
-        />
-        {/* Bottom-right */}
-        <div
-          className="absolute bottom-1 right-1 w-4 h-4 pointer-events-none z-20"
-          style={{
-            borderBottom: `2px solid ${color}`,
-            borderRight: `2px solid ${color}`,
-            opacity: 0.7,
-          }}
-        />
+        <div className="absolute top-1 left-1 w-4 h-4 pointer-events-none z-20"
+          style={{ borderTop: `2px solid ${color}`, borderLeft: `2px solid ${color}`, opacity: 0.7 }} />
+        <div className="absolute top-1 right-1 w-4 h-4 pointer-events-none z-20"
+          style={{ borderTop: `2px solid ${color}`, borderRight: `2px solid ${color}`, opacity: 0.7 }} />
+        <div className="absolute bottom-1 left-1 w-4 h-4 pointer-events-none z-20"
+          style={{ borderBottom: `2px solid ${color}`, borderLeft: `2px solid ${color}`, opacity: 0.7 }} />
+        <div className="absolute bottom-1 right-1 w-4 h-4 pointer-events-none z-20"
+          style={{ borderBottom: `2px solid ${color}`, borderRight: `2px solid ${color}`, opacity: 0.7 }} />
       </div>
 
-      {/* Nameplate — bottom 27%, from 73% to 100% */}
+      {/* Stats panel — sizes to content */}
       <div
-        className="absolute left-0 right-0 bottom-0 flex flex-col justify-between px-3 py-2 z-10"
+        className="relative z-10 flex flex-col px-3 py-2 gap-1 shrink-0"
         style={{
-          top: "73%",
           background: "rgba(15,25,41,0.97)",
           borderTop: `1px solid ${color}`,
         }}
@@ -209,38 +155,55 @@ export function CardFrame({ imageUrl, suitName, rarity, pilotName, hp }: CardFra
           className="font-[family-name:var(--font-orbitron)] font-bold leading-tight truncate"
           style={{ color: "#ffffff", fontSize: "11px" }}
         >
-          {suitName}
+          {traits.name}
         </p>
 
-        {/* Pilot name */}
-        <p
-          className="font-mono truncate"
-          style={{ color: "#94a3b8", fontSize: "8px" }}
+        {/* Pilot + Armor */}
+        <div className="flex items-center justify-between">
+          <span className="font-mono truncate" style={{ color: "#94a3b8", fontSize: "7px" }}>
+            PILOT: {traits.pilotName.toUpperCase()}
+          </span>
+          <span className="font-mono" style={{ color, fontSize: "7px", opacity: 0.8 }}>
+            {traits.armorType.toUpperCase()}
+          </span>
+        </div>
+
+        {/* Rarity + HP */}
+        <div
+          className="flex items-center justify-between py-0.5"
+          style={{ borderTop: `1px solid ${color}33`, borderBottom: `1px solid ${color}33` }}
         >
-          PILOT: {pilotName.toUpperCase()}
-        </p>
-
-        {/* Rarity badge + HP */}
-        <div className="flex items-center justify-between mt-1">
           <span
             className="font-[family-name:var(--font-orbitron)] font-bold uppercase tracking-wider"
             style={{ color, fontSize: "8px" }}
           >
-            {rarity}
+            {traits.rarity}
           </span>
-          <span
-            className="font-mono font-bold"
-            style={{ color: "#ffffff", fontSize: "9px" }}
-          >
-            HP {hp}
+          <span className="font-mono font-bold" style={{ color: "#ffffff", fontSize: "10px" }}>
+            HP {traits.hp}
           </span>
         </div>
 
+        {/* Weapons grid */}
+        <div className="grid grid-cols-2 gap-x-2 gap-y-0.5">
+          {weapons.map((w) => (
+            <div key={w.label} className="flex items-center justify-between">
+              <span className="font-mono truncate" style={{ color: "#94a3b8", fontSize: "6.5px", maxWidth: "75%" }}>
+                <span style={{ color, opacity: 0.7 }}>{w.label}</span>{" "}
+                {w.name}
+              </span>
+              <span className="font-mono font-bold" style={{ color: "#ffffff", fontSize: "7px" }}>
+                {w.dmg}
+              </span>
+            </div>
+          ))}
+        </div>
+
         {/* GundariuM seal */}
-        <div className="flex justify-center mt-1">
+        <div className="flex justify-center">
           <span
             className="font-[family-name:var(--font-orbitron)] tracking-widest"
-            style={{ color, fontSize: "6px", opacity: 0.5 }}
+            style={{ color, fontSize: "5px", opacity: 0.5 }}
           >
             &#x25C6; GUNDARIUM &#x25C6;
           </span>
