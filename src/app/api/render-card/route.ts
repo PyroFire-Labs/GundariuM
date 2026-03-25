@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { renderCard } from "@/lib/card/draw-frame";
 import { RARITY_PALETTES } from "@/lib/card/frame-config";
-import type { Rarity } from "@/types/nft";
+import type { Rarity, TraitSet } from "@/types/nft";
 
 export const maxDuration = 10;
 
@@ -23,39 +23,32 @@ export async function POST(req: NextRequest): Promise<Response> {
   }
 
   const imageFile = formData.get("image");
-  const suitName = formData.get("suitName");
-  const rarityRaw = formData.get("rarity");
-  const pilotName = formData.get("pilotName");
-  const hpRaw = formData.get("hp");
+  const traitsEntry = formData.get("traits");
 
-  if (
-    !(imageFile instanceof File) ||
-    typeof suitName !== "string" ||
-    !suitName.trim() ||
-    typeof rarityRaw !== "string" ||
-    typeof pilotName !== "string" ||
-    !pilotName.trim() ||
-    typeof hpRaw !== "string"
-  ) {
+  if (!(imageFile instanceof File) || !traitsEntry) {
     return NextResponse.json(
-      { error: "Missing required fields: image, suitName, rarity, pilotName, hp" },
+      { error: "Missing required fields: image, traits" },
       { status: 400 }
     );
   }
 
-  const rarity = rarityRaw as Rarity;
+  let traits: TraitSet;
+  try {
+    const traitsJson =
+      traitsEntry instanceof File
+        ? await traitsEntry.text()
+        : (traitsEntry as string);
+    traits = JSON.parse(traitsJson) as TraitSet;
+  } catch {
+    return NextResponse.json({ error: "Invalid traits JSON" }, { status: 400 });
+  }
+
+  const rarity = traits.rarity;
   if (!VALID_RARITIES.has(rarity)) {
     return NextResponse.json(
-      {
-        error: `Invalid rarity "${rarityRaw}". Must be one of: ${[...VALID_RARITIES].join(", ")}`,
-      },
+      { error: `Invalid rarity "${rarity}"` },
       { status: 400 }
     );
-  }
-
-  const hp = Number(hpRaw);
-  if (!Number.isFinite(hp)) {
-    return NextResponse.json({ error: "hp must be a valid number" }, { status: 400 });
   }
 
   const palette = RARITY_PALETTES[rarity];
@@ -67,10 +60,17 @@ export async function POST(req: NextRequest): Promise<Response> {
 
     pngBuffer = await renderCard({
       photoBuffer,
-      suitName: suitName.trim(),
+      suitName: traits.name,
       rarity,
-      pilotName: pilotName.trim(),
-      hp,
+      pilotName: traits.pilotName,
+      hp: traits.hp,
+      armorType: traits.armorType,
+      weapons: [
+        { label: "PRI", name: traits.primaryWeapon, damage: traits.primaryDamage },
+        { label: "SEC", name: traits.secondaryWeapon, damage: traits.secondaryDamage },
+        { label: "TER", name: traits.tertiaryWeapon, damage: traits.tertiaryDamage },
+        { label: "SPL", name: traits.specialAttack, damage: traits.specialDamage },
+      ],
       palette,
     });
   } catch (err) {

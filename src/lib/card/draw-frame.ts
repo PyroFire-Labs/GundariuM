@@ -214,15 +214,25 @@ export function drawHeader(ctx: Ctx, palette: RarityPalette): void {
   ctx.restore();
 }
 
+export interface WeaponData {
+  label: string;
+  name: string;
+  damage: number;
+}
+
 export function drawNameplate(
   ctx: Ctx,
   palette: RarityPalette,
   suitName: string,
   rarity: Rarity,
   pilotName: string,
-  hp: number
+  hp: number,
+  armorType: string,
+  weapons: WeaponData[]
 ): void {
   const plateY = CARD_HEIGHT - NAMEPLATE_HEIGHT - PHOTO_PADDING;
+  const textX = PHOTO_PADDING + 8;
+  const rightX = CARD_WIDTH - PHOTO_PADDING - 8;
 
   // Nameplate background
   ctx.save();
@@ -239,43 +249,113 @@ export function drawNameplate(
   ctx.stroke();
   ctx.restore();
 
-  const textX = PHOTO_PADDING + 8;
-  const line1Y = plateY + 26;
-  const line2Y = plateY + 50;
-  const line3Y = plateY + 74;
+  let y = plateY + 24;
 
-  // Suit name
+  // Row 1: Suit name
   ctx.save();
   ctx.fillStyle = palette.text;
   ctx.font = `bold 16px "Orbitron", monospace`;
   ctx.textAlign = "left";
-  ctx.textBaseline = "alphabetic";
   ctx.shadowColor = palette.glow;
   ctx.shadowBlur = 6;
-  ctx.fillText(suitName, textX, line1Y);
+  ctx.fillText(suitName, textX, y);
   ctx.restore();
 
-  // Rarity badge
+  y += 20;
+
+  // Row 2: Pilot + Armor type
   ctx.save();
-  ctx.fillStyle = palette.primary;
-  ctx.font = `bold 11px "Orbitron", monospace`;
+  ctx.font = "10px monospace";
+  ctx.fillStyle = "#94a3b8";
   ctx.textAlign = "left";
-  ctx.textBaseline = "alphabetic";
-  ctx.fillText(`◆ ${rarity.toUpperCase()}`, textX, line2Y);
-  ctx.restore();
-
-  // Pilot name and HP
-  ctx.save();
-  ctx.fillStyle = palette.text;
+  ctx.fillText(`PILOT: ${pilotName.toUpperCase()}`, textX, y);
+  ctx.fillStyle = palette.primary;
   ctx.globalAlpha = 0.8;
-  ctx.font = "11px monospace";
-  ctx.textAlign = "left";
-  ctx.textBaseline = "alphabetic";
-  ctx.fillText(`PILOT: ${pilotName}`, textX, line3Y);
-
   ctx.textAlign = "right";
+  ctx.fillText(armorType.toUpperCase(), rightX, y);
+  ctx.restore();
+
+  y += 16;
+
+  // Divider line
+  ctx.save();
+  ctx.strokeStyle = palette.primary;
+  ctx.globalAlpha = 0.2;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(textX, y);
+  ctx.lineTo(rightX, y);
+  ctx.stroke();
+  ctx.restore();
+
+  y += 16;
+
+  // Row 3: Rarity + HP
+  ctx.save();
   ctx.fillStyle = palette.primary;
-  ctx.fillText(`HP ${hp}`, CARD_WIDTH - PHOTO_PADDING - 8, line3Y);
+  ctx.font = `bold 12px "Orbitron", monospace`;
+  ctx.textAlign = "left";
+  ctx.fillText(rarity.toUpperCase(), textX, y);
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "bold 14px monospace";
+  ctx.textAlign = "right";
+  ctx.fillText(`HP ${hp}`, rightX, y);
+  ctx.restore();
+
+  y += 14;
+
+  // Divider line
+  ctx.save();
+  ctx.strokeStyle = palette.primary;
+  ctx.globalAlpha = 0.2;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(textX, y);
+  ctx.lineTo(rightX, y);
+  ctx.stroke();
+  ctx.restore();
+
+  y += 16;
+
+  // Row 4: Weapons (2-column grid)
+  const midX = CARD_WIDTH / 2;
+  for (let i = 0; i < weapons.length; i++) {
+    const w = weapons[i];
+    const col = i % 2;
+    const row = Math.floor(i / 2);
+    const wx = col === 0 ? textX : midX + 4;
+    const dmgX = col === 0 ? midX - 8 : rightX;
+    const wy = y + row * 16;
+
+    ctx.save();
+    // Label
+    ctx.font = "bold 9px monospace";
+    ctx.fillStyle = palette.primary;
+    ctx.globalAlpha = 0.7;
+    ctx.textAlign = "left";
+    ctx.fillText(w.label, wx, wy);
+    // Weapon name
+    ctx.fillStyle = "#94a3b8";
+    ctx.globalAlpha = 1;
+    ctx.font = "9px monospace";
+    ctx.fillText(w.name, wx + 28, wy);
+    // Damage
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 10px monospace";
+    ctx.textAlign = "right";
+    ctx.fillText(String(w.damage), dmgX, wy);
+    ctx.restore();
+  }
+
+  y += Math.ceil(weapons.length / 2) * 16 + 8;
+
+  // GundariuM seal
+  ctx.save();
+  ctx.fillStyle = palette.primary;
+  ctx.globalAlpha = 0.5;
+  ctx.font = `bold 8px "Orbitron", monospace`;
+  ctx.textAlign = "center";
+  ctx.fillText("\u25C6 GUNDARIUM \u25C6", CARD_WIDTH / 2, y);
   ctx.restore();
 }
 
@@ -287,11 +367,13 @@ export interface RenderCardInput {
   rarity: Rarity;
   pilotName: string;
   hp: number;
+  armorType: string;
+  weapons: WeaponData[];
   palette: RarityPalette;
 }
 
 export async function renderCard(input: RenderCardInput): Promise<Buffer> {
-  const { photoBuffer, suitName, rarity, pilotName, hp, palette } = input;
+  const { photoBuffer, suitName, rarity, pilotName, hp, armorType, weapons, palette } = input;
 
   const canvas = createCanvas(CARD_WIDTH, CARD_HEIGHT);
   const ctx = canvas.getContext("2d");
@@ -335,7 +417,7 @@ export async function renderCard(input: RenderCardInput): Promise<Buffer> {
 
   // 6. Header and nameplate
   drawHeader(ctx, palette);
-  drawNameplate(ctx, palette, suitName, rarity, pilotName, hp);
+  drawNameplate(ctx, palette, suitName, rarity, pilotName, hp, armorType, weapons);
 
   return Buffer.from(canvas.toBuffer("image/png"));
 }

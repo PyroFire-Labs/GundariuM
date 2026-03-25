@@ -43,10 +43,11 @@ export function MintConfirm() {
       // Step 1: Render the framed card
       const renderForm = new FormData();
       renderForm.append("image", imageFile!);
-      renderForm.append("suitName", traits!.name);
-      renderForm.append("rarity", traits!.rarity);
-      renderForm.append("pilotName", traits!.pilotName);
-      renderForm.append("hp", String(traits!.hp));
+      renderForm.append(
+        "traits",
+        new Blob([JSON.stringify(traits)], { type: "application/json" }),
+        "traits.json"
+      );
 
       const renderRes = await fetch("/api/render-card", {
         method: "POST",

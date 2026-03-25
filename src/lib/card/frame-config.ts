@@ -6,7 +6,7 @@ export const CARD_WIDTH = 600;
 export const CARD_HEIGHT = 900;
 
 export const PHOTO_PADDING = 24;
-export const NAMEPLATE_HEIGHT = 120;
+export const NAMEPLATE_HEIGHT = 200;
 export const HEADER_HEIGHT = 40;
 
 export const PHOTO_X = PHOTO_PADDING;
