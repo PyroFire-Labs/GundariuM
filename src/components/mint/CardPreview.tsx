@@ -26,10 +26,16 @@ export function CardPreview() {
       {/* Action buttons */}
       <div className="flex flex-col items-center gap-2 w-full max-w-sm">
         <button
+          onClick={() => goTo("cosmetics_select")}
+          className="w-full py-3 bg-[var(--accent-2)] text-white font-bold font-[family-name:var(--font-orbitron)] text-sm rounded-lg hover:brightness-110 transition-all"
+        >
+          ADD COSMETICS
+        </button>
+        <button
           onClick={() => goTo("confirming")}
           className="w-full py-3 bg-[var(--accent)] text-black font-bold font-[family-name:var(--font-orbitron)] text-sm rounded-lg hover:brightness-110 transition-all"
         >
-          CONFIRM & MINT →
+          MINT AS-IS →
         </button>
         <button
           onClick={() => goTo("reviewing")}

@@ -10,6 +10,7 @@ export type MintStep =
   | "analyzing"
   | "reviewing"
   | "card_preview"
+  | "cosmetics_select"
   | "confirming"
   | "success";
 

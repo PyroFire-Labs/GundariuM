@@ -9,6 +9,7 @@ import { TraitReview } from "@/components/mint/TraitReview";
 import { CardPreview } from "@/components/mint/CardPreview";
 import { MintConfirm } from "@/components/mint/MintConfirm";
 import { MintSuccess } from "@/components/mint/MintSuccess";
+import { CosmeticsMenu } from "@/components/cosmetics/CosmeticsMenu";
 
 const MINT_ENABLED = process.env.NEXT_PUBLIC_MINT_ENABLED === "true";
 
@@ -20,14 +21,15 @@ const STEP_LABELS: Record<string, string> = {
   analyzing: "AI is identifying your Gunpla…",
   reviewing: "Review & edit your card traits",
   card_preview: "Preview your GundariuM card",
+  cosmetics_select: "Customize your card",
   confirming: "Approve & mint on-chain",
   success: "Your card is live!",
 };
 
-const PROGRESS_STEPS = ["suit_search", "grade_select", "idle", "reviewing", "card_preview", "confirming", "success"] as const;
+const PROGRESS_STEPS = ["suit_search", "grade_select", "idle", "reviewing", "card_preview", "cosmetics_select", "confirming", "success"] as const;
 
 function MintFlow() {
-  const { step } = useMintStore();
+  const { step, goTo } = useMintStore();
 
   const currentProgressIndex = (() => {
     if (step === "suit_search") return 0;
@@ -35,8 +37,9 @@ function MintFlow() {
     if (step === "idle" || step === "uploading" || step === "analyzing") return 2;
     if (step === "reviewing") return 3;
     if (step === "card_preview") return 4;
-    if (step === "confirming") return 5;
-    return 6;
+    if (step === "cosmetics_select") return 5;
+    if (step === "confirming") return 6;
+    return 7;
   })();
 
   return (
@@ -83,6 +86,14 @@ function MintFlow() {
       {step === "idle" && <PhotoDropzone />}
       {step === "reviewing" && <TraitReview />}
       {step === "card_preview" && <CardPreview />}
+      {step === "cosmetics_select" && (
+        <CosmeticsMenu
+          onConfirm={() => goTo("confirming")}
+          onSkip={() => goTo("card_preview")}
+          confirmLabel="CONFIRM & MINT →"
+          skipLabel="← Back to preview"
+        />
+      )}
       {step === "confirming" && <MintConfirm />}
       {step === "success" && <MintSuccess />}
     </div>
