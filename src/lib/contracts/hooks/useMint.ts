@@ -82,8 +82,8 @@ export function useMint() {
     query: { enabled: !!contracts },
   });
 
-  // Fall back to the known constant (5 USDC, 6 decimals) if the read hasn't resolved yet
-  const mintPrice = mintPriceData ?? BigInt(5_000_000);
+  // Fall back to the known constant ($2 USDC, 6 decimals) if the read hasn't resolved yet
+  const mintPrice = mintPriceData ?? BigInt(2_000_000);
 
   const approveMint = async () => {
     if (!contracts) return;

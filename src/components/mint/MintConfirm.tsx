@@ -94,7 +94,7 @@ export function MintConfirm() {
     }
   };
 
-  const usdcAmount = mintPrice ? Number(mintPrice) / 1_000_000 : 5;
+  const usdcAmount = mintPrice ? Number(mintPrice) / 1_000_000 : 2;
   const isUploading = !metadataUri && !storeError;
 
   return (
