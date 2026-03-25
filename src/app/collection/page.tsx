@@ -4,9 +4,13 @@ import { useEffect, useState } from "react";
 import { useCollection, type OwnedCard } from "@/lib/contracts/hooks/useCollection";
 import { CardFrame } from "@/components/card/CardFrame";
 import { ipfsToHttp } from "@/lib/ipfs";
+import { CosmeticsMenu } from "@/components/cosmetics/CosmeticsMenu";
+import { useCosmeticsStore } from "@/store/useCosmeticsStore";
 
 function CollectionCard({ card }: { card: OwnedCard }) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [showCustomize, setShowCustomize] = useState(false);
+  const reset = useCosmeticsStore((s) => s.reset);
 
   useEffect(() => {
     if (!card.tokenUri) return;
@@ -33,6 +37,26 @@ function CollectionCard({ card }: { card: OwnedCard }) {
       <span className="font-mono text-xs text-[var(--foreground)]/40">
         #{String(card.tokenId)}
       </span>
+      <button
+        onClick={() => setShowCustomize(true)}
+        className="py-2 px-6 bg-[var(--accent-2)] text-white font-bold font-[family-name:var(--font-orbitron)] text-xs rounded-lg hover:brightness-110 transition-all"
+      >
+        CUSTOMIZE
+      </button>
+      {showCustomize && (
+        <CosmeticsMenu
+          onConfirm={() => {
+            alert("Coming soon — on-chain cosmetics in next update");
+            reset();
+          }}
+          onSkip={() => {
+            setShowCustomize(false);
+            reset();
+          }}
+          confirmLabel="CONFIRM & MINT →"
+          skipLabel="← Back to preview"
+        />
+      )}
     </div>
   );
 }
