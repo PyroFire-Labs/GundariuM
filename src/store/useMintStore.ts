@@ -9,6 +9,7 @@ export type MintStep =
   | "uploading"
   | "analyzing"
   | "reviewing"
+  | "card_preview"
   | "confirming"
   | "success";
 

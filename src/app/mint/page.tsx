@@ -6,6 +6,7 @@ import { SuitSearch } from "@/components/mint/SuitSearch";
 import { PhotoDropzone } from "@/components/mint/PhotoDropzone";
 import { GradePicker } from "@/components/mint/GradePicker";
 import { TraitReview } from "@/components/mint/TraitReview";
+import { CardPreview } from "@/components/mint/CardPreview";
 import { MintConfirm } from "@/components/mint/MintConfirm";
 import { MintSuccess } from "@/components/mint/MintSuccess";
 
@@ -18,11 +19,12 @@ const STEP_LABELS: Record<string, string> = {
   uploading: "Uploading…",
   analyzing: "AI is identifying your Gunpla…",
   reviewing: "Review & edit your card traits",
+  card_preview: "Preview your GundariuM card",
   confirming: "Approve & mint on-chain",
   success: "Your card is live!",
 };
 
-const PROGRESS_STEPS = ["suit_search", "grade_select", "idle", "reviewing", "confirming", "success"] as const;
+const PROGRESS_STEPS = ["suit_search", "grade_select", "idle", "reviewing", "card_preview", "confirming", "success"] as const;
 
 function MintFlow() {
   const { step } = useMintStore();
@@ -32,8 +34,9 @@ function MintFlow() {
     if (step === "grade_select") return 1;
     if (step === "idle" || step === "uploading" || step === "analyzing") return 2;
     if (step === "reviewing") return 3;
-    if (step === "confirming") return 4;
-    return 5;
+    if (step === "card_preview") return 4;
+    if (step === "confirming") return 5;
+    return 6;
   })();
 
   return (
@@ -78,16 +81,8 @@ function MintFlow() {
       {step === "suit_search" && <SuitSearch />}
       {step === "grade_select" && <GradePicker />}
       {step === "idle" && <PhotoDropzone />}
-      {step === "uploading" && (
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-2 border-[var(--accent)] border-t-transparent rounded-full animate-spin" />
-          <p className="text-[var(--accent)] text-sm font-[family-name:var(--font-orbitron)] tracking-wider">
-            UPLOADING...
-          </p>
-        </div>
-      )}
-      {(step === "analyzing") && <GradePicker />}
       {step === "reviewing" && <TraitReview />}
+      {step === "card_preview" && <CardPreview />}
       {step === "confirming" && <MintConfirm />}
       {step === "success" && <MintSuccess />}
     </div>
