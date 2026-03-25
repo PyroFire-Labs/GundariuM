@@ -39,26 +39,49 @@ export function MintConfirm() {
   }, []);
 
   const uploadToIPFS = async () => {
-    const form = new FormData();
-    form.append("image", imageFile!);
-    // Use Blob to avoid ByteString encoding errors with non-ASCII characters
-    form.append(
-      "traits",
-      new Blob([JSON.stringify(traits)], { type: "application/json" }),
-      "traits.json"
-    );
-
     try {
+      // Step 1: Render the framed card
+      const renderForm = new FormData();
+      renderForm.append("image", imageFile!);
+      renderForm.append("suitName", traits!.name);
+      renderForm.append("rarity", traits!.rarity);
+      renderForm.append("pilotName", traits!.pilotName);
+      renderForm.append("hp", String(traits!.hp));
+
+      const renderRes = await fetch("/api/render-card", {
+        method: "POST",
+        body: renderForm,
+      });
+
+      if (!renderRes.ok) {
+        const text = await renderRes.text();
+        let msg = "Card rendering failed";
+        try { msg = JSON.parse(text).error ?? msg; } catch {}
+        throw new Error(msg);
+      }
+
+      const cardBlob = await renderRes.blob();
+      const cardFile = new File([cardBlob], "card.png", { type: "image/png" });
+
+      // Step 2: Upload rendered card to IPFS
+      const uploadForm = new FormData();
+      uploadForm.append("image", cardFile);
+      uploadForm.append(
+        "traits",
+        new Blob([JSON.stringify(traits)], { type: "application/json" }),
+        "traits.json"
+      );
+
       const res = await fetch("/api/mint-metadata", {
         method: "POST",
-        body: form,
+        body: uploadForm,
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       setImageIpfsHash(data.imageHash);
       setMetadataUri(data.metadataUri);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "IPFS upload failed");
+      setError(e instanceof Error ? e.message : "Card rendering or IPFS upload failed");
     }
   };
 
@@ -131,7 +154,7 @@ export function MintConfirm() {
         <div className="flex items-center justify-center gap-3 py-2">
           <div className="w-5 h-5 border-2 border-[var(--accent)] border-t-transparent rounded-full animate-spin" />
           <span className="text-[var(--accent)] text-sm font-[family-name:var(--font-orbitron)]">
-            UPLOADING TO IPFS…
+            RENDERING & UPLOADING…
           </span>
         </div>
       )}
@@ -184,10 +207,10 @@ export function MintConfirm() {
       )}
 
       <button
-        onClick={() => goTo("reviewing")}
+        onClick={() => goTo("card_preview")}
         className="text-[var(--foreground)]/40 text-sm hover:text-[var(--foreground)]/60 transition-colors"
       >
-        ← Back to traits
+        ← Back to preview
       </button>
     </div>
   );
