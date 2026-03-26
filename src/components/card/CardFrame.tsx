@@ -4,9 +4,18 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import type { Rarity, TraitSet } from "@/types/nft";
 
+export interface CosmeticOverrides {
+  frameColor?: string;    // override frame color (from selected frame skin)
+  colorShift?: number;    // hue-rotate degrees (0-360)
+  tintColor?: string;     // tint overlay hex color
+  decalName?: string;     // decal name to show as badge
+  repaintName?: string;   // repaint style name to show as badge
+}
+
 interface CardFrameProps {
   imageUrl: string;
   traits: TraitSet;
+  cosmetics?: CosmeticOverrides;
 }
 
 const RARITY_COLOR: Record<Rarity, string> = {
@@ -33,9 +42,13 @@ function hexGridSvg(color: string): string {
   return `url("data:image/svg+xml,${encodeURIComponent(hex)}")`;
 }
 
-export function CardFrame({ imageUrl, traits }: CardFrameProps) {
-  const color = RARITY_COLOR[traits.rarity];
-  const rarityClass = RARITY_CLASS[traits.rarity];
+export function CardFrame({ imageUrl, traits, cosmetics }: CardFrameProps) {
+  // Frame color: use cosmetic override if provided, otherwise rarity default
+  const color = cosmetics?.frameColor ?? RARITY_COLOR[traits.rarity];
+  const rarityClass = cosmetics?.frameColor ? undefined : RARITY_CLASS[traits.rarity];
+
+  // Photo filters from cosmetic selections
+  const photoFilter = cosmetics?.colorShift ? `hue-rotate(${cosmetics.colorShift}deg)` : undefined;
 
   const weapons = [
     { label: "PRI", name: traits.primaryWeapon, dmg: traits.primaryDamage },
@@ -50,7 +63,13 @@ export function CardFrame({ imageUrl, traits }: CardFrameProps) {
         "relative w-full max-w-[300px] border-2 rounded-sm overflow-hidden select-none flex flex-col",
         rarityClass
       )}
-      style={{ background: "rgba(8,12,20,0.98)" }}
+      style={{
+        background: "rgba(8,12,20,0.98)",
+        ...(cosmetics?.frameColor ? {
+          borderColor: color,
+          boxShadow: `0 0 20px ${color}50, 0 0 40px ${color}30`,
+        } : {}),
+      }}
     >
       {/* Hex grid overlay */}
       <div
@@ -92,7 +111,16 @@ export function CardFrame({ imageUrl, traits }: CardFrameProps) {
           className="object-cover"
           sizes="300px"
           unoptimized
+          style={photoFilter ? { filter: photoFilter } : undefined}
         />
+
+        {/* Tint color overlay */}
+        {cosmetics?.tintColor && (
+          <div
+            className="absolute inset-0 pointer-events-none z-[5]"
+            style={{ background: cosmetics.tintColor, mixBlendMode: "color", opacity: 0.4 }}
+          />
+        )}
 
         {/* Scan line */}
         <div
@@ -140,6 +168,26 @@ export function CardFrame({ imageUrl, traits }: CardFrameProps) {
           style={{ borderBottom: `2px solid ${color}`, borderLeft: `2px solid ${color}`, opacity: 0.7 }} />
         <div className="absolute bottom-1 right-1 w-4 h-4 pointer-events-none z-20"
           style={{ borderBottom: `2px solid ${color}`, borderRight: `2px solid ${color}`, opacity: 0.7 }} />
+
+        {/* Decal badge */}
+        {cosmetics?.decalName && (
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-30 px-2 py-0.5 rounded"
+            style={{ background: `${color}cc`, backdropFilter: "blur(4px)" }}>
+            <span className="font-mono text-[7px] font-bold text-white">
+              {cosmetics.decalName.toUpperCase()}
+            </span>
+          </div>
+        )}
+
+        {/* Repaint badge */}
+        {cosmetics?.repaintName && (
+          <div className="absolute top-2 left-1/2 -translate-x-1/2 z-30 px-2 py-0.5 rounded"
+            style={{ background: "#7c3aedcc", backdropFilter: "blur(4px)" }}>
+            <span className="font-mono text-[7px] font-bold text-white">
+              AI: {cosmetics.repaintName.toUpperCase()}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Stats panel — sizes to content */}

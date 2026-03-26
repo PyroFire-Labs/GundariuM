@@ -10,6 +10,8 @@ import { CardPreview } from "@/components/mint/CardPreview";
 import { MintConfirm } from "@/components/mint/MintConfirm";
 import { MintSuccess } from "@/components/mint/MintSuccess";
 import { CosmeticsMenu } from "@/components/cosmetics/CosmeticsMenu";
+import { CardFrame } from "@/components/card/CardFrame";
+import { useCosmeticOverrides } from "@/lib/card/use-cosmetic-overrides";
 
 const MINT_ENABLED = process.env.NEXT_PUBLIC_MINT_ENABLED === "true";
 
@@ -27,6 +29,29 @@ const STEP_LABELS: Record<string, string> = {
 };
 
 const PROGRESS_STEPS = ["suit_search", "grade_select", "idle", "reviewing", "card_preview", "cosmetics_select", "confirming", "success"] as const;
+
+function CosmeticsStep() {
+  const { traits, imagePreviewUrl, goTo } = useMintStore();
+  const cosmetics = useCosmeticOverrides();
+
+  if (!traits || !imagePreviewUrl) return null;
+
+  return (
+    <div className="w-full max-w-4xl flex flex-col md:flex-row gap-6 items-start">
+      {/* Live card preview with cosmetics applied */}
+      <div className="flex-shrink-0 flex justify-center w-full md:w-auto">
+        <CardFrame imageUrl={imagePreviewUrl} traits={traits} cosmetics={cosmetics} />
+      </div>
+      {/* Cosmetics menu */}
+      <CosmeticsMenu
+        onConfirm={() => goTo("confirming")}
+        onSkip={() => goTo("card_preview")}
+        confirmLabel="CONFIRM & MINT →"
+        skipLabel="← Back to preview"
+      />
+    </div>
+  );
+}
 
 function MintFlow() {
   const { step, goTo } = useMintStore();
@@ -86,14 +111,7 @@ function MintFlow() {
       {step === "idle" && <PhotoDropzone />}
       {step === "reviewing" && <TraitReview />}
       {step === "card_preview" && <CardPreview />}
-      {step === "cosmetics_select" && (
-        <CosmeticsMenu
-          onConfirm={() => goTo("confirming")}
-          onSkip={() => goTo("card_preview")}
-          confirmLabel="CONFIRM & MINT →"
-          skipLabel="← Back to preview"
-        />
-      )}
+      {step === "cosmetics_select" && <CosmeticsStep />}
       {step === "confirming" && <MintConfirm />}
       {step === "success" && <MintSuccess />}
     </div>

@@ -8,7 +8,8 @@
       "HG",
       "RG",
       "MG",
-      "PG"
+      "PG",
+      "MG_VERKA"
     ],
     "series": "Mobile Suit Gundam",
     "timeline": "Universal Century",
@@ -1705,7 +1706,8 @@
     "grades": [
       "HG",
       "RG",
-      "MG"
+      "MG",
+      "MG_VERKA"
     ],
     "series": "Mobile Suit Zeta Gundam",
     "timeline": "Universal Century",
@@ -1748,7 +1750,8 @@
     "model_number": "MSZ-010",
     "grades": [
       "HG",
-      "MG"
+      "MG",
+      "MG_VERKA"
     ],
     "series": "Mobile Suit Gundam ZZ",
     "timeline": "Universal Century",
@@ -1792,7 +1795,8 @@
     "grades": [
       "HG",
       "RG",
-      "MG"
+      "MG",
+      "MG_VERKA"
     ],
     "series": "Char's Counterattack",
     "timeline": "Universal Century",
@@ -1802,10 +1806,9 @@
     "weapons": [
       "Beam Rifle",
       "Beam Saber",
-      "Fin Funnels",
       "Hyper Bazooka",
-      "Newtype Missiles",
-      "Head Vulcans"
+      "Head Vulcans",
+      "Fin Funnels"
     ],
     "armor_type": "gundarium",
     "kit_rarity": "uncommon",
@@ -1837,7 +1840,8 @@
     "grades": [
       "HG",
       "RG",
-      "MG"
+      "MG",
+      "MG_VERKA"
     ],
     "series": "Char's Counterattack",
     "timeline": "Universal Century",
@@ -1881,7 +1885,8 @@
     "model_number": "RX-93-\u03bd2",
     "grades": [
       "HG",
-      "MG"
+      "MG",
+      "MG_VERKA"
     ],
     "series": "Char's Counterattack",
     "timeline": "Universal Century",
@@ -1891,10 +1896,9 @@
     "weapons": [
       "Beam Rifle",
       "Beam Saber",
-      "Fin Funnels",
       "Hyper Bazooka",
       "Head Vulcans",
-      "Grenade"
+      "Fin Funnels"
     ],
     "armor_type": "gundarium",
     "kit_rarity": "rare",
@@ -1926,7 +1930,8 @@
     "grades": [
       "HG",
       "RG",
-      "MG"
+      "MG",
+      "MG_VERKA"
     ],
     "series": "Mobile Suit Gundam Unicorn",
     "timeline": "Universal Century",
@@ -1972,7 +1977,8 @@
       "HG",
       "RG",
       "MG",
-      "PG"
+      "PG",
+      "MG_VERKA"
     ],
     "series": "Mobile Suit Gundam Unicorn",
     "timeline": "Universal Century",
@@ -5316,9 +5322,9 @@
     "grades": [
       "HG"
     ],
-    "series": "Mobile Suit Gundam The Witch from Mercury",
-    "timeline": "Correct Century",
-    "era": "Ad Stella 96",
+    "series": "Mobile Suit Gundam: The Witch from Mercury",
+    "timeline": "Ad Stella",
+    "era": "Ad Stella",
     "faction": "Ochs Earth",
     "pilot": "Elnora Samaya",
     "weapons": [
@@ -5721,8 +5727,8 @@
       "HG"
     ],
     "series": "Mobile Suit Gundam GQuuuuuuX",
-    "timeline": "After Colony",
-    "era": "After Colony AU",
+    "timeline": "Universal Century",
+    "era": "GQuuuuuuX",
     "faction": "Unknown",
     "pilot": "Amate Yuzuriha",
     "weapons": [
@@ -5762,8 +5768,8 @@
       "HG"
     ],
     "series": "Mobile Suit Gundam GQuuuuuuX",
-    "timeline": "After Colony",
-    "era": "After Colony AU",
+    "timeline": "Universal Century",
+    "era": "GQuuuuuuX",
     "faction": "Unknown",
     "pilot": "Amate Yuzuriha",
     "weapons": [
@@ -5802,9 +5808,9 @@
     "grades": [
       "HG"
     ],
-    "series": "Mobile Suit Gundam GQuuuuuuX",
-    "timeline": "Correct Century",
-    "era": "Ad Stella AU",
+    "series": "Mobile Suit Gundam: The Witch from Mercury",
+    "timeline": "Ad Stella",
+    "era": "Ad Stella",
     "faction": "Unknown",
     "pilot": "Unknown",
     "weapons": [
@@ -6166,5 +6172,89 @@
         92
       ]
     }
+  },
+  {
+    "id": "rx-9-c-narrative-c-packs",
+    "name": "Narrative Gundam C-Packs",
+    "model_number": "RX-9/C",
+    "grades": [
+      "HG",
+      "MG_VERKA"
+    ],
+    "series": "Mobile Suit Gundam Narrative",
+    "timeline": "Universal Century",
+    "era": "UC 0097",
+    "faction": "Earth Federation",
+    "pilot": "Jona Basta",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Funnel Missiles",
+      "Head Vulcans"
+    ],
+    "armor_type": "newtype_use",
+    "stat_ranges": {
+      "hp": [
+        1600,
+        2100
+      ],
+      "attack": [
+        82,
+        94
+      ],
+      "defense": [
+        76,
+        88
+      ],
+      "speed": [
+        78,
+        92
+      ]
+    },
+    "kit_rarity": "ultra_rare",
+    "kit_rarity_score": 8,
+    "known_print_run": false
+  },
+  {
+    "id": "rx-9-b-narrative-b-packs",
+    "name": "Narrative Gundam B-Packs",
+    "model_number": "RX-9/B",
+    "grades": [
+      "HG",
+      "MG_VERKA"
+    ],
+    "series": "Mobile Suit Gundam Narrative",
+    "timeline": "Universal Century",
+    "era": "UC 0097",
+    "faction": "Earth Federation",
+    "pilot": "Jona Basta",
+    "weapons": [
+      "Beam Rifle",
+      "Beam Saber",
+      "Funnel Missiles",
+      "Head Vulcans"
+    ],
+    "armor_type": "newtype_use",
+    "stat_ranges": {
+      "hp": [
+        1600,
+        2100
+      ],
+      "attack": [
+        82,
+        94
+      ],
+      "defense": [
+        76,
+        88
+      ],
+      "speed": [
+        78,
+        92
+      ]
+    },
+    "kit_rarity": "ultra_rare",
+    "kit_rarity_score": 8,
+    "known_print_run": false
   }
 ]
