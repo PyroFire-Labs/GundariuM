@@ -221,6 +221,18 @@ export default function Home() {
             >
               WHITEPAPER
             </a>
+            <Link
+              href="/terms"
+              className="font-[family-name:var(--font-orbitron)] text-xs font-bold tracking-wider text-[var(--accent-2)] transition-colors hover:text-[var(--accent)]"
+            >
+              TERMS
+            </Link>
+            <Link
+              href="/privacy"
+              className="font-[family-name:var(--font-orbitron)] text-xs font-bold tracking-wider text-[var(--accent-2)] transition-colors hover:text-[var(--accent)]"
+            >
+              PRIVACY
+            </Link>
           </div>
         </div>
       </footer>
