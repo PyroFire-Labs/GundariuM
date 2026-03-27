@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { CountdownBanner } from "@/components/ui/CountdownTimer";
+import { ShareButtons } from "@/components/ui/ShareButtons";
 import { useEffect, useState } from "react";
 import { formatUnits, parseEther } from "viem";
 
@@ -206,8 +207,18 @@ export default function Home() {
       {/* ── LAUNCH COUNTDOWN (bottom) ───────────────────────────────── */}
       <CountdownBanner />
 
+      {/* ── SHARE ──────────────────────────────────────────────────── */}
+      <section className="px-4 py-12 bg-[var(--surface)]">
+        <div className="mx-auto max-w-2xl text-center space-y-4">
+          <h3 className="font-[family-name:var(--font-orbitron)] text-sm font-black tracking-wider text-[var(--foreground)]/60">
+            SPREAD THE WORD
+          </h3>
+          <ShareButtons />
+        </div>
+      </section>
+
       {/* ── FOOTER ─────────────────────────────────────────────────── */}
-      <footer className="border-t border-[var(--border)] bg-[var(--surface)] px-4 py-8">
+      <footer className="border-t border-[var(--border)] bg-[var(--background)] px-4 py-8">
         <div className="mx-auto flex max-w-4xl flex-col items-center gap-4 sm:flex-row sm:justify-between">
           <div className="font-[family-name:var(--font-orbitron)] text-xs font-bold tracking-wider text-[var(--foreground)]/40">
             PyroFire Labs · 2026
@@ -221,6 +232,18 @@ export default function Home() {
             >
               WHITEPAPER
             </a>
+            <Link
+              href="/terms"
+              className="font-[family-name:var(--font-orbitron)] text-xs font-bold tracking-wider text-[var(--accent-2)] transition-colors hover:text-[var(--accent)]"
+            >
+              TERMS
+            </Link>
+            <Link
+              href="/privacy"
+              className="font-[family-name:var(--font-orbitron)] text-xs font-bold tracking-wider text-[var(--accent-2)] transition-colors hover:text-[var(--accent)]"
+            >
+              PRIVACY
+            </Link>
           </div>
         </div>
       </footer>
