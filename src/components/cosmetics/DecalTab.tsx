@@ -41,9 +41,10 @@ export function DecalTab() {
               )}
 
               <div className="flex items-center gap-2">
-                <span
-                  className="w-6 h-6 rounded flex-shrink-0 border border-white/20"
-                  style={{ backgroundColor: decal.preview }}
+                <img
+                  src={`/data/decals/${decal.id}.png`}
+                  alt={decal.name}
+                  className="w-10 h-10 rounded flex-shrink-0 object-cover"
                 />
                 <span
                   className="text-xs font-[family-name:var(--font-orbitron)] font-bold leading-tight"
