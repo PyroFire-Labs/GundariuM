@@ -1,30 +1,289 @@
+"use client";
+
+import { useState } from "react";
+import { useAccount, useSwitchChain } from "wagmi";
+import { baseSepolia } from "wagmi/chains";
+import { useStaking } from "@/lib/contracts/hooks/useStaking";
+
+const PCT_OPTIONS = [
+  { label: "25%",  pct: 0.25 },
+  { label: "50%",  pct: 0.50 },
+  { label: "75%",  pct: 0.75 },
+  { label: "MAX",  pct: 1.00 },
+] as const;
+
+function fmt(n: number) {
+  if (n >= 1_000_000_000) return `${(n / 1_000_000_000).toFixed(2)}B`;
+  if (n >= 1_000_000)     return `${(n / 1_000_000).toFixed(2)}M`;
+  if (n >= 1_000)         return `${(n / 1_000).toFixed(1)}K`;
+  return n.toLocaleString(undefined, { maximumFractionDigits: 0 });
+}
+
+function fmtCountdown(future: Date): string {
+  const ms = future.getTime() - Date.now();
+  if (ms <= 0) return "now";
+  const d = Math.floor(ms / 86_400_000);
+  const h = Math.floor((ms % 86_400_000) / 3_600_000);
+  const m = Math.floor((ms % 3_600_000) / 60_000);
+  if (d > 0) return `${d}d ${h}h`;
+  if (h > 0) return `${h}h ${m}m`;
+  return `${m}m`;
+}
+
+function isPast(date: Date | null): boolean {
+  return !!date && date.getTime() <= Date.now();
+}
+
 export default function StakePage() {
+  const { isConnected } = useAccount();
+  const { switchChainAsync } = useSwitchChain();
+  const {
+    staked, totalStaked, earned,
+    lockUntil, rewardEligibleAt,
+    phase, error, contractReady,
+    unstake, claimRewards, reset,
+  } = useStaking();
+  const [amount, setAmount] = useState("");
+
+  const isUnlocked = isPast(lockUntil);
+  const isEligible = isPast(rewardEligibleAt);
+  const hasStake   = staked > 0;
+  const hasRewards = earned > 0;
+
+  const isPending = ["unstaking", "claiming"].includes(phase);
+
+  const handleUnstake = async () => {
+    if (!amount || parseFloat(amount) <= 0) return;
+    reset();
+    await unstake(amount);
+  };
+
+  const handleClaim = async () => {
+    reset();
+    await claimRewards();
+  };
+
   return (
-    <main className="min-h-screen px-4 py-12 flex items-center justify-center">
-      <div className="mx-auto max-w-lg text-center space-y-6">
-        <div className="mx-auto w-16 h-16 rounded-full border-2 border-yellow-500/40 bg-yellow-500/10 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
+    <main className="min-h-screen px-4 py-12">
+      <div className="mx-auto max-w-2xl space-y-6">
+
+        {/* Header */}
+        <div className="text-center space-y-1">
+          <h1 className="font-[family-name:var(--font-orbitron)] text-3xl font-black tracking-wider text-[var(--accent)]">
+            UNSTAKE GNDM
+          </h1>
+          <p className="text-sm text-[var(--foreground)]/50">
+            Staking is currently closed. Withdraw your tokens below.
+          </p>
         </div>
 
-        <h1 className="font-[family-name:var(--font-orbitron)] text-3xl font-black tracking-wider text-[var(--accent)]">
-          STAKING CLOSED
-        </h1>
-
-        <p className="text-[var(--foreground)]/60 text-sm leading-relaxed max-w-md mx-auto">
-          The GNDM staking contract is currently closed for maintenance.
-          We&apos;re upgrading the system and will be back online soon.
-        </p>
-
-        <div className="rounded-xl border border-yellow-500/20 bg-yellow-500/5 px-6 py-4">
+        {/* Maintenance banner */}
+        <div className="rounded-xl border border-yellow-500/20 bg-yellow-500/5 px-6 py-4 text-center">
           <p className="font-[family-name:var(--font-orbitron)] text-xs font-bold text-yellow-400 tracking-widest uppercase">
-            MAINTENANCE IN PROGRESS
+            STAKING CLOSED FOR MAINTENANCE
           </p>
           <p className="text-xs text-[var(--foreground)]/40 mt-2">
-            Existing stakes are safe. No action is required on your part.
+            New stakes are disabled. You may unstake and claim rewards.
           </p>
         </div>
+
+        {/* Wrong network banner */}
+        {isConnected && !contractReady && (
+          <div className="rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4 flex items-center justify-between gap-4">
+            <div>
+              <p className="text-yellow-400 font-bold text-sm font-[family-name:var(--font-orbitron)] tracking-wider">
+                WRONG NETWORK
+              </p>
+              <p className="text-xs text-yellow-400/60 mt-1">
+                Switch to Base to unstake
+              </p>
+            </div>
+            <button
+              onClick={() => switchChainAsync({ chainId: baseSepolia.id })}
+              className="shrink-0 rounded-lg bg-yellow-500 text-black font-bold text-xs px-4 py-2 hover:brightness-110 transition-all font-[family-name:var(--font-orbitron)] tracking-wider"
+            >
+              SWITCH
+            </button>
+          </div>
+        )}
+
+        {/* Stats bar */}
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            { label: "Your Staked", value: isConnected ? fmt(staked) : "—" },
+            { label: "Total Staked", value: isConnected ? fmt(totalStaked) : "—" },
+          ].map((s) => (
+            <div key={s.label} className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4 text-center">
+              <div className="text-xs text-[var(--foreground)]/40 uppercase tracking-widest mb-1">{s.label}</div>
+              <div className="font-[family-name:var(--font-orbitron)] font-black text-[var(--accent)] text-lg">{s.value}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Lock status — only shown when staked */}
+        {isConnected && contractReady && hasStake && (
+          <div className={`rounded-xl border p-4 text-center ${
+            isUnlocked
+              ? "border-green-500/30 bg-green-500/5"
+              : "border-red-500/30 bg-red-500/5"
+          }`}>
+            <div className="text-xs uppercase tracking-widest mb-1 font-bold" style={{
+              color: isUnlocked ? "rgb(134 239 172)" : "rgb(252 165 165)",
+              opacity: 0.7,
+            }}>
+              {isUnlocked ? "UNLOCKED" : "LOCKED"}
+            </div>
+            <div className="font-[family-name:var(--font-orbitron)] font-black text-sm" style={{
+              color: isUnlocked ? "rgb(134 239 172)" : "rgb(252 165 165)",
+            }}>
+              {isUnlocked
+                ? "Ready to unstake"
+                : lockUntil ? fmtCountdown(lockUntil) : "—"}
+            </div>
+            {!isUnlocked && lockUntil && (
+              <div className="text-xs mt-1 opacity-40">until unstakeable</div>
+            )}
+          </div>
+        )}
+
+        {/* Claim rewards panel */}
+        {isConnected && contractReady && isEligible && hasRewards && (
+          <div className="rounded-xl border border-[var(--accent)]/40 bg-[var(--accent)]/5 p-5 space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="font-[family-name:var(--font-orbitron)] text-sm font-black text-[var(--accent)] tracking-wider">
+                  STAKING REWARDS
+                </div>
+                <div className="text-xs text-[var(--foreground)]/50 mt-0.5">
+                  7-day eligibility window passed
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="font-[family-name:var(--font-orbitron)] font-black text-2xl text-[var(--accent)]">
+                  {fmt(earned)}
+                </div>
+                <div className="text-xs text-[var(--foreground)]/40">GNDM earned</div>
+              </div>
+            </div>
+
+            {phase === "done" && (
+              <p className="text-green-400 text-sm text-center font-bold">Claimed successfully!</p>
+            )}
+            {phase === "error" && error && (
+              <p className="text-red-400 text-sm text-center">{error}</p>
+            )}
+
+            <button
+              onClick={handleClaim}
+              disabled={isPending}
+              className="w-full rounded-lg bg-[var(--accent)] text-black font-bold py-3 hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-[family-name:var(--font-orbitron)] tracking-wider"
+            >
+              {phase === "claiming" ? (
+                <span className="flex items-center justify-center gap-2">
+                  <span className="inline-block w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                  CLAIMING...
+                </span>
+              ) : `CLAIM ${fmt(earned)} GNDM`}
+            </button>
+          </div>
+        )}
+
+        {/* Unstake panel */}
+        <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-6 space-y-5">
+          <h2 className="font-[family-name:var(--font-orbitron)] text-sm font-black text-[var(--foreground)]/60 tracking-widest uppercase">
+            WITHDRAW
+          </h2>
+
+          {/* Lock warning */}
+          {hasStake && !isUnlocked && lockUntil && (
+            <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2 text-xs text-red-400 text-center">
+              Tokens locked for <strong>{fmtCountdown(lockUntil)}</strong>
+            </div>
+          )}
+
+          {/* Amount input */}
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-[var(--foreground)]/50 uppercase tracking-widest">
+              Amount (GNDM)
+            </label>
+            <div className="flex items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--background)] px-4 py-3">
+              <input
+                type="number"
+                min="0"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="0"
+                className="flex-1 bg-transparent text-lg font-bold text-[var(--foreground)] outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              />
+              <span className="text-sm font-bold text-[var(--foreground)]/50">GNDM</span>
+            </div>
+            {/* Percentage buttons */}
+            <div className="flex gap-2">
+              {PCT_OPTIONS.map((opt) => {
+                const pctAmount = Math.floor(staked * opt.pct).toString();
+                return (
+                  <button
+                    key={opt.label}
+                    onClick={() => setAmount(pctAmount)}
+                    disabled={staked <= 0}
+                    className={`flex-1 rounded-md py-1.5 text-xs font-bold transition-all ${
+                      amount === pctAmount && staked > 0
+                        ? "bg-[var(--accent)] text-black"
+                        : "border border-[var(--border)] text-[var(--foreground)]/50 hover:border-[var(--accent)] hover:text-[var(--accent)] disabled:opacity-30 disabled:cursor-not-allowed"
+                    } ${opt.label === "MAX" ? "font-[family-name:var(--font-orbitron)] tracking-wider" : ""}`}
+                  >
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Error */}
+          {phase === "error" && error && (
+            <p className="text-red-400 text-sm text-center">{error}</p>
+          )}
+
+          {/* Success */}
+          {phase === "done" && (
+            <p className="text-green-400 text-sm text-center font-bold">
+              Unstaked successfully!
+            </p>
+          )}
+
+          {/* Action button */}
+          {!isConnected ? (
+            <p className="text-center text-sm text-[var(--foreground)]/50 py-2">
+              Connect your wallet to unstake
+            </p>
+          ) : !contractReady ? (
+            <button
+              disabled
+              className="w-full rounded-lg bg-[var(--border)] text-[var(--foreground)]/30 font-bold py-3 cursor-not-allowed font-[family-name:var(--font-orbitron)] tracking-wider"
+            >
+              CONTRACT NOT DEPLOYED
+            </button>
+          ) : (
+            <button
+              onClick={handleUnstake}
+              disabled={isPending || !amount || parseFloat(amount) <= 0}
+              className="w-full rounded-lg bg-red-500 text-white font-bold py-3 hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-[family-name:var(--font-orbitron)] tracking-wider"
+            >
+              {phase === "unstaking" ? (
+                <span className="flex items-center justify-center gap-2">
+                  <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  UNSTAKING...
+                </span>
+              ) : "UNSTAKE GNDM"}
+            </button>
+          )}
+
+          {/* Footer */}
+          <div className="text-xs text-[var(--foreground)]/30 text-center">
+            Base Mainnet
+          </div>
+        </div>
+
       </div>
     </main>
   );
