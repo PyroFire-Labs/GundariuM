@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useChainId, useSwitchChain } from "wagmi";
 import { useMintStore } from "@/store/useMintStore";
 import { useMint } from "@/lib/contracts/hooks/useMint";
+import { CardFrame } from "@/components/card/CardFrame";
 
 export function MintConfirm() {
   const {
@@ -74,30 +75,13 @@ export function MintConfirm() {
   const isUploading = !metadataUri && !storeError;
 
   return (
-    <div className="w-full max-w-md flex flex-col gap-5">
-      {/* Card preview */}
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] overflow-hidden">
-        {imageUrl && (
-          <img
-            src={imageUrl}
-            alt={traits?.name}
-            className="w-full object-cover max-h-52"
-          />
-        )}
-        <div className="p-4 space-y-1">
-          <p className="font-[family-name:var(--font-orbitron)] font-bold text-[var(--foreground)]">
-            {traits?.name}
-          </p>
-          <p className="text-sm text-[var(--foreground)]/60">{traits?.series}</p>
-          <div className="flex flex-wrap items-center gap-2 mt-2 text-xs text-[var(--foreground)]/50">
-            <span>{traits?.rarity}</span>
-            <span>·</span>
-            <span>{traits?.armorType} Armor</span>
-            <span>·</span>
-            <span>{traits?.hp} HP</span>
-          </div>
+    <div className="w-full max-w-lg flex flex-col gap-5 items-center">
+      {/* Card preview with frame */}
+      {imageUrl && traits && (
+        <div className="w-full max-w-xs">
+          <CardFrame imageUrl={imageUrl} traits={traits} />
         </div>
-      </div>
+      )}
 
       {/* Cost breakdown */}
       <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-2 text-sm">
