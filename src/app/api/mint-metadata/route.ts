@@ -4,26 +4,51 @@ import type { TraitSet } from "@/types/nft";
 
 export async function POST(request: NextRequest) {
   try {
-    const form = await request.formData();
-    const file = form.get("image") as File | null;
-    const traitsEntry = form.get("traits");
+    const contentType = request.headers.get("content-type") ?? "";
 
-    if (!file || !traitsEntry) {
-      return NextResponse.json(
-        { error: "Missing image or traits" },
-        { status: 400 }
-      );
+    let imageFile: File;
+    let traits: TraitSet;
+
+    if (contentType.includes("application/json")) {
+      // Generative flow: image arrives as base64
+      const body = await request.json();
+      const { imageBase64, imageMimeType, traits: bodyTraits } = body;
+
+      if (!imageBase64 || !bodyTraits) {
+        return NextResponse.json(
+          { error: "Missing imageBase64 or traits" },
+          { status: 400 }
+        );
+      }
+
+      const buffer = Buffer.from(imageBase64, "base64");
+      const ext = imageMimeType === "image/png" ? "png" : "jpg";
+      imageFile = new File([buffer], `kitbash.${ext}`, {
+        type: imageMimeType ?? "image/png",
+      });
+      traits = bodyTraits as TraitSet;
+    } else {
+      // Legacy photo flow: image arrives as FormData
+      const form = await request.formData();
+      const file = form.get("image") as File | null;
+      const traitsEntry = form.get("traits");
+
+      if (!file || !traitsEntry) {
+        return NextResponse.json(
+          { error: "Missing image or traits" },
+          { status: 400 }
+        );
+      }
+
+      imageFile = file;
+      const traitsJson =
+        traitsEntry instanceof File
+          ? await traitsEntry.text()
+          : (traitsEntry as string);
+      traits = JSON.parse(traitsJson) as TraitSet;
     }
 
-    // traitsEntry may be a File (Blob with filename) or a plain string
-    const traitsJson =
-      traitsEntry instanceof File
-        ? await traitsEntry.text()
-        : (traitsEntry as string);
-
-    const traits = JSON.parse(traitsJson) as TraitSet;
-
-    const imageHash = await uploadImage(file);
+    const imageHash = await uploadImage(imageFile);
     const metadataUri = await uploadMetadata(traits, imageHash);
 
     return NextResponse.json({ imageHash, metadataUri });

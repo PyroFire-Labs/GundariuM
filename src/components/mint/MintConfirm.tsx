@@ -2,15 +2,14 @@
 
 import { useEffect } from "react";
 import { useChainId, useSwitchChain } from "wagmi";
-import { baseSepolia } from "wagmi/chains";
 import { useMintStore } from "@/store/useMintStore";
 import { useMint } from "@/lib/contracts/hooks/useMint";
 
 export function MintConfirm() {
   const {
     traits,
-    imageFile,
-    imagePreviewUrl,
+    generatedImageBase64,
+    generatedImageMimeType,
     metadataUri,
     setMetadataUri,
     setImageIpfsHash,
@@ -32,26 +31,22 @@ export function MintConfirm() {
 
   // Upload to IPFS on mount (if not already done)
   useEffect(() => {
-    if (!metadataUri && imageFile && traits) {
+    if (!metadataUri && generatedImageBase64 && traits) {
       uploadToIPFS();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const uploadToIPFS = async () => {
-    const form = new FormData();
-    form.append("image", imageFile!);
-    // Use Blob to avoid ByteString encoding errors with non-ASCII characters
-    form.append(
-      "traits",
-      new Blob([JSON.stringify(traits)], { type: "application/json" }),
-      "traits.json"
-    );
-
     try {
       const res = await fetch("/api/mint-metadata", {
         method: "POST",
-        body: form,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          imageBase64: generatedImageBase64,
+          imageMimeType: generatedImageMimeType,
+          traits,
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
@@ -71,6 +66,10 @@ export function MintConfirm() {
     }
   };
 
+  const imageUrl = generatedImageBase64
+    ? `data:${generatedImageMimeType ?? "image/png"};base64,${generatedImageBase64}`
+    : undefined;
+
   const usdcAmount = mintPrice ? Number(mintPrice) / 1_000_000 : 5;
   const isUploading = !metadataUri && !storeError;
 
@@ -78,9 +77,9 @@ export function MintConfirm() {
     <div className="w-full max-w-md flex flex-col gap-5">
       {/* Card preview */}
       <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] overflow-hidden">
-        {imagePreviewUrl && (
+        {imageUrl && (
           <img
-            src={imagePreviewUrl}
+            src={imageUrl}
             alt={traits?.name}
             className="w-full object-cover max-h-52"
           />
@@ -118,7 +117,6 @@ export function MintConfirm() {
             {metadataUri ? "IPFS ✓" : "Uploading…"}
           </span>
         </div>
-
       </div>
 
       {/* Error */}
@@ -184,10 +182,10 @@ export function MintConfirm() {
       )}
 
       <button
-        onClick={() => goTo("reviewing")}
+        onClick={() => goTo("reveal")}
         className="text-[var(--foreground)]/40 text-sm hover:text-[var(--foreground)]/60 transition-colors"
       >
-        ← Back to traits
+        ← Back to card
       </button>
     </div>
   );
