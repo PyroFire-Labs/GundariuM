@@ -1,32 +1,35 @@
 import { create } from "zustand";
-import type { TraitSet, SuitData } from "@/types/nft";
-import type { KitGrade } from "@/types/nft";
+import type { TraitSet, KitbashTraits, TraitRarity } from "@/types/nft";
 
 export type MintStep =
-  | "suit_search"
-  | "grade_select"
   | "idle"
-  | "uploading"
-  | "analyzing"
-  | "reviewing"
+  | "generating"
+  | "reveal"
   | "confirming"
   | "success";
 
 interface MintState {
   step: MintStep;
-  selectedSuit: SuitData | null;
-  imageFile: File | null;
-  imagePreviewUrl: string | null;
-  imageIpfsHash: string | null;
-  grade: KitGrade | null;
+  faction: string | null;
+  kitbashTraits: KitbashTraits | null;
+  traitRarities: Record<string, TraitRarity> | null;
   traits: TraitSet | null;
+  generatedImageBase64: string | null;
+  generatedImageMimeType: string | null;
+  imageIpfsHash: string | null;
   metadataUri: string | null;
   mintedTokenId: bigint | null;
   error: string | null;
 
-  setSelectedSuit: (suit: SuitData) => void;
-  setImage: (file: File, previewUrl: string) => void;
-  setGrade: (grade: KitGrade) => void;
+  // Actions
+  setFaction: (faction: string | null) => void;
+  setGenerationResult: (result: {
+    traits: TraitSet;
+    kitbashTraits: KitbashTraits;
+    traitRarities: Record<string, TraitRarity>;
+    imageBase64: string;
+    imageMimeType: string;
+  }) => void;
   setTraits: (traits: TraitSet) => void;
   setImageIpfsHash: (hash: string) => void;
   setMetadataUri: (uri: string) => void;
@@ -37,13 +40,14 @@ interface MintState {
 }
 
 const initialState = {
-  step: "suit_search" as MintStep,
-  selectedSuit: null,
-  imageFile: null,
-  imagePreviewUrl: null,
-  imageIpfsHash: null,
-  grade: null,
+  step: "idle" as MintStep,
+  faction: null,
+  kitbashTraits: null,
+  traitRarities: null,
   traits: null,
+  generatedImageBase64: null,
+  generatedImageMimeType: null,
+  imageIpfsHash: null,
   metadataUri: null,
   mintedTokenId: null,
   error: null,
@@ -51,11 +55,17 @@ const initialState = {
 
 export const useMintStore = create<MintState>((set) => ({
   ...initialState,
-
-  setSelectedSuit: (suit) => set({ selectedSuit: suit }),
-  setImage: (file, previewUrl) =>
-    set({ imageFile: file, imagePreviewUrl: previewUrl }),
-  setGrade: (grade) => set({ grade }),
+  setFaction: (faction) => set({ faction }),
+  setGenerationResult: (result) =>
+    set({
+      traits: result.traits,
+      kitbashTraits: result.kitbashTraits,
+      traitRarities: result.traitRarities,
+      generatedImageBase64: result.imageBase64,
+      generatedImageMimeType: result.imageMimeType,
+      step: "reveal",
+      error: null,
+    }),
   setTraits: (traits) => set({ traits }),
   setImageIpfsHash: (hash) => set({ imageIpfsHash: hash }),
   setMetadataUri: (uri) => set({ metadataUri: uri }),
