@@ -87,7 +87,8 @@ GundariuM/
 | Fonts | Orbitron (headings/accent), Geist Sans + Geist Mono |
 | State | Zustand (client stores) |
 | Web3 | wagmi v3, viem v2 |
-| AI | `@anthropic-ai/sdk` — Claude Sonnet 4.6 with extended thinking |
+| AI (analysis) | `@anthropic-ai/sdk` — Claude Sonnet 4.6 with extended thinking (RWA tier) |
+| AI (generation) | `@google/genai` — Gemini 2.5 Flash Image (kitbash minting) |
 | IPFS | Pinata SDK v2 |
 | Smart Contracts | Solidity ^0.8.20+, Foundry, OpenZeppelin upgradeable v5 |
 | Blockchain | Base mainnet (8453), Base Sepolia testnet (84532) |
@@ -118,7 +119,8 @@ All secrets go in `.env.local` (never committed — `.env*` is gitignored).
 
 | Variable | Purpose |
 |---|---|
-| `ANTHROPIC_API_KEY` | Server-side — Claude API key for Gunpla image analysis |
+| `ANTHROPIC_API_KEY` | Server-side — Claude API key for Gunpla image analysis (RWA tier) |
+| `GOOGLE_AI_API_KEY` | Server-side — Gemini API key for kitbash image generation |
 | `PINATA_JWT` | Pinata JWT for IPFS uploads |
 | `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | WalletConnect project ID |
 | `NEXT_PUBLIC_MINT_ENABLED` | Set `"true"` to enable the mint page (otherwise shows countdown) |
@@ -128,46 +130,56 @@ All secrets go in `.env.local` (never committed — `.env*` is gitignored).
 
 ## Mint flow (state machine)
 
-The mint page is a 7-step Zustand state machine in `useMintStore.ts`:
+The mint page is a 5-step Zustand state machine in `useMintStore.ts`:
 
 ```
-suit_search → grade_select → idle → uploading → analyzing → reviewing → confirming → success
+idle → generating → reveal → confirming → success
 ```
 
 | Step | Component | What happens |
 |---|---|---|
-| `suit_search` | `SuitSearch` | User searches the 148-suit database and selects their Mobile Suit |
-| `grade_select` | `GradePicker` | User selects kit grade (SD/HG/RG/MG/MG_VERKA/HIRM/PG) |
-| `idle` | `PhotoDropzone` | User uploads a photo |
-| `uploading` | spinner | Image is uploaded to Pinata IPFS |
-| `analyzing` | spinner | `POST /api/analyze-gunpla` sends image to Claude |
-| `reviewing` | `TraitReview` | User reviews and can edit the AI-generated traits |
-| `confirming` | `MintConfirm` | User approves USDC + calls `mintCard()` on-chain |
-| `success` | `MintSuccess` | Shows minted NFT |
+| `idle` | `MintLanding` | User optionally selects a faction, clicks "MINT YOUR GUNPLA" |
+| `generating` | spinner | Traits are randomly rolled, `POST /api/generate-kitbash` calls Gemini to generate a unique kitbash image |
+| `reveal` | `GenerationReveal` | User sees their generated card with trait badges, rarity breakdown, and battle stats |
+| `confirming` | `MintConfirm` | Image + metadata uploaded to Pinata IPFS, user approves USDC + mints on-chain |
+| `success` | `MintSuccess` | Shows minted NFT with animated reveal |
 
 The `NEXT_PUBLIC_MINT_ENABLED` flag guards the entire flow — when `false`, the page shows a `CountdownPage` instead.
 
+The original photo-your-kit mint components (SuitSearch, GradePicker, PhotoDropzone, TraitReview) are preserved in `src/components/mint/_deprecated/` for the future RWA premium tier.
+
 ---
 
-## AI analysis pipeline
+## AI generation pipeline
 
-**File:** `src/lib/claude/analyzeGunpla.ts`
+**File:** `src/lib/kitbash/generate.ts`
 
-- Model: `claude-sonnet-4-6` with extended thinking (`budget_tokens: 8000`)
-- Input: base64 image + `KitGrade` (pre-confirmed by user, not detected)
-- Output: `SuitIdentification` JSON — name, series, faction, pilot, armor type, 4 weapons, confidence score
-- Prompt: `buildGunplaPrompt(grade)` in `src/lib/constants/prompts.ts` (currently v3.1.1)
-- The API route `POST /api/analyze-gunpla` merges the Claude output with server-derived stats (HP range by rarity, damage multipliers) to produce the full `TraitSet`
+- Model: Gemini `gemini-2.5-flash-image` with `responseModalities: ["TEXT", "IMAGE"]`
+- Input: assembled prompt from rolled `KitbashTraits` (frame type, head, weapon, backpack, colorway, stance, background, special)
+- Output: base64-encoded PNG image of a unique kitbashed Mobile Suit
+- Generation time: ~8-15 seconds
 
-**Stat derivation** (in the API route, not Claude):
-- Grade → Rarity mapping: SD/HG=Common, RG=Uncommon, MG=Rare, MG_VERKA/HIRM=Ultra Rare, PG=Legendary
+**Trait system:** `src/lib/kitbash/traits.ts`
+
+- 8 trait categories with weighted rarity tables (~69M+ unique combinations)
+- Card rarity derived from number of non-common traits rolled
+- Battle stats (HP, damage values) derived from card rarity using the same HP ranges as before
+- Optional faction hint biases the colorway selection toward that faction's palette
+
+**Stat derivation** (in the API route):
+- Trait weights → per-trait rarity (Common/Uncommon/Rare/Ultra Rare/Legendary)
+- Count of non-common traits → card rarity (0-1=Common, 2=Uncommon, 3=Rare, 4+=Ultra Rare, any Legendary trait=Legendary)
 - HP ranges: Common 150–349, Uncommon 350–599, Rare 600–899, Ultra Rare 900–1199, Legendary 1200–2000
 - Weapon damages are percentages of HP (primary 15–25%, secondary 25–40%, tertiary 8–15%, special 50–80%)
 
-**When updating the Claude prompt:**
-- Bump `PROMPT_VERSION` in `prompts.ts`
-- The prompt must always return pure JSON (no markdown fences), ASCII only (no Unicode above U+007F, use hyphens not em dashes)
-- Never return `null` — always provide a best estimate
+**When updating the generation prompt:**
+- Modify `buildPrompt()` in `src/lib/kitbash/generate.ts`
+- The prompt must produce clean 3D-rendered mecha art — not anime/cartoon style
+- Test changes using `scripts/test-kitbash-gen.ts` before deploying
+
+**RWA analysis pipeline (preserved for future use):**
+- `src/lib/claude/analyzeGunpla.ts` — Claude Sonnet 4.6 photo analysis
+- `src/app/api/analyze-gunpla/route.ts` — photo analysis API route
 
 ---
 
