@@ -122,3 +122,18 @@ export function buildOpenSeaAttributes(traits: TraitSet): OpenSeaAttribute[] {
     ...(traits.decalId ? [{ trait_type: "Decal", value: traits.decalId }] : []),
   ];
 }
+
+/** Rolled traits for a generative kitbash mint */
+export interface KitbashTraits {
+  frameType: string;
+  head: string;
+  primaryWeapon: string;
+  backpack: string;
+  colorway: string;
+  stance: string;
+  background: string;
+  special: string;
+}
+
+/** Rarity tier for individual traits */
+export type TraitRarity = "Common" | "Uncommon" | "Rare" | "Ultra Rare" | "Legendary";
