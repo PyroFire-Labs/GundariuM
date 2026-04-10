@@ -13,7 +13,10 @@ const RARITY_CLASS: Record<Rarity, string> = {
 };
 
 export function MintSuccess() {
-  const { traits, imagePreviewUrl, mintedTokenId, reset } = useMintStore();
+  const { traits, generatedImageBase64, generatedImageMimeType, mintedTokenId, reset } = useMintStore();
+  const imageUrl = generatedImageBase64
+    ? `data:${generatedImageMimeType ?? "image/png"};base64,${generatedImageBase64}`
+    : undefined;
   const rarityClass = traits ? RARITY_CLASS[traits.rarity] : "rarity-common";
 
   return (
@@ -31,9 +34,9 @@ export function MintSuccess() {
         className={`w-56 rounded-xl border-2 overflow-hidden beam-scan ${rarityClass}`}
         style={{ perspective: 1000 }}
       >
-        {imagePreviewUrl && (
+        {imageUrl && (
           <img
-            src={imagePreviewUrl}
+            src={imageUrl}
             alt={traits?.name}
             className="w-full object-cover"
           />
