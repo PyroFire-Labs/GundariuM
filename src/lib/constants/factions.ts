@@ -61,7 +61,7 @@ export const FACTIONS: Record<FactionKey, Faction> = {
   },
   GUNDAM_WING_TEAM: {
     key: "GUNDAM_WING_TEAM",
-    name: "Gundam Meisters (Wing)",
+    name: "Operation Meteor",
     universe: "After Colony",
     color: "#e5e7eb",
     description:
