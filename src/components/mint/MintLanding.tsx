@@ -94,6 +94,18 @@ export function MintLanding() {
         A unique AI-generated kitbash Mobile Suit will be created just for you.
         Traits are randomly rolled with weighted rarity.
       </p>
+
+      <p className="text-[10px] text-[var(--foreground)]/30 text-center max-w-sm">
+        By pressing &quot;MINT YOUR GUNPLA&quot; you agree to our{" "}
+        <a href="/terms" className="underline hover:text-[var(--foreground)]/50 transition-colors">
+          Terms of Use
+        </a>{" "}
+        and{" "}
+        <a href="/privacy" className="underline hover:text-[var(--foreground)]/50 transition-colors">
+          Privacy Notice
+        </a>
+        .
+      </p>
     </div>
   );
 }
