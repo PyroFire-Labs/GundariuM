@@ -53,6 +53,9 @@ function traitsToOnchain(traits: TraitSet) {
     specialDamage: traits.specialDamage,
     repaintColor: traits.repaintColor ?? "",
     decalId: traits.decalId ?? "",
+    frameId: 0,
+    colorShift: 0,
+    repaintStyle: 0,
   };
 }
 
