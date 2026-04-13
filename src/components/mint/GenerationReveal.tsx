@@ -57,11 +57,11 @@ export function GenerationReveal() {
       </div>
 
       {/* Trait breakdown */}
-      <div className="flex-1 space-y-4">
-        <h3 className="text-lg font-[family-name:var(--font-orbitron)] text-[var(--accent)]">
+      <div className="flex-1 space-y-4 w-full max-w-[92vw] sm:max-w-sm lg:max-w-none">
+        <h3 className="text-lg font-[family-name:var(--font-orbitron)] text-[var(--accent)] text-center lg:text-left">
           {traits.name}
         </h3>
-        <p className="text-sm text-[var(--foreground)]/60">
+        <p className="text-sm text-[var(--foreground)]/60 text-center lg:text-left">
           {traits.series} — {traits.faction}
         </p>
 
@@ -122,7 +122,7 @@ export function GenerationReveal() {
         </div>
 
         {/* Actions */}
-        <div className="flex gap-3">
+        <div className="flex gap-3 justify-center lg:justify-start">
           <button
             onClick={() => goTo("confirming")}
             className="flex-1 px-6 py-3 bg-[var(--accent)] text-black font-[family-name:var(--font-orbitron)] font-bold rounded-xl hover:brightness-110 transition-all"
