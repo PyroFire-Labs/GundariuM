@@ -50,9 +50,9 @@ export function GenerationReveal() {
   const traitKeys = Object.keys(kitbashTraits) as (keyof KitbashTraits)[];
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 items-start justify-center">
+    <div className="flex flex-col lg:flex-row gap-6 items-center lg:items-start justify-center w-full px-2">
       {/* Card preview */}
-      <div className="flex-shrink-0 w-full max-w-xs sm:max-w-sm lg:max-w-md">
+      <div className="flex-shrink-0 w-full max-w-[92vw] sm:max-w-sm lg:max-w-md">
         <CardFrame imageUrl={imageUrl} traits={traits} />
       </div>
 
