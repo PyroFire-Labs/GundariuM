@@ -64,7 +64,6 @@ export function useMint() {
   const [error, setError] = useState<string | null>(null);
 
   const chainId = useChainId();
-  const { address } = useAccount();
   const publicClient = usePublicClient();
   const { writeContractAsync } = useWriteContract();
 
@@ -78,6 +77,8 @@ export function useMint() {
   const usdcAddress = process.env
     .NEXT_PUBLIC_USDC_ADDRESS as `0x${string}`;
 
+  const account = useAccount();
+
   const { data: mintPriceData } = useReadContract({
     address: contracts?.gunplaCard,
     abi: GUNPLA_CARD_ABI,
@@ -88,7 +89,40 @@ export function useMint() {
   // Fall back to the known constant (5 USDC, 6 decimals) if the read hasn't resolved yet
   const mintPrice = mintPriceData ?? BigInt(5_000_000);
 
-  const approveMint = async () => {
+  const { data: currentPhase } = useReadContract({
+    address: contracts?.gunplaCard,
+    abi: GUNPLA_CARD_ABI,
+    functionName: "mintPhase",
+  });
+
+  const { data: wlMintCount } = useReadContract({
+    address: contracts?.gunplaCard,
+    abi: GUNPLA_CARD_ABI,
+    functionName: "whitelistMintCount",
+    args: account.address ? [account.address] : undefined,
+  });
+
+  const { data: mintCap } = useReadContract({
+    address: contracts?.gunplaCard,
+    abi: GUNPLA_CARD_ABI,
+    functionName: "whitelistMintCap",
+  });
+
+  const { data: vipPrice } = useReadContract({
+    address: contracts?.gunplaCard,
+    abi: GUNPLA_CARD_ABI,
+    functionName: "tierPrice",
+    args: [1],
+  });
+
+  const { data: wlPrice } = useReadContract({
+    address: contracts?.gunplaCard,
+    abi: GUNPLA_CARD_ABI,
+    functionName: "tierPrice",
+    args: [2],
+  });
+
+  const approveMint = async (priceOverride?: bigint) => {
     if (!contracts) return;
     try {
       setError(null);
@@ -97,7 +131,7 @@ export function useMint() {
         address: usdcAddress,
         abi: erc20Abi,
         functionName: "approve",
-        args: [contracts.gunplaCard, mintPrice],
+        args: [contracts.gunplaCard, priceOverride ?? mintPrice],
       });
       await publicClient!.waitForTransactionReceipt({ hash });
       setPhase("approved");
@@ -111,7 +145,7 @@ export function useMint() {
     tokenUri: string,
     traits: TraitSet
   ): Promise<bigint | null> => {
-    if (!address || !contracts) return null;
+    if (!account.address || !contracts) return null;
     try {
       setPhase("minting");
       const hash = await writeContractAsync({
@@ -119,7 +153,7 @@ export function useMint() {
         abi: GUNPLA_CARD_ABI,
         functionName: "mintCard",
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        args: [address, tokenUri, traitsToOnchain(traits) as any],
+        args: [account.address, tokenUri, traitsToOnchain(traits) as any],
       });
       const receipt = await publicClient!.waitForTransactionReceipt({ hash });
       setPhase("done");
@@ -141,6 +175,37 @@ export function useMint() {
     }
   };
 
+  async function executeWhitelistMint(
+    tokenUri: string,
+    traits: TraitSet,
+    tier: number,
+    proof: `0x${string}`[]
+  ): Promise<bigint | null> {
+    if (!contracts || !publicClient) return null;
+    setPhase("minting");
+    setError(null);
+    try {
+      const onchainTraits = traitsToOnchain(traits);
+      const hash = await writeContractAsync({
+        address: contracts.gunplaCard,
+        abi: GUNPLA_CARD_ABI,
+        functionName: "mintCardWhitelist",
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        args: [account.address!, tokenUri, onchainTraits as any, tier, proof],
+      });
+      const receipt = await publicClient.waitForTransactionReceipt({ hash });
+      const transferLog = receipt.logs.find((l) => l.topics[0] === TRANSFER_SIG);
+      const tokenId = transferLog ? BigInt(transferLog.topics[3]!) : null;
+      setPhase("done");
+      return tokenId;
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Mint failed";
+      setError(msg);
+      setPhase("error");
+      return null;
+    }
+  }
+
   return {
     phase,
     error,
@@ -148,5 +213,11 @@ export function useMint() {
     contracts,
     approveMint,
     executeMint,
+    executeWhitelistMint,
+    currentPhase: currentPhase as number | undefined,
+    whitelistMintCount: wlMintCount as bigint | undefined,
+    whitelistMintCap: mintCap as bigint | undefined,
+    vipPrice: vipPrice as bigint | undefined,
+    wlPrice: wlPrice as bigint | undefined,
   };
 }

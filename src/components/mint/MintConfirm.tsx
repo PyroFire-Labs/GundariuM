@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
-import { useChainId, useSwitchChain } from "wagmi";
+import { useState, useEffect } from "react";
+import { useAccount, useChainId, useSwitchChain } from "wagmi";
 import { useMintStore } from "@/store/useMintStore";
 import { useMint } from "@/lib/contracts/hooks/useMint";
 import { CardFrame } from "@/components/card/CardFrame";
@@ -20,15 +20,49 @@ export function MintConfirm() {
     error: storeError,
   } = useMintStore();
 
-  const { phase, error: mintError, mintPrice, approveMint, executeMint } =
-    useMint();
+  const {
+    phase,
+    error: mintError,
+    mintPrice,
+    approveMint,
+    executeMint,
+    executeWhitelistMint,
+    currentPhase,
+    whitelistMintCount,
+    whitelistMintCap,
+    vipPrice,
+    wlPrice,
+  } = useMint();
 
+  const account = useAccount();
   const chainId = useChainId();
   const { switchChain } = useSwitchChain();
   const targetChainId = Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? 84532);
   const wrongChain = chainId !== targetChainId;
 
   const error = storeError ?? mintError;
+
+  // Whitelist proof loading
+  const [proofData, setProofData] = useState<{ tier: number; proof: string[] } | null>(null);
+
+  useEffect(() => {
+    if (!account.address || currentPhase !== 1) return;
+    fetch("/whitelist-proofs.json")
+      .then((r) => r.json())
+      .then((data) => {
+        const entry = data.proofs?.[account.address!.toLowerCase()];
+        if (entry) setProofData(entry);
+      })
+      .catch(() => {});
+  }, [account.address, currentPhase]);
+
+  const effectivePrice = currentPhase === 1 && proofData
+    ? (proofData.tier === 1 ? vipPrice : wlPrice) ?? mintPrice
+    : mintPrice;
+
+  const tierLabel = currentPhase === 1 && proofData
+    ? proofData.tier === 1 ? "VIP (50% off)" : "Whitelist (25% off)"
+    : "Public";
 
   // Upload to IPFS on mount (if not already done)
   useEffect(() => {
@@ -60,7 +94,17 @@ export function MintConfirm() {
 
   const handleMint = async () => {
     if (!metadataUri || !traits) return;
-    const tokenId = await executeMint(metadataUri, traits);
+    let tokenId: bigint | null = null;
+    if (currentPhase === 1 && proofData) {
+      tokenId = await executeWhitelistMint(
+        metadataUri,
+        traits,
+        proofData.tier,
+        proofData.proof as `0x${string}`[]
+      );
+    } else {
+      tokenId = await executeMint(metadataUri, traits);
+    }
     if (tokenId !== null) {
       setMintedTokenId(tokenId);
       goTo("success");
@@ -71,7 +115,7 @@ export function MintConfirm() {
     ? `data:${generatedImageMimeType ?? "image/png"};base64,${generatedImageBase64}`
     : undefined;
 
-  const usdcAmount = mintPrice ? Number(mintPrice) / 1_000_000 : 5;
+  const usdcAmount = effectivePrice ? Number(effectivePrice) / 1_000_000 : 5;
   const isUploading = !metadataUri && !storeError;
 
   return (
@@ -90,6 +134,18 @@ export function MintConfirm() {
           <span className="font-mono">${usdcAmount} USDC</span>
         </div>
         <div className="flex justify-between">
+          <span className="text-[var(--foreground)]/60">Tier</span>
+          <span className="font-mono text-[var(--accent)]">{tierLabel}</span>
+        </div>
+        {currentPhase === 1 && whitelistMintCap !== undefined && (
+          <div className="flex justify-between">
+            <span className="text-[var(--foreground)]/60">WL mints</span>
+            <span className="font-mono">
+              {whitelistMintCount?.toString() ?? "0"} / {whitelistMintCap.toString()}
+            </span>
+          </div>
+        )}
+        <div className="flex justify-between">
           <span className="text-[var(--foreground)]/60">Network</span>
           <span className="font-mono text-[var(--foreground)]/80">
             Base Sepolia
@@ -102,6 +158,13 @@ export function MintConfirm() {
           </span>
         </div>
       </div>
+
+      {/* Not on whitelist */}
+      {currentPhase === 1 && !proofData && (
+        <p className="text-center text-red-400 font-[family-name:var(--font-orbitron)]">
+          Your wallet is not on the whitelist.
+        </p>
+      )}
 
       {/* Error */}
       {error && (
@@ -121,16 +184,28 @@ export function MintConfirm() {
       {/* Step 2 — Switch network or Approve */}
       {!isUploading && phase === "idle" && (
         wrongChain ? (
-          <button
-            onClick={() => switchChain({ chainId: targetChainId })}
-            className="w-full py-3 bg-yellow-500 text-black font-bold font-[family-name:var(--font-orbitron)] text-sm rounded-lg hover:brightness-110 transition-all"
-          >
-            SWITCH TO BASE SEPOLIA
-          </button>
+          <div className="flex flex-col gap-2">
+            <button
+              onClick={async () => {
+                try {
+                  await switchChain({ chainId: targetChainId });
+                } catch {
+                  setError("Please switch to Base Sepolia manually in your wallet, then reload this page.");
+                }
+              }}
+              className="w-full py-3 bg-yellow-500 text-black font-bold font-[family-name:var(--font-orbitron)] text-sm rounded-lg hover:brightness-110 transition-all"
+            >
+              SWITCH TO BASE SEPOLIA
+            </button>
+            <p className="text-xs text-[var(--foreground)]/40 text-center">
+              If switching fails, manually select Base Sepolia (chainId 84532) in your wallet
+            </p>
+          </div>
         ) : (
           <button
-            onClick={approveMint}
-            className="w-full py-3 bg-[var(--accent)] text-black font-bold font-[family-name:var(--font-orbitron)] text-sm rounded-lg hover:brightness-110 transition-all"
+            onClick={() => approveMint(effectivePrice)}
+            disabled={currentPhase === 1 && !proofData}
+            className="w-full py-3 bg-[var(--accent)] text-black font-bold font-[family-name:var(--font-orbitron)] text-sm rounded-lg hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             1 / 2 — APPROVE USDC
           </button>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Turnstile } from "@marsidev/react-turnstile";
 import { useMintStore } from "@/store/useMintStore";
 import { FACTIONS, FACTION_KEYS } from "@/lib/constants/factions";
 import type { FactionKey } from "@/lib/constants/factions";
@@ -9,6 +10,7 @@ export function MintLanding() {
   const { setFaction, setGenerationResult, goTo, setError } = useMintStore();
   const [selectedFaction, setSelectedFaction] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
   async function handleMint() {
     setGenerating(true);
@@ -19,7 +21,7 @@ export function MintLanding() {
       const res = await fetch("/api/generate-kitbash", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ faction: selectedFaction }),
+        body: JSON.stringify({ faction: selectedFaction, turnstileToken }),
       });
 
       if (!res.ok) {
@@ -81,10 +83,22 @@ export function MintLanding() {
         </div>
       </div>
 
+      {/* Turnstile bot protection */}
+      {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && (
+        <Turnstile
+          siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+          onSuccess={setTurnstileToken}
+          options={{ theme: "dark", size: "invisible" }}
+        />
+      )}
+
       {/* Mint button */}
       <button
         onClick={handleMint}
-        disabled={generating}
+        disabled={
+          generating ||
+          (!!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && !turnstileToken)
+        }
         className="px-8 py-4 bg-[var(--accent)] text-black font-[family-name:var(--font-orbitron)] font-bold text-lg rounded-xl hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {generating ? "GENERATING..." : "MINT YOUR GUNPLA"}
