@@ -8,13 +8,36 @@ import {
   getTraitRarity,
 } from "@/lib/kitbash/traits";
 import { generateKitbashImage } from "@/lib/kitbash/generate";
+import { verifyTurnstile } from "@/lib/turnstile";
+import { checkRateLimit } from "@/lib/rateLimit";
 
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
   try {
     const body = await req.json().catch(() => ({}));
-    const factionHint = body.faction as string | undefined;
+    const { faction: factionHint, turnstileToken } = body as {
+      faction?: string;
+      turnstileToken?: string;
+    };
+
+    // Anti-abuse: verify Turnstile
+    if (turnstileToken) {
+      const valid = await verifyTurnstile(turnstileToken);
+      if (!valid) {
+        return NextResponse.json({ error: "Bot detected" }, { status: 403 });
+      }
+    }
+
+    // Rate limit: 10 generations per hour per IP
+    const ip = req.headers.get("x-forwarded-for") ?? "unknown";
+    const limit = checkRateLimit(`gen:${ip}`, 10, 60 * 60 * 1000);
+    if (!limit.allowed) {
+      return NextResponse.json(
+        { error: "Rate limit exceeded. Try again later." },
+        { status: 429, headers: { "Retry-After": String(Math.ceil(limit.retryAfterMs / 1000)) } }
+      );
+    }
 
     const kitbashTraits = rollTraits(factionHint);
     const rarity = deriveCardRarity(kitbashTraits);

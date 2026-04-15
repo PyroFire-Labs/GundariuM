@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { uploadImage, uploadMetadata } from "@/lib/pinata/upload";
 import type { TraitSet } from "@/types/nft";
+import { verifyTurnstile } from "@/lib/turnstile";
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,7 +13,15 @@ export async function POST(request: NextRequest) {
     if (contentType.includes("application/json")) {
       // Generative flow: image arrives as base64
       const body = await request.json();
-      const { imageBase64, imageMimeType, traits: bodyTraits } = body;
+      const { imageBase64, imageMimeType, traits: bodyTraits, turnstileToken } = body;
+
+      // Anti-abuse: verify Turnstile
+      if (turnstileToken) {
+        const valid = await verifyTurnstile(turnstileToken);
+        if (!valid) {
+          return NextResponse.json({ error: "Bot detected" }, { status: 403 });
+        }
+      }
 
       if (!imageBase64 || !bodyTraits) {
         return NextResponse.json(
