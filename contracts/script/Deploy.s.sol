@@ -38,8 +38,8 @@ import {MockERC20} from "../src/MockERC20.sol";
  *     -vvvv
  */
 contract Deploy is Script {
-    // Mint price: $5 USDC (6 decimals)
-    uint256 constant MINT_PRICE_USDC     = 5_000_000;
+    // Mint price: $2 USDC (6 decimals)
+    uint256 constant MINT_PRICE_USDC     = 2_000_000;
     // Cosmetics price: $1 USDC
     uint256 constant COSMETIC_PRICE_USDC = 1_000_000;
     // PVE entry fee: 10 GNDM (18 decimals)
@@ -106,7 +106,15 @@ contract Deploy is Script {
         );
         ERC1967Proxy cardProxy = new ERC1967Proxy(address(cardImpl), cardInit);
         address cardAddress = address(cardProxy);
+        GunplaCard card = GunplaCard(cardAddress);
         console.log("GunplaCard proxy: ", cardAddress);
+
+        // ─── Whitelist Configuration ───────────────────────────────
+        card.setTierPrice(1, 1_000_000);    // VIP: $1
+        card.setTierPrice(2, 1_500_000);    // WL: $1.50
+        card.setWhitelistMintCap(5);
+        // Merkle root set separately after tree generation
+        // Phase starts as PAUSED (default 0)
 
         // ── 2. GundaniumGame ─────────────────────────────────────────────────
         GundaniumGame gameImpl = new GundaniumGame();
