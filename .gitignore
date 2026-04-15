@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# generated merkle proofs
+scripts/whitelist-proofs.json
+scripts/migration-proofs.json
