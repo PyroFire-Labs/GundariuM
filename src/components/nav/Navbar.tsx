@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/stake", label: "Stake" },
+  { href: "/migrate", label: "Migrate" },
   { href: "/mint", label: "Mint" },
   { href: "/arena", label: "Arena" },
   { href: "/battle", label: "Battle" },
@@ -48,15 +49,15 @@ export function Navbar() {
             </Link>
           ))}
           <Link
-            href="/buy-gndm"
+            href="/buy-gunr"
             className={cn(
               "text-sm font-bold tracking-wide transition-colors",
-              pathname === "/buy-gndm"
+              pathname === "/buy-gunr"
                 ? "text-[var(--accent)]"
                 : "text-[var(--accent)]/80 hover:text-[var(--accent)]"
             )}
           >
-            Buy GNDM 🔥
+            Buy GUNR 🔥
           </Link>
         </div>
 
@@ -94,11 +95,11 @@ export function Navbar() {
             </Link>
           ))}
           <Link
-            href="/buy-gndm"
+            href="/buy-gunr"
             onClick={() => setMenuOpen(false)}
             className="text-sm font-bold text-[var(--accent)] py-1"
           >
-            Buy GNDM 🔥
+            Buy GUNR 🔥
           </Link>
           <div className="pt-2 border-t border-[var(--border)]">
             <ConnectButton />
