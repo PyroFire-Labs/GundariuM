@@ -23,6 +23,18 @@ export interface SuitData {
 
 export type Rarity = "Common" | "Uncommon" | "Rare" | "Ultra Rare" | "Legendary";
 
+export const RARITY_DISPLAY: Record<Rarity, string> = {
+  Common: "Gundar Steel",
+  Uncommon: "Titanium",
+  Rare: "Apex",
+  "Ultra Rare": "Zenith Gundar",
+  Legendary: "\u03A9 GundariuM",
+};
+
+export function displayRarity(rarity: Rarity): string {
+  return RARITY_DISPLAY[rarity];
+}
+
 export type ArmorType =
   | "Standard"
   | "Gundanium"
@@ -106,7 +118,7 @@ export function buildOpenSeaAttributes(traits: TraitSet): OpenSeaAttribute[] {
     { trait_type: "Series", value: traits.series },
     { trait_type: "Faction", value: traits.faction },
     { trait_type: "Grade", value: traits.grade ?? "HG" },
-    { trait_type: "Rarity", value: traits.rarity },
+    { trait_type: "Rarity", value: displayRarity(traits.rarity) },
     { trait_type: "Pilot", value: traits.pilotName },
     { trait_type: "Armor Type", value: traits.armorType },
     { trait_type: "HP", display_type: "number", value: traits.hp, max_value: 2000 },

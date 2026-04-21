@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useMintStore } from "@/store/useMintStore";
-import type { Rarity } from "@/types/nft";
+import { displayRarity, type Rarity } from "@/types/nft";
 
 const RARITY_CLASS: Record<Rarity, string> = {
   Common: "rarity-common",
@@ -82,7 +82,7 @@ export function MintSuccess() {
                 {traits?.name}
               </p>
               <p className="text-xs text-[var(--foreground)]/60 mt-1">
-                {traits?.rarity}
+                {traits ? displayRarity(traits.rarity) : ""}
               </p>
               {mintedTokenId !== null && (
                 <p className="text-xs text-[var(--foreground)]/40 mt-1 font-mono">
@@ -138,7 +138,7 @@ export function MintSuccess() {
                 <div className="flex justify-between">
                   <span className="font-[family-name:var(--font-orbitron)] text-[var(--foreground)]/40">RARITY</span>
                 </div>
-                <span className="text-right" style={{ color: glowColor }}>{traits?.rarity}</span>
+                <span className="text-right" style={{ color: glowColor }}>{traits ? displayRarity(traits.rarity) : ""}</span>
               </div>
 
               {/* HP bar */}
@@ -196,7 +196,7 @@ export function MintSuccess() {
         className="space-y-2"
       >
         <h2 className="font-[family-name:var(--font-orbitron)] text-3xl font-bold text-[var(--accent)]">
-          CARD MINTED!
+          GUNDAR-FRAME FORGED
         </h2>
         <p className="text-[var(--foreground)]/60 text-sm max-w-xs">
           {traits?.name} has been permanently recorded on Base and added to

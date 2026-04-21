@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import type { Rarity, TraitSet } from "@/types/nft";
+import { displayRarity, type Rarity, type TraitSet } from "@/types/nft";
 
 export interface CosmeticOverrides {
   frameColor?: string;    // override frame color (from selected frame skin)
@@ -225,7 +225,7 @@ export function CardFrame({ imageUrl, traits, cosmetics }: CardFrameProps) {
             className="font-[family-name:var(--font-orbitron)] font-bold uppercase tracking-wider"
             style={{ color, fontSize: "8px" }}
           >
-            {traits.rarity}
+            {displayRarity(traits.rarity)}
           </span>
           <span className="font-mono font-bold" style={{ color: "#ffffff", fontSize: "10px" }}>
             HP {traits.hp}

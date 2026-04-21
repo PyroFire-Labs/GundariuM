@@ -44,7 +44,7 @@ export default function Home() {
           Roll your traits. Generate your legend.
         </p>
         <p className="mb-10 max-w-xl text-sm text-[var(--foreground)]/40 md:text-base">
-          AI-generated kitbash Mobile Suits minted as unique NFT battle cards on
+          AI-generated kitbash Gundar-Frames minted as unique NFT battle cards on
           Base. Roll traits, forge your deck, dominate the arena.
         </p>
 

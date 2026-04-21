@@ -34,8 +34,8 @@ export default function CollectionPage() {
         </h1>
         <p className="text-[var(--foreground)]/60 text-sm">
           {isConnected && !wrongChain
-            ? `${count} ${count === 1 ? "card" : "cards"} owned`
-            : "Connect your wallet to view your Gunpla cards"}
+            ? `${count} ${count === 1 ? "Gundar-Frame" : "Gundar-Frames"} owned`
+            : "Connect your wallet to view your Gundar-Frames"}
         </p>
       </div>
 
@@ -66,7 +66,7 @@ export default function CollectionPage() {
       {isConnected && !wrongChain && !isLoading && count === 0 && (
         <div className="flex flex-col items-center gap-4 py-12">
           <p className="text-[var(--foreground)]/60 text-sm">
-            You don&apos;t own any Gunpla cards yet.
+            You don&apos;t own any Gundar-Frames yet.
           </p>
           <Link
             href="/mint"
