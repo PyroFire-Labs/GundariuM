@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useChainId, useSwitchChain } from "wagmi";
 import { CountdownPage } from "@/components/ui/CountdownTimer";
@@ -10,9 +11,15 @@ const MINT_ENABLED = process.env.NEXT_PUBLIC_MINT_ENABLED === "true";
 const TARGET_CHAIN_ID = Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? 84532);
 
 export default function CollectionPage() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const chainId = useChainId();
   const { switchChain } = useSwitchChain();
   const { cards, isLoading, isConnected, count } = useCollection();
+  const walletReady = mounted && isConnected;
 
   if (!MINT_ENABLED) {
     return (
@@ -24,7 +31,7 @@ export default function CollectionPage() {
     );
   }
 
-  const wrongChain = isConnected && chainId !== TARGET_CHAIN_ID;
+  const wrongChain = walletReady && chainId !== TARGET_CHAIN_ID;
 
   return (
     <div className="min-h-[calc(100vh-64px)] flex flex-col items-center px-4 py-12 gap-8">
@@ -33,13 +40,13 @@ export default function CollectionPage() {
           YOUR COLLECTION
         </h1>
         <p className="text-[var(--foreground)]/60 text-sm">
-          {isConnected && !wrongChain
+          {walletReady && !wrongChain
             ? `${count} ${count === 1 ? "Gundar-Frame" : "Gundar-Frames"} owned`
             : "Connect your wallet to view your Gundar-Frames"}
         </p>
       </div>
 
-      {!isConnected && (
+      {mounted && !isConnected && (
         <p className="text-[var(--foreground)]/40 text-sm font-[family-name:var(--font-orbitron)] tracking-widest">
           WALLET NOT CONNECTED
         </p>
@@ -54,7 +61,7 @@ export default function CollectionPage() {
         </button>
       )}
 
-      {isConnected && !wrongChain && isLoading && (
+      {walletReady && !wrongChain && isLoading && (
         <div className="flex items-center gap-3 py-12">
           <div className="w-6 h-6 border-2 border-[var(--accent)] border-t-transparent rounded-full animate-spin" />
           <span className="text-[var(--accent)] text-sm font-[family-name:var(--font-orbitron)] tracking-wider">
@@ -63,7 +70,7 @@ export default function CollectionPage() {
         </div>
       )}
 
-      {isConnected && !wrongChain && !isLoading && count === 0 && (
+      {walletReady && !wrongChain && !isLoading && count === 0 && (
         <div className="flex flex-col items-center gap-4 py-12">
           <p className="text-[var(--foreground)]/60 text-sm">
             You don&apos;t own any Gundar-Frames yet.
@@ -77,7 +84,7 @@ export default function CollectionPage() {
         </div>
       )}
 
-      {isConnected && !wrongChain && cards.length > 0 && (
+      {walletReady && !wrongChain && cards.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full max-w-6xl">
           {cards.map((card) => (
             <CollectionCard key={card.tokenId.toString()} card={card} />
