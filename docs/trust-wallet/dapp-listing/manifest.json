@@ -1,0 +1,8 @@
+{
+  "name": "GundariuM",
+  "iconUrl": "https://gundarium.xyz/icon.png",
+  "url": "https://gundarium.xyz",
+  "categories": ["nft", "games"],
+  "chains": ["base"],
+  "description": "Gunpla NFT battle game on Base. Mint your Gunpla model kit as an NFT, battle PVE and PVP, and earn $GNDM."
+}
