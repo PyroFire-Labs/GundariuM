@@ -14,6 +14,8 @@ interface MintState {
   kitbashTraits: KitbashTraits | null;
   traitRarities: Record<string, TraitRarity> | null;
   traits: TraitSet | null;
+  fallbackName: string | null;
+  customName: string;
   generatedImageBase64: string | null;
   generatedImageMimeType: string | null;
   imageIpfsHash: string | null;
@@ -31,6 +33,7 @@ interface MintState {
     imageMimeType: string;
   }) => void;
   setTraits: (traits: TraitSet) => void;
+  setCustomName: (name: string) => void;
   setImageIpfsHash: (hash: string) => void;
   setMetadataUri: (uri: string) => void;
   setMintedTokenId: (id: bigint) => void;
@@ -45,6 +48,8 @@ const initialState = {
   kitbashTraits: null,
   traitRarities: null,
   traits: null,
+  fallbackName: null,
+  customName: "",
   generatedImageBase64: null,
   generatedImageMimeType: null,
   imageIpfsHash: null,
@@ -59,6 +64,8 @@ export const useMintStore = create<MintState>((set) => ({
   setGenerationResult: (result) =>
     set({
       traits: result.traits,
+      fallbackName: result.traits.name,
+      customName: "",
       kitbashTraits: result.kitbashTraits,
       traitRarities: result.traitRarities,
       generatedImageBase64: result.imageBase64,
@@ -67,6 +74,15 @@ export const useMintStore = create<MintState>((set) => ({
       error: null,
     }),
   setTraits: (traits) => set({ traits }),
+  setCustomName: (name) =>
+    set((state) => {
+      if (!state.traits || !state.fallbackName) return { customName: name };
+      const effective = name.trim() || state.fallbackName;
+      return {
+        customName: name,
+        traits: { ...state.traits, name: effective },
+      };
+    }),
   setImageIpfsHash: (hash) => set({ imageIpfsHash: hash }),
   setMetadataUri: (uri) => set({ metadataUri: uri }),
   setMintedTokenId: (id) => set({ mintedTokenId: id }),

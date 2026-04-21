@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { useMintStore } from "@/store/useMintStore";
 import { CardFrame } from "@/components/card/CardFrame";
-import type { KitbashTraits, TraitRarity } from "@/types/nft";
+import { displayRarity, type KitbashTraits, type TraitRarity } from "@/types/nft";
+import { validateCustomName } from "@/lib/kitbash/namePools";
 
 const RARITY_COLORS: Record<TraitRarity, string> = {
   Common: "text-gray-400",
@@ -38,9 +40,14 @@ export function GenerationReveal() {
     traitRarities,
     generatedImageBase64,
     generatedImageMimeType,
+    fallbackName,
+    customName,
+    setCustomName,
     goTo,
     reset,
   } = useMintStore();
+
+  const [nameError, setNameError] = useState<string | null>(null);
 
   if (!traits || !kitbashTraits || !traitRarities || !generatedImageBase64) {
     return null;
@@ -48,6 +55,13 @@ export function GenerationReveal() {
 
   const imageUrl = `data:${generatedImageMimeType ?? "image/png"};base64,${generatedImageBase64}`;
   const traitKeys = Object.keys(kitbashTraits) as (keyof KitbashTraits)[];
+
+  const handleNameChange = (value: string) => {
+    setCustomName(value);
+    setNameError(validateCustomName(value));
+  };
+
+  const canProceed = nameError === null;
 
   return (
     <div className="flex flex-col lg:flex-row gap-6 items-center lg:items-start justify-center w-full px-2">
@@ -64,6 +78,36 @@ export function GenerationReveal() {
         <p className="text-sm text-[var(--foreground)]/60 text-center lg:text-left">
           {traits.series} — {traits.faction}
         </p>
+
+        {/* Name your Gundar-Frame */}
+        <div>
+          <label
+            htmlFor="custom-name"
+            className="block text-[10px] font-[family-name:var(--font-orbitron)] text-[var(--foreground)]/40 mb-1 tracking-wider"
+          >
+            NAME YOUR GUNDAR-FRAME
+          </label>
+          <input
+            id="custom-name"
+            type="text"
+            maxLength={32}
+            value={customName}
+            onChange={(e) => handleNameChange(e.target.value)}
+            placeholder={fallbackName ?? ""}
+            className="w-full px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] text-sm text-[var(--foreground)] placeholder:text-[var(--foreground)]/30 focus:outline-none focus:border-[var(--accent)]/60"
+          />
+          <div className="flex items-center justify-between mt-1">
+            <span className="text-[10px] text-[var(--foreground)]/30">
+              {nameError ?? "Optional. Leave blank to use the auto-name."}
+            </span>
+            <span className="text-[10px] font-mono text-[var(--foreground)]/30">
+              {customName.length}/32
+            </span>
+          </div>
+          {nameError && (
+            <p className="text-red-400 text-[10px] mt-0.5">{nameError}</p>
+          )}
+        </div>
 
         {/* Trait badges */}
         <div className="grid grid-cols-2 gap-2">
@@ -85,7 +129,7 @@ export function GenerationReveal() {
                   <div
                     className={`text-[10px] font-[family-name:var(--font-orbitron)] ${RARITY_COLORS[rarity]}`}
                   >
-                    {rarity.toUpperCase()}
+                    {displayRarity(rarity).toUpperCase()}
                   </div>
                 </div>
               );
@@ -125,7 +169,8 @@ export function GenerationReveal() {
         <div className="flex gap-3 justify-center lg:justify-start">
           <button
             onClick={() => goTo("confirming")}
-            className="flex-1 px-6 py-3 bg-[var(--accent)] text-black font-[family-name:var(--font-orbitron)] font-bold rounded-xl hover:brightness-110 transition-all"
+            disabled={!canProceed}
+            className="flex-1 px-6 py-3 bg-[var(--accent)] text-black font-[family-name:var(--font-orbitron)] font-bold rounded-xl hover:brightness-110 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
           >
             MINT THIS CARD
           </button>

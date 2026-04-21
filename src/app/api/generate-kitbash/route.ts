@@ -4,9 +4,9 @@ import {
   rollTraits,
   deriveCardRarity,
   deriveStats,
-  generateSuitName,
   getTraitRarity,
 } from "@/lib/kitbash/traits";
+import { pickFallbackName } from "@/lib/kitbash/namePools";
 import { generateKitbashImage } from "@/lib/kitbash/generate";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { checkRateLimit } from "@/lib/rateLimit";
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
     const kitbashTraits = rollTraits(validHint ?? undefined);
     const rarity = deriveCardRarity(kitbashTraits);
     const stats = deriveStats(rarity);
-    const name = generateSuitName(kitbashTraits, validHint ?? undefined);
+    const name = pickFallbackName(rarity);
     const faction = validHint ?? deriveFaction(kitbashTraits.colorway);
     const armorType = deriveArmorType(kitbashTraits);
 
