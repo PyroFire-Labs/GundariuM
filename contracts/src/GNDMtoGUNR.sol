@@ -17,14 +17,14 @@ contract GNDMtoGUNR {
 
     event Migrated(address indexed user, uint256 amount, uint256 totalMigrated);
 
-    constructor(address gndm_, address gunr_, bytes32 merkleRoot_, uint256 deadline_) {
-        require(gndm_ != address(0) && gunr_ != address(0), "Migration: zero address");
+    constructor(address owner_, address gndm_, address gunr_, bytes32 merkleRoot_, uint256 deadline_) {
+        require(owner_ != address(0) && gndm_ != address(0) && gunr_ != address(0), "Migration: zero address");
         require(deadline_ > block.timestamp, "Migration: deadline in past");
+        owner = owner_;
         gndm = IERC20(gndm_);
         gunr = IERC20(gunr_);
         merkleRoot = merkleRoot_;
         deadline = deadline_;
-        owner = msg.sender;
     }
 
     /// @notice Swap GNDM for GUNR at 1:1. Caller must have approved GNDM to this contract.

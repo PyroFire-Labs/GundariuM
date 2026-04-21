@@ -194,8 +194,15 @@ export function useMint() {
         args: [account.address!, tokenUri, onchainTraits as any, tier, proof],
       });
       const receipt = await publicClient.waitForTransactionReceipt({ hash });
-      const transferLog = receipt.logs.find((l) => l.topics[0] === TRANSFER_SIG);
-      const tokenId = transferLog ? BigInt(transferLog.topics[3]!) : null;
+      const transferLog = receipt.logs.find(
+        (l) =>
+          l.address.toLowerCase() === contracts!.gunplaCard.toLowerCase() &&
+          l.topics[0] === TRANSFER_SIG
+      );
+      const tokenId =
+        transferLog && transferLog.topics[3]
+          ? BigInt(transferLog.topics[3])
+          : null;
       setPhase("done");
       return tokenId;
     } catch (e: unknown) {

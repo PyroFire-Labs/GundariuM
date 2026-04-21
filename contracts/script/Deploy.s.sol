@@ -25,6 +25,7 @@ import {MockERC20} from "../src/MockERC20.sol";
  * Required env vars:
  *   USDC_ADDRESS              — USDC on the target chain
  *   BATTLE_RESOLVER_ADDRESS   — trusted off-chain resolver EOA
+ *   OWNER_ADDRESS             — contract owner (your deployer wallet)
  *
  * Optional env vars:
  *   GNDM_ADDRESS              — $GNDM token address (if unset, MockERC20 is deployed)
@@ -52,6 +53,7 @@ contract Deploy is Script {
     function run() external {
         // Key injection: prefer --account keystore; fall back to DEPLOYER_PRIVATE_KEY env var.
         uint256 deployerKey    = vm.envOr("DEPLOYER_PRIVATE_KEY", uint256(0));
+        address owner          = vm.envAddress("OWNER_ADDRESS");
         address usdc           = vm.envAddress("USDC_ADDRESS");
         address battleResolver = vm.envAddress("BATTLE_RESOLVER_ADDRESS");
 
@@ -66,17 +68,14 @@ contract Deploy is Script {
         }
 
         // Start broadcast: with key (env var) or without (--account keystore).
-        address deployer;
         if (deployerKey != 0) {
-            deployer = vm.addr(deployerKey);
             vm.startBroadcast(deployerKey);
         } else {
             vm.startBroadcast();
-            deployer = msg.sender; // populated by --account flag
         }
 
         console.log("=== GundariuM Deploy ===");
-        console.log("Deployer:         ", deployer);
+        console.log("Owner:            ", owner);
         console.log("USDC:             ", usdc);
         console.log("Battle resolver:  ", battleResolver);
         console.log("Chain ID:         ", block.chainid);
@@ -92,7 +91,7 @@ contract Deploy is Script {
                 "GundariuM",
                 "GNDM",
                 MOCK_GNDM_SUPPLY,
-                deployer
+                owner
             );
             gndm = address(mockGndm);
             console.log("MockGNDM deployed:", gndm);
@@ -102,7 +101,7 @@ contract Deploy is Script {
         GunplaCard cardImpl = new GunplaCard();
         bytes memory cardInit = abi.encodeCall(
             GunplaCard.initialize,
-            (deployer, usdc, MINT_PRICE_USDC, COSMETIC_PRICE_USDC)
+            (owner, usdc, MINT_PRICE_USDC, COSMETIC_PRICE_USDC)
         );
         ERC1967Proxy cardProxy = new ERC1967Proxy(address(cardImpl), cardInit);
         address cardAddress = address(cardProxy);
@@ -120,7 +119,7 @@ contract Deploy is Script {
         GundaniumGame gameImpl = new GundaniumGame();
         bytes memory gameInit = abi.encodeCall(
             GundaniumGame.initialize,
-            (deployer, gndm, battleResolver, PVE_ENTRY_FEE, PVP_MIN_STAKE)
+            (owner, gndm, battleResolver, PVE_ENTRY_FEE, PVP_MIN_STAKE)
         );
         ERC1967Proxy gameProxy = new ERC1967Proxy(address(gameImpl), gameInit);
         address gameAddress = address(gameProxy);
@@ -130,7 +129,7 @@ contract Deploy is Script {
         PrizePool poolImpl = new PrizePool();
         bytes memory poolInit = abi.encodeCall(
             PrizePool.initialize,
-            (deployer, gndm, usdc)
+            (owner, gndm, usdc)
         );
         ERC1967Proxy poolProxy = new ERC1967Proxy(address(poolImpl), poolInit);
         address poolAddress = address(poolProxy);

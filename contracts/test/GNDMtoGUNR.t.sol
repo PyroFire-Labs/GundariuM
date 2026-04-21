@@ -29,7 +29,7 @@ contract GNDMtoGUNRTest is Test {
 
         vm.prank(owner);
         uint256 deadline = block.timestamp + 30 days;
-        migration = new GNDMtoGUNR(address(gndm), address(gunr), merkleRoot, deadline);
+        migration = new GNDMtoGUNR(owner, address(gndm), address(gunr), merkleRoot, deadline);
 
         // Fund contract with GUNR
         vm.prank(owner);
@@ -201,11 +201,11 @@ contract GNDMtoGUNRTest is Test {
 
     function test_constructor_zeroAddress_reverts() public {
         vm.expectRevert("Migration: zero address");
-        new GNDMtoGUNR(address(0), address(gunr), merkleRoot, block.timestamp + 30 days);
+        new GNDMtoGUNR(owner, address(0), address(gunr), merkleRoot, block.timestamp + 30 days);
     }
 
     function test_constructor_deadlineInPast_reverts() public {
         vm.expectRevert("Migration: deadline in past");
-        new GNDMtoGUNR(address(gndm), address(gunr), merkleRoot, block.timestamp - 1);
+        new GNDMtoGUNR(owner, address(gndm), address(gunr), merkleRoot, block.timestamp - 1);
     }
 }

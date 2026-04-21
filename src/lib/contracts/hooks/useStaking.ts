@@ -37,13 +37,13 @@ export function useStaking() {
   let contracts: ReturnType<typeof getContracts> | null = null;
   try { contracts = getContracts(chainId); } catch { /* unsupported chain */ }
 
-  const stakingAddress = contracts?.gndmStaking;
-  const gndmTokenAddress = contracts?.gndmToken;
+  const stakingAddress = contracts?.gunrStaking;
+  const gunrTokenAddress = contracts?.gunrToken;
   const contractReady = !!stakingAddress && !isPlaceholder(stakingAddress);
 
   // Read GNDM balance
   const { data: balanceRaw, refetch: refetchBalance } = useReadContract({
-    address: gndmTokenAddress,
+    address: gunrTokenAddress,
     abi: ERC20_ABI,
     functionName: "balanceOf",
     args: address ? [address] : undefined,
@@ -122,17 +122,17 @@ export function useStaking() {
       const amountWei = parseUnits(amount, 18);
       // Step 1: approve
       const approveTx = await writeContractAsync({
-        address: contracts.gndmToken,
+        address: contracts.gunrToken,
         abi: ERC20_ABI,
         functionName: "approve",
-        args: [contracts.gndmStaking, amountWei],
+        args: [contracts.gunrStaking, amountWei],
       });
       await publicClient.waitForTransactionReceipt({ hash: approveTx, timeout: 60_000 * 5 });
 
       // Step 2: stake
       setPhase("staking");
       const stakeTx = await writeContractAsync({
-        address: contracts.gndmStaking,
+        address: contracts.gunrStaking,
         abi: GNDM_STAKING_ABI,
         functionName: "stake",
         args: [amountWei],
@@ -160,7 +160,7 @@ export function useStaking() {
     try {
       const amountWei = parseUnits(amount, 18);
       const tx = await writeContractAsync({
-        address: contracts.gndmStaking,
+        address: contracts.gunrStaking,
         abi: GNDM_STAKING_ABI,
         functionName: "unstake",
         args: [amountWei],
@@ -186,7 +186,7 @@ export function useStaking() {
     }
     try {
       const tx = await writeContractAsync({
-        address: contracts.gndmStaking,
+        address: contracts.gunrStaking,
         abi: GNDM_STAKING_ABI,
         functionName: "claimRewards",
         args: [],

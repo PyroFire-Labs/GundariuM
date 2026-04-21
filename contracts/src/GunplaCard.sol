@@ -7,6 +7,7 @@ import {ERC721EnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/t
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {MerkleProof} from "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
 /**
  * @title GunplaCard
@@ -55,6 +56,15 @@ contract GunplaCard is
 
     mapping(uint256 => CardTraits) private _traits;
 
+    // ─── Whitelist ─────────────────────────────────────────────────
+    enum MintPhase { PAUSED, WHITELIST, PUBLIC }
+
+    MintPhase public mintPhase;
+    bytes32 public merkleRoot;
+    mapping(address => uint256) public whitelistMintCount;
+    mapping(uint8 => uint256) public tierPrice;
+    uint256 public whitelistMintCap;
+
     // ─── Events ─────────────────────────────────────────────────────────────
 
     event CardMinted(address indexed to, uint256 indexed tokenId, string name, uint8 rarity);
@@ -100,10 +110,41 @@ contract GunplaCard is
         string calldata tokenUri,
         CardTraits calldata traits
     ) external returns (uint256 tokenId) {
+        require(mintPhase == MintPhase.PUBLIC, "GunplaCard: not in public phase");
         require(
             usdc.transferFrom(msg.sender, address(this), mintPriceUsdc),
             "GunplaCard: USDC transfer failed"
         );
+
+        tokenId = _nextTokenId++;
+        _safeMint(to, tokenId);
+        _setTokenURI(tokenId, tokenUri);
+        _traits[tokenId] = traits;
+
+        emit CardMinted(to, tokenId, traits.name, traits.rarity);
+    }
+
+    /// @notice Mint during whitelist phase with Merkle proof
+    function mintCardWhitelist(
+        address to,
+        string calldata tokenUri,
+        CardTraits calldata traits,
+        uint8 tier,
+        bytes32[] calldata proof
+    ) external returns (uint256 tokenId) {
+        require(mintPhase == MintPhase.WHITELIST, "GunplaCard: not in whitelist phase");
+        require(whitelistMintCap == 0 || whitelistMintCount[msg.sender] < whitelistMintCap, "GunplaCard: mint cap reached");
+        require(tierPrice[tier] > 0, "GunplaCard: invalid tier");
+
+        bytes32 leaf = keccak256(abi.encodePacked(msg.sender, tier));
+        require(MerkleProof.verify(proof, merkleRoot, leaf), "GunplaCard: invalid proof");
+
+        require(
+            usdc.transferFrom(msg.sender, address(this), tierPrice[tier]),
+            "GunplaCard: USDC transfer failed"
+        );
+
+        whitelistMintCount[msg.sender]++;
 
         tokenId = _nextTokenId++;
         _safeMint(to, tokenId);
@@ -153,6 +194,22 @@ contract GunplaCard is
     function setCosmeticPrice(uint256 newPrice) external onlyOwner {
         cosmeticPriceUsdc = newPrice;
         emit CosmeticPriceUpdated(newPrice);
+    }
+
+    function setMintPhase(MintPhase phase_) external onlyOwner {
+        mintPhase = phase_;
+    }
+
+    function setMerkleRoot(bytes32 root_) external onlyOwner {
+        merkleRoot = root_;
+    }
+
+    function setTierPrice(uint8 tier_, uint256 price_) external onlyOwner {
+        tierPrice[tier_] = price_;
+    }
+
+    function setWhitelistMintCap(uint256 cap_) external onlyOwner {
+        whitelistMintCap = cap_;
     }
 
     function withdrawUsdc(uint256 amount) external onlyOwner {

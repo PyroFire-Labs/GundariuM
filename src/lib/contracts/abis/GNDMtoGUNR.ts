@@ -3,6 +3,11 @@ export const MIGRATION_ABI = [
     "type": "constructor",
     "inputs": [
       {
+        "name": "owner_",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
         "name": "gndm_",
         "type": "address",
         "internalType": "address"
