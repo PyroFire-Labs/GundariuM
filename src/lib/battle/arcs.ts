@@ -6,7 +6,7 @@ export interface CampaignArc {
   subtitle: string;
   description: string;
   difficulty: "Rookie" | "Veteran" | "Elite" | "Ace" | "Legend";
-  gndmReward: number;    // display only — set on-chain via setArcReward
+  gunrReward: number;    // display only — set on-chain via setArcReward
   enemy: TraitSet;
 }
 
@@ -17,7 +17,7 @@ export const CAMPAIGN_ARCS: CampaignArc[] = [
     subtitle: "Colony Side 7 Defense",
     description: "A Zaku II patrol has spotted your Gunpla. Defeat it before it calls reinforcements.",
     difficulty: "Rookie",
-    gndmReward: 5,
+    gunrReward: 5,
     enemy: {
       name: "MS-06F Zaku II",
       series: "Mobile Suit Gundam [Universal Century]",
@@ -42,7 +42,7 @@ export const CAMPAIGN_ARCS: CampaignArc[] = [
     subtitle: "Pursuit at Luna II",
     description: "Char Aznable's custom Zaku cuts through space at five times normal speed. Can you keep up?",
     difficulty: "Veteran",
-    gndmReward: 15,
+    gunrReward: 15,
     enemy: {
       name: "MS-06S Zaku II (Char Custom)",
       series: "Mobile Suit Gundam [Universal Century]",
@@ -67,7 +67,7 @@ export const CAMPAIGN_ARCS: CampaignArc[] = [
     subtitle: "Space Fortress Defense",
     description: "The amphibious Z'Gok variant commands the fortress approaches. Its claws have crushed Balls like tin cans.",
     difficulty: "Elite",
-    gndmReward: 40,
+    gunrReward: 40,
     enemy: {
       name: "MSM-07S Z'Gok (Char Custom)",
       series: "Mobile Suit Gundam [Universal Century]",
@@ -92,7 +92,7 @@ export const CAMPAIGN_ARCS: CampaignArc[] = [
     subtitle: "Neo Zeon Intercept",
     description: "The Qubeley's funnels fill the battlefield. Its I-Field deflects beam weapons - choose your loadout wisely.",
     difficulty: "Ace",
-    gndmReward: 100,
+    gunrReward: 100,
     enemy: {
       name: "AMX-004 Qubeley",
       series: "Mobile Suit Zeta Gundam [Universal Century]",
@@ -117,7 +117,7 @@ export const CAMPAIGN_ARCS: CampaignArc[] = [
     subtitle: "Axis Drop Intercept",
     description: "Char's final form. The Sazabi stands between you and victory. Everything you have learned leads to this moment.",
     difficulty: "Legend",
-    gndmReward: 250,
+    gunrReward: 250,
     enemy: {
       name: "MSN-04 Sazabi",
       series: "Mobile Suit Gundam: Char's Counterattack [Universal Century]",

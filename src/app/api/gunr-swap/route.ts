@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const NATIVE_TOKEN = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
-const GNDM_ADDRESS = "0xfc7008f9157257a17a9fb3c602b1cd56c27a4ba3";
+const GUNR_ADDRESS = "0x825E54c23CCbE0f697854b9A53FB4E6cE3e0DB07";
 const CHAIN_ID = "8453";
 
 // Firm quote — returns transaction data for client to sign and send
@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
   const params = new URLSearchParams({
     chainId: CHAIN_ID,
     sellToken: NATIVE_TOKEN,
-    buyToken: GNDM_ADDRESS,
+    buyToken: GUNR_ADDRESS,
     sellAmount,
     slippageBps: "200",
     taker,

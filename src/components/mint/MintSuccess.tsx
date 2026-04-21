@@ -13,12 +13,15 @@ const RARITY_CLASS: Record<Rarity, string> = {
   Legendary: "rarity-legendary",
 };
 
+// Aligned with --color-rarity-* in globals.css so the back glow matches the
+// front border that's set by the .rarity-* CSS class. Previously these were
+// swapped — Legendary read as purple on flip instead of gold.
 const RARITY_GLOW: Record<Rarity, string> = {
-  Common: "#6b7280",
+  Common: "#9ca3af",
   Uncommon: "#22c55e",
   Rare: "#3b82f6",
-  "Ultra Rare": "#eab308",
-  Legendary: "#a855f7",
+  "Ultra Rare": "#a855f7",
+  Legendary: "#f59e0b",
 };
 
 export function MintSuccess() {

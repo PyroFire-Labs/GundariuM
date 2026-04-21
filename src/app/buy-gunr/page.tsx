@@ -11,15 +11,15 @@ import {
 import { formatUnits, parseEther } from "viem";
 import { base } from "viem/chains";
 
-const GNDM_CAIP19 = "eip155:8453/erc20:0xfc7008f9157257a17a9fb3c602b1cd56c27a4ba3";
+const GUNR_CAIP19 = "eip155:8453/erc20:0x825E54c23CCbE0f697854b9A53FB4E6cE3e0DB07";
 const ETH_CAIP19  = "eip155:8453/native";
 
-const GNDM_ADDRESS = "0xfc7008f9157257a17a9fb3c602b1cd56c27a4ba3";
+const GUNR_ADDRESS = "0x825E54c23CCbE0f697854b9A53FB4E6cE3e0DB07";
 const QUICK_AMOUNTS = ["0.001", "0.01", "0.1", "1"];
 
 type Phase = "idle" | "quoting" | "swapping" | "done" | "error";
 
-export default function BuyGndmPage() {
+export default function BuyGunrPage() {
   const { address, isConnected } = useAccount();
   const chainId = useChainId();
   const { switchChainAsync } = useSwitchChain();
@@ -27,7 +27,7 @@ export default function BuyGndmPage() {
   const publicClient = usePublicClient({ chainId: base.id });
 
   const [ethAmount, setEthAmount] = useState("0.01");
-  const [gndmQuote, setGndmQuote] = useState<bigint | null>(null);
+  const [gunrQuote, setGunrQuote] = useState<bigint | null>(null);
   const [phase, setPhase] = useState<Phase>("idle");
   const [txHash, setTxHash] = useState<string | null>(null);
   const [receivedAmount, setReceivedAmount] = useState<bigint | null>(null);
@@ -41,7 +41,7 @@ export default function BuyGndmPage() {
         if (!ctx?.user?.fid) return;
         setIsFarcaster(true);
         // Launch native Farcaster swap immediately — no amount pre-set, user picks in Warpcast
-        sdk.actions.swapToken({ buyToken: GNDM_CAIP19 }).catch(() => {});
+        sdk.actions.swapToken({ buyToken: GUNR_CAIP19 }).catch(() => {});
       }).catch(() => {});
     }).catch(() => {});
   }, []);
@@ -49,19 +49,19 @@ export default function BuyGndmPage() {
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isMainnet = chainId === base.id;
 
-  // Live ticker: 0.01 ETH → GNDM, refreshes every 30s
-  const [tickerGndm, setTickerGndm] = useState<string | null>(null);
+  // Live ticker: 0.01 ETH → GUNR, refreshes every 30s
+  const [tickerGunr, setTickerGunr] = useState<string | null>(null);
   useEffect(() => {
     const TICKER_SELL = parseEther("0.01").toString();
     const fetchTicker = async () => {
       try {
-        const res = await fetch(`/api/gndm-quote?sellAmount=${TICKER_SELL}`);
+        const res = await fetch(`/api/gunr-quote?sellAmount=${TICKER_SELL}`);
         const json = await res.json();
         if (json.buyAmount) {
           const n = parseFloat(formatUnits(BigInt(json.buyAmount), 18));
-          if (n >= 1_000_000) setTickerGndm(`${(n / 1_000_000).toFixed(2)}M`);
-          else if (n >= 1_000) setTickerGndm(`${(n / 1_000).toFixed(1)}K`);
-          else setTickerGndm(n.toLocaleString(undefined, { maximumFractionDigits: 0 }));
+          if (n >= 1_000_000) setTickerGunr(`${(n / 1_000_000).toFixed(2)}M`);
+          else if (n >= 1_000) setTickerGunr(`${(n / 1_000).toFixed(1)}K`);
+          else setTickerGunr(n.toLocaleString(undefined, { maximumFractionDigits: 0 }));
         }
       } catch { /* non-critical */ }
     };
@@ -74,7 +74,7 @@ export default function BuyGndmPage() {
   useEffect(() => {
     const amt = parseFloat(ethAmount);
     if (!isMainnet || !ethAmount || isNaN(amt) || amt <= 0) {
-      setGndmQuote(null);
+      setGunrQuote(null);
       return;
     }
     if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -82,15 +82,15 @@ export default function BuyGndmPage() {
     debounceRef.current = setTimeout(async () => {
       try {
         const sellAmount = parseEther(ethAmount).toString();
-        const res = await fetch(`/api/gndm-quote?sellAmount=${sellAmount}`);
+        const res = await fetch(`/api/gunr-quote?sellAmount=${sellAmount}`);
         const json = await res.json();
         if (json.buyAmount) {
-          setGndmQuote(BigInt(json.buyAmount));
+          setGunrQuote(BigInt(json.buyAmount));
         } else {
-          setGndmQuote(null);
+          setGunrQuote(null);
         }
       } catch {
-        setGndmQuote(null);
+        setGunrQuote(null);
       } finally {
         setPhase("idle");
       }
@@ -111,7 +111,7 @@ export default function BuyGndmPage() {
         const sellAmount = parseEther(ethAmount).toString();
         const result = await sdk.actions.swapToken({
           sellToken: ETH_CAIP19,
-          buyToken: GNDM_CAIP19,
+          buyToken: GUNR_CAIP19,
           sellAmount,
         });
         if (!result.success) {
@@ -122,7 +122,7 @@ export default function BuyGndmPage() {
           throw new Error(result.error?.message ?? "Swap failed");
         }
         setTxHash(result.swap.transactions[0] ?? null);
-        setReceivedAmount(gndmQuote);
+        setReceivedAmount(gunrQuote);
         setPhase("done");
         return;
       }
@@ -135,7 +135,7 @@ export default function BuyGndmPage() {
 
       const sellAmount = parseEther(ethAmount).toString();
       const res = await fetch(
-        `/api/gndm-swap?sellAmount=${sellAmount}&taker=${address}`
+        `/api/gunr-swap?sellAmount=${sellAmount}&taker=${address}`
       );
       const quote = await res.json();
 
@@ -156,16 +156,16 @@ export default function BuyGndmPage() {
       await publicClient?.waitForTransactionReceipt({ hash });
 
       setTxHash(hash);
-      setReceivedAmount(gndmQuote);
+      setReceivedAmount(gunrQuote);
       setPhase("done");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Swap failed";
       setErrorMsg(msg.includes("User rejected") ? "Transaction cancelled" : msg);
       setPhase("error");
     }
-  }, [address, ethAmount, gndmQuote, isFarcaster, sendTransactionAsync, publicClient, switchChainAsync, chainId]);
+  }, [address, ethAmount, gunrQuote, isFarcaster, sendTransactionAsync, publicClient, switchChainAsync, chainId]);
 
-  const formatGndm = (val: bigint) => {
+  const formatGunr = (val: bigint) => {
     const n = parseFloat(formatUnits(val, 18));
     if (n >= 1_000_000_000) return `${(n / 1_000_000_000).toFixed(2)}B`;
     if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(2)}M`;
@@ -180,13 +180,13 @@ export default function BuyGndmPage() {
         <div className="w-full max-w-md rounded-xl border border-[var(--border)] bg-[var(--surface)] p-8 text-center space-y-4">
           <div className="text-5xl">🔥</div>
           <h2 className="font-[family-name:var(--font-orbitron)] text-2xl font-black text-[var(--accent)]">
-            GNDM ACQUIRED
+            GUNR ACQUIRED
           </h2>
           {receivedAmount && (
             <p className="text-[var(--foreground)]/70">
               You received{" "}
               <span className="text-[var(--accent)] font-bold">
-                {formatGndm(receivedAmount)} GNDM
+                {formatGunr(receivedAmount)} GUNR
               </span>
             </p>
           )}
@@ -203,7 +203,7 @@ export default function BuyGndmPage() {
               setPhase("idle");
               setTxHash(null);
               setReceivedAmount(null);
-              setGndmQuote(null);
+              setGunrQuote(null);
             }}
             className="w-full rounded-lg border border-[var(--border)] py-2 text-sm font-bold text-[var(--foreground)]/70 hover:text-[var(--accent)] transition-colors"
           >
@@ -221,7 +221,7 @@ export default function BuyGndmPage() {
         {/* Header */}
         <div className="text-center space-y-1">
           <h1 className="font-[family-name:var(--font-orbitron)] text-3xl font-black tracking-wider text-[var(--accent)]">
-            BUY GNDM 🔥
+            BUY GUNR 🔥
           </h1>
           <p className="text-sm text-[var(--foreground)]/60">
             Power your battles on Base
@@ -232,10 +232,10 @@ export default function BuyGndmPage() {
         <div className="flex items-center justify-between rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-xs font-mono">
           <span className="flex items-center gap-1.5 text-[var(--foreground)]/50">
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-            GNDM / ETH
+            GUNR / ETH
           </span>
           <span className="text-[var(--accent)] font-bold tracking-wide">
-            {tickerGndm ? `0.01 ETH = ${tickerGndm} GNDM` : "—"}
+            {tickerGunr ? `0.01 ETH = ${tickerGunr} GUNR` : "—"}
           </span>
           <span className="text-[var(--foreground)]/30">OKX DEX</span>
         </div>
@@ -295,7 +295,7 @@ export default function BuyGndmPage() {
           {/* Arrow */}
           <div className="text-center text-[var(--foreground)]/30 text-lg">↓</div>
 
-          {/* GNDM output */}
+          {/* GUNR output */}
           <div className="space-y-2">
             <label className="text-xs font-bold text-[var(--foreground)]/50 uppercase tracking-widest">
               You Receive
@@ -307,15 +307,15 @@ export default function BuyGndmPage() {
                     <span className="inline-block w-4 h-4 border-2 border-[var(--accent)] border-t-transparent rounded-full animate-spin" />
                     <span className="text-sm text-[var(--foreground)]/40">Fetching…</span>
                   </span>
-                ) : gndmQuote !== null ? (
-                  `~${formatGndm(gndmQuote)}`
+                ) : gunrQuote !== null ? (
+                  `~${formatGunr(gunrQuote)}`
                 ) : (
                   <span className="text-[var(--foreground)]/30 text-sm">
                     {isMainnet ? "Enter an amount" : "Switch to Base mainnet"}
                   </span>
                 )}
               </span>
-              <span className="text-sm font-bold text-[var(--accent)]/70">GNDM</span>
+              <span className="text-sm font-bold text-[var(--accent)]/70">GUNR</span>
             </div>
           </div>
 
@@ -342,7 +342,7 @@ export default function BuyGndmPage() {
               disabled={
                 phase === "swapping" ||
                 phase === "quoting" ||
-                !gndmQuote
+                !gunrQuote
               }
               className="w-full rounded-lg bg-[var(--accent)] text-black font-bold py-3 hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-[family-name:var(--font-orbitron)] tracking-wider"
             >
@@ -352,7 +352,7 @@ export default function BuyGndmPage() {
                   SWAPPING…
                 </span>
               ) : (
-                "BUY GNDM 🔥"
+                "BUY GUNR 🔥"
               )}
             </button>
           )}
@@ -365,14 +365,14 @@ export default function BuyGndmPage() {
 
         {/* Contract link */}
         <p className="text-center text-xs text-[var(--foreground)]/30">
-          GNDM:{" "}
+          GUNR:{" "}
           <a
-            href={`https://basescan.org/token/${GNDM_ADDRESS}`}
+            href={`https://basescan.org/token/${GUNR_ADDRESS}`}
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-[var(--accent)] transition-colors"
           >
-            {GNDM_ADDRESS.slice(0, 6)}…{GNDM_ADDRESS.slice(-4)}
+            {GUNR_ADDRESS.slice(0, 6)}…{GUNR_ADDRESS.slice(-4)}
           </a>
         </p>
       </div>

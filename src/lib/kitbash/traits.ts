@@ -1,4 +1,6 @@
 import type { KitbashTraits, Rarity, TraitRarity } from "@/types/nft";
+import type { FactionKey } from "@/lib/constants/factions";
+import { FACTION_BIAS } from "./factionBias";
 
 interface WeightedTrait {
   name: string;
@@ -6,6 +8,9 @@ interface WeightedTrait {
 }
 
 // ─── Trait Tables ──────────────────────────────────────────────────
+// Existing entries preserved; signature faction-specific entries added
+// at low weights so they remain rare in the global pool but become
+// natural choices when faction bias filters the pool down.
 
 export const TRAIT_TABLES: Record<keyof KitbashTraits, WeightedTrait[]> = {
   frameType: [
@@ -19,6 +24,7 @@ export const TRAIT_TABLES: Record<keyof KitbashTraits, WeightedTrait[]> = {
     { name: "Full Armor", weight: 4 },
   ],
   head: [
+    // Generic / cross-universe
     { name: "Classic V-Fin", weight: 25 },
     { name: "Mono-Eye", weight: 20 },
     { name: "Visor Type", weight: 15 },
@@ -27,8 +33,26 @@ export const TRAIT_TABLES: Record<keyof KitbashTraits, WeightedTrait[]> = {
     { name: "Crown Crest", weight: 8 },
     { name: "Blade Antenna", weight: 6 },
     { name: "Multi-Sensor", weight: 4 },
+    // Faction-signature heads
+    { name: "Commander Horn", weight: 5 },
+    { name: "Gas-Mask Intake", weight: 4 },
+    { name: "Knight-Crest", weight: 5 },
+    { name: "Multi-Sensor Array", weight: 5 },
+    { name: "Beast-like Fin", weight: 5 },
+    { name: "Guard Plate", weight: 5 },
+    { name: "Knight's Visor", weight: 6 },
+    { name: "Permet Shell Faceplate", weight: 4 },
+    { name: "Reptilian Crown", weight: 3 },
+    { name: "Samurai Helmet", weight: 3 },
+    { name: "GN Condenser Head", weight: 4 },
+    { name: "Rick Dias Hockey Mask", weight: 3 },
+    { name: "Curved V-Fin", weight: 4 },
+    { name: "Rabbit-Ear Sensors", weight: 3 },
+    { name: "Plumed Sensor", weight: 4 },
+    { name: "Slit Visor", weight: 5 },
   ],
   primaryWeapon: [
+    // Generic / cross-universe
     { name: "Beam Rifle", weight: 20 },
     { name: "Machine Gun", weight: 15 },
     { name: "Heat Hawk", weight: 12 },
@@ -40,8 +64,37 @@ export const TRAIT_TABLES: Record<keyof KitbashTraits, WeightedTrait[]> = {
     { name: "Twin Buster Rifle", weight: 4 },
     { name: "GN Sword", weight: 3 },
     { name: "Ship-Cutting Sword", weight: 3 },
+    // Faction-signature weapons
+    { name: "Heat Sword", weight: 5 },
+    { name: "Beam Naginata", weight: 5 },
+    { name: "Pile Bunker", weight: 4 },
+    { name: "Smoothbore Cannon", weight: 4 },
+    { name: "Schwert Gewehr", weight: 3 },
+    { name: "Agni Hyper Impulse Cannon", weight: 3 },
+    { name: "GN Sniper Rifle", weight: 4 },
+    { name: "Dober Gun", weight: 5 },
+    { name: "Beam Scythe", weight: 4 },
+    { name: "Heat Shotel", weight: 4 },
+    { name: "Long Blade Rifle", weight: 3 },
+    { name: "Beam Shotrifle", weight: 3 },
+    { name: "Beam Magnum", weight: 3 },
+    { name: "GUND-Bit Stave", weight: 3 },
+    { name: "Heavy Physical Blade", weight: 5 },
+    { name: "Beam Carbine", weight: 5 },
+    { name: "Burning Finger", weight: 3 },
+    { name: "Photon Beam Rifle", weight: 4 },
+    { name: "DODS Rifle", weight: 4 },
+    { name: "Tactical Arms", weight: 3 },
+    { name: "Halberd", weight: 4 },
+    { name: "Battle Blade", weight: 5 },
+    { name: "Dainsleif Launcher", weight: 2 },
+    { name: "Mega Bazooka Launcher", weight: 3 },
+    { name: "Funnel Bits", weight: 3 },
+    { name: "Beam Wire", weight: 3 },
+    { name: "Gerbera Straight Katana", weight: 3 },
   ],
   backpack: [
+    // Generic / cross-universe
     { name: "Standard Thruster Pack", weight: 25 },
     { name: "Flight Unit", weight: 20 },
     { name: "Heavy Arms Rack", weight: 12 },
@@ -50,8 +103,32 @@ export const TRAIT_TABLES: Record<keyof KitbashTraits, WeightedTrait[]> = {
     { name: "Booster Pod", weight: 15 },
     { name: "Wing Binders", weight: 10 },
     { name: "Psychoframe Emitter", weight: 4 },
+    // Faction-signature backpacks
+    { name: "Wizard Pack", weight: 6 },
+    { name: "Aile Striker Pack", weight: 6 },
+    { name: "Sword Striker Pack", weight: 4 },
+    { name: "Launcher Striker Pack", weight: 4 },
+    { name: "IWSP", weight: 3 },
+    { name: "GN Drive (Cone)", weight: 4 },
+    { name: "GN Drive Tau (Flat)", weight: 5 },
+    { name: "Active Cloak", weight: 4 },
+    { name: "Ahab Reactor Thrusters", weight: 5 },
+    { name: "Sub-Arm Rigging", weight: 4 },
+    { name: "Minovsky Flight Craft", weight: 3 },
+    { name: "Multi-Petal Binders", weight: 3 },
+    { name: "Reflector Pack", weight: 4 },
+    { name: "Bit On-Form", weight: 4 },
+    { name: "Trans-Am Booster", weight: 3 },
+    { name: "Movable Frame Thrusters", weight: 5 },
+    { name: "Funnel Rack", weight: 4 },
+    { name: "Shield Booster (Stackable)", weight: 5 },
+    { name: "Atmospheric Pack", weight: 4 },
+    { name: "Tail-Blade Thruster", weight: 3 },
+    { name: "Core Lander", weight: 3 },
+    { name: "Power Cylinder", weight: 4 },
   ],
   colorway: [
+    // Existing
     { name: "Federation White & Blue", weight: 15 },
     { name: "Zeon Army Green", weight: 12 },
     { name: "Char Red", weight: 10 },
@@ -66,6 +143,28 @@ export const TRAIT_TABLES: Record<keyof KitbashTraits, WeightedTrait[]> = {
     { name: "Psychoframe Aurora (iridescent)", weight: 3 },
     { name: "Chrome Silver", weight: 3 },
     { name: "Phantom Midnight Blue", weight: 3 },
+    // New canonical palettes
+    { name: "ZAFT Maroon & Grey", weight: 5 },
+    { name: "Strike White, Blue & Red", weight: 5 },
+    { name: "Dagger Grey & Navy", weight: 4 },
+    { name: "Akatsuki Gold & Black", weight: 3 },
+    { name: "Astray Red & White", weight: 4 },
+    { name: "Astray Blue & White", weight: 4 },
+    { name: "Rusty Iron & Orange", weight: 4 },
+    { name: "Tekkadan Dark Olive", weight: 4 },
+    { name: "Gjallarhorn Emerald & Slate", weight: 4 },
+    { name: "Gjallarhorn Royal Blue", weight: 4 },
+    { name: "Vibrant Primary (G-Nations)", weight: 3 },
+    { name: "Vagan Gold & Purple", weight: 3 },
+    { name: "Vagan Pale Grey & Pink", weight: 3 },
+    { name: "Pastel Blue & Translucent (G-Self)", weight: 3 },
+    { name: "Lime Green & Silver", weight: 3 },
+    { name: "Permet Teal & White", weight: 4 },
+    { name: "Slate Blue & Charcoal", weight: 4 },
+    { name: "Mafty Pale Orange & White", weight: 3 },
+    { name: "Hyaku Shiki Gold", weight: 3 },
+    { name: "Solar Orange & White", weight: 3 },
+    { name: "Stealth Black & Purple", weight: 3 },
   ],
   stance: [
     { name: "Standing at attention, weapon held", weight: 20 },
@@ -114,18 +213,31 @@ function weightedRandom(items: WeightedTrait[]): string {
   return items[items.length - 1].name;
 }
 
-export function rollTraits(factionHint?: string): KitbashTraits {
+function pickFromAllowList(
+  table: WeightedTrait[],
+  allowed: readonly string[] | undefined
+): string {
+  if (!allowed || allowed.length === 0) return weightedRandom(table);
+  const filtered = table.filter((t) => allowed.includes(t.name));
+  if (filtered.length === 0) return weightedRandom(table);
+  return weightedRandom(filtered);
+}
+
+export function rollTraits(faction?: FactionKey): KitbashTraits {
+  const bias = faction && faction !== "UNKNOWN" ? FACTION_BIAS[faction] : null;
+
   return {
-    frameType: weightedRandom(TRAIT_TABLES.frameType),
-    head: weightedRandom(TRAIT_TABLES.head),
-    primaryWeapon: weightedRandom(TRAIT_TABLES.primaryWeapon),
-    backpack: weightedRandom(TRAIT_TABLES.backpack),
-    colorway: factionHint
-      ? factionColorway(factionHint)
-      : weightedRandom(TRAIT_TABLES.colorway),
+    frameType: pickFromAllowList(TRAIT_TABLES.frameType, bias?.allowedFrames),
+    head: pickFromAllowList(TRAIT_TABLES.head, bias?.allowedHeads),
+    primaryWeapon: pickFromAllowList(
+      TRAIT_TABLES.primaryWeapon,
+      bias?.allowedWeapons
+    ),
+    backpack: pickFromAllowList(TRAIT_TABLES.backpack, bias?.allowedBackpacks),
+    colorway: pickFromAllowList(TRAIT_TABLES.colorway, bias?.colorways),
     stance: weightedRandom(TRAIT_TABLES.stance),
     background: weightedRandom(TRAIT_TABLES.background),
-    special: weightedRandom(TRAIT_TABLES.special),
+    special: pickFromAllowList(TRAIT_TABLES.special, bias?.allowedSpecial),
   };
 }
 
@@ -165,36 +277,14 @@ export function deriveCardRarity(traits: KitbashTraits): Rarity {
   return "Common";
 }
 
-// ─── Faction Colorway Bias ─────────────────────────────────────────
-
-const FACTION_COLORWAYS: Record<string, string[]> = {
-  EFSF: ["Federation White & Blue"],
-  ZEON: ["Zeon Army Green", "Char Red", "Neo Zeon Crimson"],
-  ZAFT: ["Zeon Army Green", "Celestial Being Gunmetal & White"],
-  ALLIANCE: ["Federation White & Blue", "Titans Navy Blue"],
-  OZ: ["OZ Royal Purple", "Titans Navy Blue"],
-  GUNDAM_WING_TEAM: ["Federation White & Blue", "Shadow Black & Gold"],
-  CELESTIAL_BEING: ["Celestial Being Gunmetal & White"],
-  HUMAN_REFORM_LEAGUE: ["Desert Tan & Brown", "Titans Navy Blue"],
-  INNOVATION: ["Psychoframe Aurora (iridescent)", "OZ Royal Purple"],
-};
-
-function factionColorway(faction: string): string {
-  const options = FACTION_COLORWAYS[faction];
-  if (options && options.length > 0) {
-    return options[Math.floor(Math.random() * options.length)];
-  }
-  return weightedRandom(TRAIT_TABLES.colorway);
-}
-
 // ─── Stats Derivation ──────────────────────────────────────────────
 
 const HP_RANGES: Record<Rarity, [number, number]> = {
-  Common: [150, 349],
-  Uncommon: [350, 599],
-  Rare: [600, 899],
-  "Ultra Rare": [900, 1199],
-  Legendary: [1200, 2000],
+  Common: [400, 550],
+  Uncommon: [500, 700],
+  Rare: [650, 850],
+  "Ultra Rare": [800, 1050],
+  Legendary: [1000, 1300],
 };
 
 function randInt(min: number, max: number): number {
@@ -215,20 +305,45 @@ export function deriveStats(rarity: Rarity) {
 
 // ─── Name Generation ───────────────────────────────────────────────
 
-export function generateSuitName(traits: KitbashTraits): string {
-  const prefixes: Record<string, string[]> = {
-    Standard: ["GN", "RX", "MSN", "GAT"],
-    "Heavy Armor": ["FA", "RX-FA", "XXXG"],
-    "High Mobility": ["MS", "RGZ", "GNY"],
-    Sniper: ["RGM", "MSZ", "GN"],
-    Commander: ["MSN", "RX", "CB"],
-    Berserker: ["MRX", "NZ", "OZ"],
-    Stealth: ["RGM-S", "GN-X", "ASW"],
-    "Full Armor": ["FA", "FAZZ", "PF"],
-  };
-  const opts = prefixes[traits.frameType] ?? ["MS"];
-  const prefix = opts[Math.floor(Math.random() * opts.length)];
+const FRAME_FALLBACK_PREFIXES: Record<string, string[]> = {
+  Standard: ["MS", "RX"],
+  "Heavy Armor": ["FA", "RX-FA"],
+  "High Mobility": ["MS", "RGZ"],
+  Sniper: ["RGM", "MSZ"],
+  Commander: ["MSN", "RX"],
+  Berserker: ["MRX", "NZ"],
+  Stealth: ["RGM-S", "ASW"],
+  "Full Armor": ["FA", "FAZZ"],
+};
+
+const MONO_EYE_HEADS = new Set([
+  "Mono-Eye",
+  "Reptilian Crown",
+  "Slit Visor",
+  "Beast-like Fin",
+]);
+
+export function generateSuitName(
+  traits: KitbashTraits,
+  faction?: FactionKey
+): string {
+  const factionPrefixes =
+    faction && faction !== "UNKNOWN"
+      ? FACTION_BIAS[faction]?.namePrefixes
+      : null;
+
+  const prefixPool =
+    factionPrefixes && factionPrefixes.length > 0
+      ? factionPrefixes
+      : FRAME_FALLBACK_PREFIXES[traits.frameType] ?? ["MS"];
+
+  const prefix = prefixPool[Math.floor(Math.random() * prefixPool.length)];
   const num = randInt(10, 999);
-  const suffix = traits.head === "Mono-Eye" ? "" : " Gundam";
+
+  // Mono-eye-style heads typically belong to grunt-class suits and don't get
+  // the "Gundam" suffix. Exception: GN Condenser / Permet heads are flagship.
+  const isGruntHead = MONO_EYE_HEADS.has(traits.head);
+  const suffix = isGruntHead ? "" : " Gundam";
+
   return `${prefix}-${num}${suffix}`;
 }

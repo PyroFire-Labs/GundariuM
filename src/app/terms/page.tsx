@@ -28,7 +28,7 @@ export default function TermsOfService() {
             <li>Photograph physical Gunpla model kits and mint ERC-721 NFTs (&quot;Gunpla Cards&quot;) with generated combat statistics</li>
             <li>Apply cosmetic upgrades to their Gunpla Cards (frame skins, decals, color modifications, AI-generated repaints)</li>
             <li>Participate in PVE and PVP battles using their Gunpla Cards</li>
-            <li>Stake and earn GNDM tokens</li>
+            <li>Stake and earn GUNR tokens</li>
             <li>Trade and transfer Gunpla Cards on compatible marketplaces</li>
           </ul>
         </section>
@@ -42,7 +42,7 @@ export default function TermsOfService() {
             <li>Maintaining the security of your wallet and private keys</li>
             <li>All transactions initiated from your wallet</li>
             <li>Any gas fees or transaction costs incurred on the blockchain</li>
-            <li>Ensuring you have sufficient funds (USDC, ETH, GNDM) for transactions</li>
+            <li>Ensuring you have sufficient funds (USDC, ETH, GUNR) for transactions</li>
           </ul>
           <p>
             We do not have access to your private keys and cannot reverse, cancel, or refund blockchain transactions. All transactions on the blockchain are final and irreversible.
@@ -78,12 +78,12 @@ export default function TermsOfService() {
         </section>
 
         <section>
-          <h2 className="font-[family-name:var(--font-orbitron)] text-lg text-[var(--foreground)] mb-3">6. GNDM Token</h2>
+          <h2 className="font-[family-name:var(--font-orbitron)] text-lg text-[var(--foreground)] mb-3">6. GUNR Token</h2>
           <p>
-            GNDM is a utility token used within the GundariuM ecosystem for staking, battle entry fees, and rewards. GNDM is not an investment, security, or financial instrument. We make no representations regarding the future value of GNDM tokens.
+            GUNR is a utility token used within the GundariuM ecosystem for staking, battle entry fees, and rewards. GUNR is not an investment, security, or financial instrument. We make no representations regarding the future value of GUNR tokens.
           </p>
           <p>
-            Staking GNDM involves a 24-hour lock period. Unstaking and reward claiming are subject to smart contract rules that cannot be overridden.
+            Staking GUNR involves a 24-hour lock period. Unstaking and reward claiming are subject to smart contract rules that cannot be overridden.
           </p>
         </section>
 
@@ -94,7 +94,7 @@ export default function TermsOfService() {
             <li>Upload images that are obscene, illegal, infringing, or harmful</li>
             <li>Attempt to exploit, hack, or manipulate the smart contracts or game mechanics</li>
             <li>Use bots, scripts, or automated tools to gain unfair advantage</li>
-            <li>Engage in market manipulation of GNDM tokens or Gunpla Cards</li>
+            <li>Engage in market manipulation of GUNR tokens or Gunpla Cards</li>
             <li>Impersonate other users or misrepresent your identity</li>
             <li>Circumvent any access restrictions or security measures</li>
           </ul>

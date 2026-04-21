@@ -1,0 +1,27 @@
+{
+  "root": "0xab43aea1724418368fa5da1e58ac3f77a3d8469676e4e894a60dd0ee16b1e0d4",
+  "totalAddresses": 3,
+  "generatedAt": "2026-04-18T03:30:50.250Z",
+  "proofs": {
+    "0x9d6277e24efe034de2f44dd9adfe0f24b8b08bb7": {
+      "tier": 1,
+      "proof": [
+        "0x90a835e36a509de443ba27ac44bd21901b8429ae22990756568048a4d47311a5",
+        "0xbc51dabcdd5de9652601cc88abdebaaed618998faeacf8f3b8edd954e05a2384"
+      ]
+    },
+    "0x6e5b466b68eb66110819c32e3e3db2f8be5c50b3": {
+      "tier": 2,
+      "proof": [
+        "0xdc03412ef0c99329df1d182ff94f0afb8d84cb25300aa7949a73a237c036671e"
+      ]
+    },
+    "0xb98f0c9b8522f9295bb26bda0f5490e1872e7fa5": {
+      "tier": 2,
+      "proof": [
+        "0x3024a87b82d7cbc8780ac0d0ccaf338b3488d127d5582756a5307210873e8af7",
+        "0xbc51dabcdd5de9652601cc88abdebaaed618998faeacf8f3b8edd954e05a2384"
+      ]
+    }
+  }
+}

@@ -217,7 +217,7 @@ export default function MigratePage() {
                 NOT ON WHITELIST
               </p>
               <p className="text-xs text-red-400/60 mt-1">
-                Only verified GNDM holders can migrate. Contact @PyroFireZero on Farcaster.
+                Only verified GNDM holders can migrate. Contact @PyroFireZerox on Farcaster.
               </p>
             </div>
           )}
