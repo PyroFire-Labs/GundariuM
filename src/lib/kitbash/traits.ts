@@ -243,48 +243,65 @@ export function rollTraits(faction?: FactionKey): KitbashTraits {
 
 // ─── Rarity Derivation ────────────────────────────────────────────
 
+// Trait rarity labels use cumulative-weight percentile against a
+// weight-descending sort of the pool. This scales with pool size — when
+// tables get expanded, thresholds stay meaningful. Percentiles mirror the
+// card-rarity distribution below: top 50% is Common, next 25% Uncommon,
+// next 15% Rare, next 7% Ultra Rare, final 3% Legendary.
 export function getTraitRarity(
   traitKey: keyof KitbashTraits,
   traitValue: string
 ): TraitRarity {
   const table = TRAIT_TABLES[traitKey];
-  const item = table.find((t) => t.name === traitValue);
-  if (!item) return "Common";
-  const total = table.reduce((sum, t) => sum + t.weight, 0);
-  const pct = (item.weight / total) * 100;
-  if (pct <= 3) return "Legendary";
-  if (pct <= 6) return "Ultra Rare";
-  if (pct <= 10) return "Rare";
-  if (pct <= 15) return "Uncommon";
+  const sorted = [...table].sort((a, b) => b.weight - a.weight);
+  const total = sorted.reduce((sum, t) => sum + t.weight, 0);
+  let cumulative = 0;
+  for (const t of sorted) {
+    cumulative += t.weight;
+    if (t.name === traitValue) {
+      const pct = (cumulative / total) * 100;
+      if (pct <= 50) return "Common";
+      if (pct <= 75) return "Uncommon";
+      if (pct <= 90) return "Rare";
+      if (pct <= 97) return "Ultra Rare";
+      return "Legendary";
+    }
+  }
   return "Common";
 }
 
-export function deriveCardRarity(traits: KitbashTraits): Rarity {
-  const keys = Object.keys(traits) as (keyof KitbashTraits)[];
-  let hasLegendary = false;
-  let nonCommonCount = 0;
+const CARD_RARITY_DISTRIBUTION: ReadonlyArray<{ tier: Rarity; weight: number }> = [
+  { tier: "Common",     weight: 50 },
+  { tier: "Uncommon",   weight: 25 },
+  { tier: "Rare",       weight: 15 },
+  { tier: "Ultra Rare", weight: 7 },
+  { tier: "Legendary",  weight: 3 },
+];
 
-  for (const key of keys) {
-    const rarity = getTraitRarity(key, traits[key]);
-    if (rarity === "Legendary") hasLegendary = true;
-    if (rarity !== "Common") nonCommonCount++;
+// Card rarity is a direct weighted roll, decoupled from per-trait rarity.
+// This guarantees the mint-pool distribution regardless of how the trait
+// tables evolve (adding new faction variants, new weapons, etc.).
+// Traits argument is kept for future mechanics (faction rarity boosts,
+// cosmetic luck effects) but is unused today.
+export function deriveCardRarity(_traits: KitbashTraits): Rarity {
+  let roll = Math.random() * 100;
+  for (const entry of CARD_RARITY_DISTRIBUTION) {
+    roll -= entry.weight;
+    if (roll <= 0) return entry.tier;
   }
-
-  if (hasLegendary) return "Legendary";
-  if (nonCommonCount >= 4) return "Ultra Rare";
-  if (nonCommonCount >= 3) return "Rare";
-  if (nonCommonCount >= 2) return "Uncommon";
   return "Common";
 }
 
 // ─── Stats Derivation ──────────────────────────────────────────────
 
+// Ranges match the documented spec in CLAUDE.md: non-overlapping, with
+// ~7× Legendary-to-Common HP spread. Damage ranges are percentages of HP.
 const HP_RANGES: Record<Rarity, [number, number]> = {
-  Common: [400, 550],
-  Uncommon: [500, 700],
-  Rare: [650, 850],
-  "Ultra Rare": [800, 1050],
-  Legendary: [1000, 1300],
+  Common: [150, 349],
+  Uncommon: [350, 599],
+  Rare: [600, 899],
+  "Ultra Rare": [900, 1199],
+  Legendary: [1200, 2000],
 };
 
 function randInt(min: number, max: number): number {
