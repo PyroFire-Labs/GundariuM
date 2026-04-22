@@ -40,6 +40,17 @@ export function MintConfirm() {
   const targetChainId = Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? 84532);
   const wrongChain = chainId !== targetChainId;
 
+  const networkLabel =
+    targetChainId === 8453
+      ? "Base"
+      : targetChainId === 84532
+        ? "Base Sepolia"
+        : `Chain ${targetChainId}`;
+  const proofsFile =
+    targetChainId === 8453
+      ? "/whitelist-proofs.mainnet.json"
+      : "/whitelist-proofs.sepolia.json";
+
   const error = storeError ?? mintError;
 
   // Whitelist proof loading
@@ -47,14 +58,14 @@ export function MintConfirm() {
 
   useEffect(() => {
     if (!account.address || currentPhase !== 1) return;
-    fetch("/whitelist-proofs.json")
+    fetch(proofsFile)
       .then((r) => r.json())
       .then((data) => {
         const entry = data.proofs?.[account.address!.toLowerCase()];
         if (entry) setProofData(entry);
       })
       .catch(() => {});
-  }, [account.address, currentPhase]);
+  }, [account.address, currentPhase, proofsFile]);
 
   const effectivePrice = currentPhase === 1 && proofData
     ? (proofData.tier === 1 ? vipPrice : wlPrice) ?? mintPrice
@@ -148,7 +159,7 @@ export function MintConfirm() {
         <div className="flex justify-between">
           <span className="text-[var(--foreground)]/60">Network</span>
           <span className="font-mono text-[var(--foreground)]/80">
-            Base Sepolia
+            {networkLabel}
           </span>
         </div>
         <div className="flex justify-between">
@@ -190,15 +201,15 @@ export function MintConfirm() {
                 try {
                   await switchChain({ chainId: targetChainId });
                 } catch {
-                  setError("Please switch to Base Sepolia manually in your wallet, then reload this page.");
+                  setError(`Please switch to ${networkLabel} manually in your wallet, then reload this page.`);
                 }
               }}
               className="w-full py-3 bg-yellow-500 text-black font-bold font-[family-name:var(--font-orbitron)] text-sm rounded-lg hover:brightness-110 transition-all"
             >
-              SWITCH TO BASE SEPOLIA
+              SWITCH TO {networkLabel.toUpperCase()}
             </button>
             <p className="text-xs text-[var(--foreground)]/40 text-center">
-              If switching fails, manually select Base Sepolia (chainId 84532) in your wallet
+              If switching fails, manually select {networkLabel} (chainId {targetChainId}) in your wallet
             </p>
           </div>
         ) : (
