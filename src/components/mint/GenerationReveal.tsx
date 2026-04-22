@@ -10,16 +10,16 @@ const RARITY_COLORS: Record<TraitRarity, string> = {
   Common: "text-gray-400",
   Uncommon: "text-green-400",
   Rare: "text-blue-400",
-  "Ultra Rare": "text-yellow-400",
-  Legendary: "text-purple-400",
+  "Ultra Rare": "text-purple-400",
+  Legendary: "text-yellow-400",
 };
 
 const RARITY_BORDER: Record<TraitRarity, string> = {
   Common: "border-gray-600",
   Uncommon: "border-green-600",
   Rare: "border-blue-600",
-  "Ultra Rare": "border-yellow-600",
-  Legendary: "border-purple-600",
+  "Ultra Rare": "border-purple-600",
+  Legendary: "border-yellow-600",
 };
 
 const TRAIT_LABELS: Record<keyof KitbashTraits, string> = {
@@ -97,16 +97,17 @@ export function GenerationReveal() {
             className="w-full px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] text-sm text-[var(--foreground)] placeholder:text-[var(--foreground)]/30 focus:outline-none focus:border-[var(--accent)]/60"
           />
           <div className="flex items-center justify-between mt-1">
-            <span className="text-[10px] text-[var(--foreground)]/30">
+            <span
+              className={`text-[10px] ${
+                nameError ? "text-red-400" : "text-[var(--foreground)]/30"
+              }`}
+            >
               {nameError ?? "Optional. Leave blank to use the auto-name."}
             </span>
             <span className="text-[10px] font-mono text-[var(--foreground)]/30">
               {customName.length}/32
             </span>
           </div>
-          {nameError && (
-            <p className="text-red-400 text-[10px] mt-0.5">{nameError}</p>
-          )}
         </div>
 
         {/* Trait badges */}

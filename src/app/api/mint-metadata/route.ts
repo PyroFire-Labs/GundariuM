@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { uploadImage, uploadMetadata } from "@/lib/pinata/upload";
 import type { TraitSet } from "@/types/nft";
 import { verifyTurnstile } from "@/lib/turnstile";
+import { validateNameContent } from "@/lib/kitbash/namePools";
 
 export async function POST(request: NextRequest) {
   try {
@@ -55,6 +56,11 @@ export async function POST(request: NextRequest) {
           ? await traitsEntry.text()
           : (traitsEntry as string);
       traits = JSON.parse(traitsJson) as TraitSet;
+    }
+
+    const nameError = validateNameContent(traits.name);
+    if (nameError) {
+      return NextResponse.json({ error: "Invalid name" }, { status: 400 });
     }
 
     const imageHash = await uploadImage(imageFile);
