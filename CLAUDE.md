@@ -1,6 +1,6 @@
 # GundariuM — CLAUDE.md
 
-GundariuM is a Gunpla NFT battle game on the Base blockchain. Users photograph real Gunpla model kits, Claude AI identifies the Mobile Suit and assigns lore-accurate stats, and the result is minted as an ERC-721 NFT ("Gunpla Card") on Base. Cards are used in turn-based PVE and PVP battles with $GNDM token staking.
+GundariuM is a Gunpla NFT battle game on the Base blockchain. Users roll traits from a pool of ~69M combinations and Gemini AI generates a unique kitbashed Mobile Suit ("Gundar-Frame") which is minted as an ERC-721 NFT on Base. Users name their own Gundar-Frame on the reveal step. Cards are used in turn-based PVE and PVP battles with $GUNR token staking. (A photograph-your-real-kit premium tier is preserved in `src/components/mint/_deprecated/` for future rollout.)
 
 ---
 
@@ -162,15 +162,21 @@ The original photo-your-kit mint components (SuitSearch, GradePicker, PhotoDropz
 **Trait system:** `src/lib/kitbash/traits.ts`
 
 - 8 trait categories with weighted rarity tables (~69M+ unique combinations)
-- Card rarity derived from number of non-common traits rolled
-- Battle stats (HP, damage values) derived from card rarity using the same HP ranges as before
-- Optional faction hint biases the colorway selection toward that faction's palette
+- Card rarity is a direct weighted roll, independent of the traits rolled
+- Per-trait rarity labels are percentile-based over the pool (for trait-badge flavor only — they do NOT feed into card rarity)
+- Battle stats (HP, damage values) derived from card rarity using non-overlapping HP bands
+- Optional faction hint biases trait selection toward that faction's canon (frames, heads, weapons, backpacks, colorway)
 
-**Stat derivation** (in the API route):
-- Trait weights → per-trait rarity (Common/Uncommon/Rare/Ultra Rare/Legendary)
-- Count of non-common traits → card rarity (0-1=Common, 2=Uncommon, 3=Rare, 4+=Ultra Rare, any Legendary trait=Legendary)
-- HP ranges: Common 150–349, Uncommon 350–599, Rare 600–899, Ultra Rare 900–1199, Legendary 1200–2000
-- Weapon damages are percentages of HP (primary 15–25%, secondary 25–40%, tertiary 8–15%, special 50–80%)
+**Stat derivation** (`src/lib/kitbash/traits.ts`):
+- **Card rarity** — `deriveCardRarity()` rolls against a fixed 50/25/15/7/3 distribution (Common/Uncommon/Rare/Ultra Rare/Legendary). Decoupled from traits so the distribution stays stable as trait tables evolve.
+- **Per-trait rarity** — `getTraitRarity()` walks the table sorted by weight descending and returns the tier based on where the trait falls in the cumulative distribution: top 50% → Common, 50–75% → Uncommon, 75–90% → Rare, 90–97% → Ultra Rare, 97–100% → Legendary.
+- **HP ranges** — Common 150–349, Uncommon 350–599, Rare 600–899, Ultra Rare 900–1199, Legendary 1200–2000 (non-overlapping, ~7× Legendary-to-Common spread).
+- **Weapon damages** are percentages of HP: primary 15–25%, secondary 25–40%, tertiary 8–15%, special 50–80%.
+
+**Naming** (`src/lib/kitbash/namePools.ts`):
+- Users name their own Gundar-Frame on the reveal step (32-char ASCII, blocks "gundam" and a hardcoded profanity/hate-speech list)
+- If the user leaves the input blank, a rarity-mapped pool name is picked (Common → "Aegis-Titan" etc., Legendary → "Ω Iron-Duke" etc.)
+- Server-side `validateNameContent()` in `/api/mint-metadata` enforces the same content rules as a safety net against direct-POST bypass
 
 **When updating the generation prompt:**
 - Modify `buildPrompt()` in `src/lib/kitbash/generate.ts`
