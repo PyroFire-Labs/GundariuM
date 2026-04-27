@@ -1562,5 +1562,17 @@
   {
     "address": "0x165cd9856efb28bd7011c4bc94cc5ea825cc1ba0",
     "tier": 2
+  },
+  {
+    "address": "0x9d6277e24efe034de2f44dd9adfe0f24b8b08bb7",
+    "tier": 1
+  },
+  {
+    "address": "0x6e5b466b68eb66110819c32e3e3db2f8be5c50b3",
+    "tier": 1
+  },
+  {
+    "address": "0xb98f0c9b8522f9295bb26bda0f5490e1872e7fa5",
+    "tier": 1
   }
 ]

@@ -34,10 +34,12 @@ contract DeployGunplaCard is Script {
     uint256 constant MINT_PRICE_USDC     = 2_000_000; // $2 USDC public-phase price
     uint256 constant COSMETIC_PRICE_USDC = 1_000_000; // $1 USDC cosmetics price
 
-    // Mainnet whitelist merkle root — generated 2026-04-17 from the
-    // 391-address final whitelist (scripts/whitelist-proofs.mainnet.json).
+    // Mainnet whitelist merkle root — generated 2026-04-27 from the
+    // 394-address final whitelist (391 community handles + 3 project
+    // wallets at VIP tier 1: deployer, treasury, GundariuM Farcaster).
+    // See scripts/whitelist-proofs.mainnet.json for the full proof set.
     bytes32 constant MAINNET_MERKLE_ROOT =
-        0x34bcd14ea30ebcb4bc88932211f4229bbc1cdeb9e74218ba61b79fe74728e044;
+        0x1cb2f45d724c456b3db6ec373f1929211cdc1329fdaf6a8cd10a1fc7bad21c60;
 
     function run() external {
         address owner = vm.envAddress("OWNER_ADDRESS");
