@@ -14,7 +14,7 @@ const manifest = {
     webhookUrl: "https://gundarium.xyz/api/webhook",
     buttonTitle: "Play Gundarium",
     description: "generate and mint your Gundam action figure models into unique NFT's and then battle them!",
-    castShareUrl: "https://gundarium.xyz/",
+    castShareUrl: "https://gundarium.xyz/mint",
     ogDescription: "mint your Gundam's into NFT's and FIGHT",
     splashImageUrl: "https://gundarium.xyz/splash.png",
     primaryCategory: "games",

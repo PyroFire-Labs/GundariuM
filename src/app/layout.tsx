@@ -20,7 +20,7 @@ const miniAppEmbed = {
     action: {
       type: "launch_frame",
       name: "GundariuM",
-      url: "https://gundarium.xyz",
+      url: "https://gundarium.xyz/mint",
       splashImageUrl: "https://gundarium.xyz/icon.png",
       splashBackgroundColor: "#080c14",
     },

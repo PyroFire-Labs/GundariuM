@@ -137,11 +137,25 @@ export function CountdownBanner() {
     <section className="border-y border-blue-500/20 bg-blue-950/20 px-4 py-8">
       <div className="mx-auto max-w-4xl flex flex-col items-center gap-5">
 
+        {/* Whitelist-live banner */}
+        <a
+          href="/mint"
+          className="group flex items-center gap-3 rounded-full border border-[var(--accent)]/60 bg-[var(--accent)]/10 px-5 py-1.5 transition-all hover:bg-[var(--accent)]/20"
+        >
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--accent)] opacity-75" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--accent)]" />
+          </span>
+          <span className="font-[family-name:var(--font-orbitron)] text-[10px] font-bold tracking-[0.25em] text-[var(--accent)] uppercase">
+            Whitelist Mint Open · gundarium.xyz/mint
+          </span>
+        </a>
+
         {/* Top label */}
         <div className="flex items-center gap-3">
           <div className="h-px w-6 bg-blue-500/50" />
           <div className="border border-blue-500/50 px-3 py-0.5 font-[family-name:var(--font-orbitron)] text-[9px] font-bold italic tracking-[0.3em] text-blue-400 uppercase">
-            MS UNIT · FULL GAME LAUNCH
+            Public Launch · Full Game Goes Live
           </div>
           <div className="h-px w-6 bg-blue-500/50" />
         </div>
@@ -163,7 +177,7 @@ export function CountdownBanner() {
             MAY 10, 2026 · 12:00 PM CST
           </div>
           <p className="text-xs text-white/40">
-            Mint · Campaign Arc 1 · Arena · Leaderboard — all go live simultaneously
+            Public mint · Campaign Arc 1 · Arena · Leaderboard — all unlock simultaneously
           </p>
         </div>
 
