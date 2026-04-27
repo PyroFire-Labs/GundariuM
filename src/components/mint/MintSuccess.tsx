@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useMintStore } from "@/store/useMintStore";
 import { displayRarity, type Rarity } from "@/types/nft";
+import { ShareButtons } from "@/components/ui/ShareButtons";
 
 const RARITY_CLASS: Record<Rarity, string> = {
   Common: "rarity-common",
@@ -224,6 +225,27 @@ export function MintSuccess() {
           Mint Another
         </button>
       </motion.div>
+
+      {/* Share */}
+      {traits && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.4 }}
+          className="flex flex-col items-center gap-3"
+        >
+          <p className="text-[10px] font-[family-name:var(--font-orbitron)] tracking-widest text-[var(--foreground)]/40">
+            SHARE YOUR FORGE
+          </p>
+          <ShareButtons
+            card={{
+              name: traits.name,
+              rarity: traits.rarity,
+              tokenId: mintedTokenId,
+            }}
+          />
+        </motion.div>
+      )}
     </motion.div>
   );
 }

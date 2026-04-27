@@ -1,12 +1,31 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import type { Rarity } from "@/types/nft";
+import { displayRarity } from "@/types/nft";
 
 const SITE_URL = "https://gundarium.xyz";
-const SHARE_TEXT = "GundariuM — Photograph your Gunpla, mint NFT battle cards, and fight on-chain. Your shelf is your deck.";
+const DEFAULT_TEXT =
+  "GundariuM — AI-generated kitbash Gundar-Frames minted as NFT battle cards on Base. Mint your own at gundarium.xyz.";
 
-export function ShareButtons() {
+interface ShareButtonsProps {
+  /** Optional minted card context — when provided, the share line is personalized. */
+  card?: {
+    name: string;
+    rarity: Rarity;
+    tokenId: bigint | null;
+  };
+}
+
+function buildShareText(card: ShareButtonsProps["card"]): string {
+  if (!card) return DEFAULT_TEXT;
+  const tokenSuffix = card.tokenId !== null ? ` (#${card.tokenId.toString()})` : "";
+  return `Just forged ${card.name}${tokenSuffix} — ${displayRarity(card.rarity)} tier — on GundariuM. Mint your own Gundar-Frame at gundarium.xyz/mint`;
+}
+
+export function ShareButtons({ card }: ShareButtonsProps = {}) {
   const [isFarcaster, setIsFarcaster] = useState(false);
+  const text = buildShareText(card);
 
   useEffect(() => {
     import("@farcaster/miniapp-sdk").then(async ({ sdk }) => {
@@ -19,23 +38,23 @@ export function ShareButtons() {
     if (isFarcaster) {
       const { sdk } = await import("@farcaster/miniapp-sdk");
       await sdk.actions.composeCast({
-        text: `${SHARE_TEXT}\n\n`,
+        text: `${text}\n\n`,
         embeds: [SITE_URL],
       });
     } else {
       window.open(
-        `https://warpcast.com/~/compose?text=${encodeURIComponent(SHARE_TEXT)}&embeds[]=${encodeURIComponent(SITE_URL)}`,
+        `https://warpcast.com/~/compose?text=${encodeURIComponent(text)}&embeds[]=${encodeURIComponent(SITE_URL)}`,
         "_blank"
       );
     }
-  }, [isFarcaster]);
+  }, [isFarcaster, text]);
 
   const shareOnX = useCallback(() => {
     window.open(
-      `https://x.com/intent/tweet?text=${encodeURIComponent(SHARE_TEXT)}&url=${encodeURIComponent(SITE_URL)}`,
+      `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(SITE_URL)}`,
       "_blank"
     );
-  }, []);
+  }, [text]);
 
   const shareOnFacebook = useCallback(() => {
     window.open(
@@ -47,12 +66,12 @@ export function ShareButtons() {
   const shareGeneric = useCallback(async () => {
     if (navigator.share) {
       try {
-        await navigator.share({ title: "GundariuM", text: SHARE_TEXT, url: SITE_URL });
+        await navigator.share({ title: "GundariuM", text, url: SITE_URL });
       } catch { /* user cancelled */ }
     } else {
-      await navigator.clipboard.writeText(`${SHARE_TEXT} ${SITE_URL}`);
+      await navigator.clipboard.writeText(`${text} ${SITE_URL}`);
     }
-  }, []);
+  }, [text]);
 
   return (
     <div className="flex flex-wrap items-center justify-center gap-2">
