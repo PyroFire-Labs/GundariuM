@@ -96,15 +96,13 @@ export function MintLanding() {
         />
       )}
 
-      {/* Mint button */}
+      {/* Mint button — Turnstile token is best-effort; server validates if
+          provided. We don't gate the button on iOS Farcaster webviews where
+          the invisible challenge is commonly blocked. Rate limiting + the
+          server-side token check still protect against bot abuse. */}
       <button
         onClick={handleMint}
-        disabled={
-          generating ||
-          (process.env.NODE_ENV === "production" &&
-            !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY &&
-            !turnstileToken)
-        }
+        disabled={generating}
         className="px-8 py-4 bg-[var(--accent)] text-black font-[family-name:var(--font-orbitron)] font-bold text-lg rounded-xl hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {generating ? "GENERATING..." : "MINT YOUR GUNPLA"}
