@@ -9,6 +9,11 @@ import { getContracts, isPlaceholder } from "@/lib/contracts/addresses";
 
 const GNDM_ADDRESS = "0xfc7008f9157257a17a9fb3c602b1cd56c27a4ba3" as const;
 
+// Set to false once the new GNDMtoGUNR contract is deployed with the corrected
+// merkle root (0x9d1fce24...) and addresses.ts + public/migration-proofs.json
+// are updated to match. Until then, the live contract rejects every proof.
+const MIGRATION_PAUSED = true;
+
 type Phase = "idle" | "loading" | "approving" | "migrating" | "done" | "error";
 
 interface ProofData {
@@ -17,6 +22,53 @@ interface ProofData {
 }
 
 export default function MigratePage() {
+  if (MIGRATION_PAUSED) return <MigrationPausedNotice />;
+  return <MigratePageInner />;
+}
+
+function MigrationPausedNotice() {
+  return (
+    <main className="min-h-screen flex items-center justify-center p-4">
+      <div className="w-full max-w-md rounded-xl border border-[var(--border)] bg-[var(--surface)] p-8 space-y-5">
+        <div className="text-center space-y-2">
+          <div className="font-[family-name:var(--font-orbitron)] text-xs font-bold tracking-widest text-[var(--accent-2)] uppercase">
+            Status
+          </div>
+          <h1 className="font-[family-name:var(--font-orbitron)] text-2xl font-black tracking-wider text-[var(--accent)]">
+            MIGRATION PAUSED
+          </h1>
+        </div>
+        <div className="space-y-3 text-sm text-[var(--foreground)]/80 leading-relaxed">
+          <p>
+            We caught a leaf-encoding bug in the deployed migration contract &mdash; it rejects every migration attempt, not just specific holders. The fix is in the codebase and a corrected contract is ready to redeploy.
+          </p>
+          <p>
+            <span className="font-bold text-[var(--accent)]">Your GNDM is safe.</span>{" "}
+            Your whitelist allocation is preserved.{" "}
+            <span className="font-bold text-[var(--accent)]">No action needed from you.</span>
+          </p>
+          <p>
+            We are redeploying after May 15, 2026, when the original contract&apos;s deadline expires and the locked GUNR can be recovered to fund the new contract. Watch{" "}
+            <a
+              className="text-[var(--accent)] hover:underline"
+              href="https://farcaster.xyz/pyrofirezero"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              @pyrofirezero
+            </a>{" "}
+            for the resume announcement.
+          </p>
+        </div>
+        <p className="text-center text-xs text-[var(--foreground)]/30 pt-2 border-t border-[var(--border)]">
+          GNDM 1:1 &rarr; GUNR &middot; Base Mainnet
+        </p>
+      </div>
+    </main>
+  );
+}
+
+function MigratePageInner() {
   const { address, isConnected } = useAccount();
   const publicClient = usePublicClient({ chainId: base.id });
   const { writeContractAsync } = useWriteContract();
