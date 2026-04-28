@@ -1,5 +1,1582 @@
 [
-  { "address": "0x9d6277e24efe034de2f44dd9adfe0f24b8b08bb7", "tier": 1 },
-  { "address": "0x6e5b466b68eb66110819c32e3e3db2f8be5c50b3", "tier": 2 },
-  { "address": "0xB98F0c9B8522f9295BB26bda0f5490E1872e7fa5", "tier": 2 }
+  {
+    "address": "0x255148be130862531729937152d82c51142a5d56",
+    "tier": 1
+  },
+  {
+    "address": "0x2d2034625c3623d962592b2466b6a70b14bdb33a",
+    "tier": 1
+  },
+  {
+    "address": "0xa036225142c4f464ac1c1e04ca663809b4cfc1bc",
+    "tier": 1
+  },
+  {
+    "address": "0x84d71b85434911f90804941d13d71e587d83f540",
+    "tier": 1
+  },
+  {
+    "address": "0x2fcad57dc1369f9bc54251d3eab977877c9eed0e",
+    "tier": 1
+  },
+  {
+    "address": "0x796355630aacb83ea13b39cfdd4c1a850a101690",
+    "tier": 1
+  },
+  {
+    "address": "0xa9a3266f73d629c19189f461ac8ca42801b2288c",
+    "tier": 1
+  },
+  {
+    "address": "0xf780ad8212738af4821b757abac02ed10a40119d",
+    "tier": 1
+  },
+  {
+    "address": "0xd725fb24c303166108c17f2badf8a8e552fcb478",
+    "tier": 1
+  },
+  {
+    "address": "0x57cb4c3329c883a5f4858833a2d31063435bb238",
+    "tier": 1
+  },
+  {
+    "address": "0x50d502b7301421fe89abeadfa492229d3e8d4812",
+    "tier": 1
+  },
+  {
+    "address": "0x6e63a4caeccb4f341ee9c9175c9cc554bdb6d10b",
+    "tier": 2
+  },
+  {
+    "address": "0xb1547ec794f927f493c229c90e5f1c8bf13ae92d",
+    "tier": 2
+  },
+  {
+    "address": "0x161c7b5396e0b705a303b8a2537e140768009a2b",
+    "tier": 2
+  },
+  {
+    "address": "0xbdddfb2ff21efcc00a2ca5a7d1fdc5798c98f07b",
+    "tier": 2
+  },
+  {
+    "address": "0x010a7030226b48929fcd5cef8a4fcb95b574a2d9",
+    "tier": 2
+  },
+  {
+    "address": "0x1a6efe61811c3887c07cdf952e8c51372628a9be",
+    "tier": 2
+  },
+  {
+    "address": "0x3ac61447a75149ba67639100ecc92c76fb20941c",
+    "tier": 2
+  },
+  {
+    "address": "0xa28fd178c686beebd6818d6772e56f6e7a6ff5cc",
+    "tier": 2
+  },
+  {
+    "address": "0x366297ba6c540ac4816d6feb16fcaf3ae0656669",
+    "tier": 2
+  },
+  {
+    "address": "0xbf10eb8f9ab1783d3a301d5e0a28892d0f3989af",
+    "tier": 2
+  },
+  {
+    "address": "0xa032af19029667fc7ad842d65d524e62a16cc4ca",
+    "tier": 2
+  },
+  {
+    "address": "0xef78247ab2cba385ad77ec28c649bb6cea81d2f3",
+    "tier": 2
+  },
+  {
+    "address": "0x8fba7ffabcf2c55e05e5b55fba3d03ed4b9342ac",
+    "tier": 2
+  },
+  {
+    "address": "0xf7a2d71253701a7706972002c8718728e0e98b49",
+    "tier": 2
+  },
+  {
+    "address": "0xa408144f4432574009984bef065c9db36cf8d5cb",
+    "tier": 2
+  },
+  {
+    "address": "0xb008bd3d6de91622852f4fd58c8478b8a5681f95",
+    "tier": 2
+  },
+  {
+    "address": "0xe07d7100dc208f45bb7e32d41af5770d174e6f0b",
+    "tier": 2
+  },
+  {
+    "address": "0x48ffcbcabb0b10b2a185d398ee67c48080b9d7e7",
+    "tier": 2
+  },
+  {
+    "address": "0xfe042b1aeb471cff2e1a6709e5682533d19cbcc7",
+    "tier": 2
+  },
+  {
+    "address": "0xf5075d6339179035c767ec632a715468a5f0a49b",
+    "tier": 2
+  },
+  {
+    "address": "0x9f3480455d86b676db1d1227b39b7955d3406c23",
+    "tier": 2
+  },
+  {
+    "address": "0xddd6f46cd2bfdc9e8ac22a079783f46f372568d2",
+    "tier": 2
+  },
+  {
+    "address": "0x7ec55b2aa3aab6c8fcfa32417ddaaad390801392",
+    "tier": 2
+  },
+  {
+    "address": "0x8da75f8b8c2f36a71ffa3139dabb58e265c93309",
+    "tier": 2
+  },
+  {
+    "address": "0x0218a557ab78920eb99a03c34f0f1e4e2c4c229a",
+    "tier": 2
+  },
+  {
+    "address": "0x320a0f9aca0f8314d7af4cba39c9fab7f4cc2d48",
+    "tier": 2
+  },
+  {
+    "address": "0x13c39b3e6e6159bc233fad90825f1f9f84fcb102",
+    "tier": 2
+  },
+  {
+    "address": "0x2ec70b9d368556746d0d69b773379b28e328396c",
+    "tier": 2
+  },
+  {
+    "address": "0x926e2100264e35613ad69a635f523d5c1e824869",
+    "tier": 2
+  },
+  {
+    "address": "0x8d68b7e9855a09705001b11f6be75fff7213e21d",
+    "tier": 2
+  },
+  {
+    "address": "0x283eadeb8ec20d9ef1bf4dcaa922ef3263e21177",
+    "tier": 2
+  },
+  {
+    "address": "0xee721836b4bc4ba0440e19c08842594ee965719e",
+    "tier": 2
+  },
+  {
+    "address": "0x612569799481f62cfdec216b4b2013b2eabd0a71",
+    "tier": 2
+  },
+  {
+    "address": "0xd984b81f72fb0c8a061d6a4019c6c5201ad9ceec",
+    "tier": 2
+  },
+  {
+    "address": "0xe422d6c46a69e989ba6468ccd0435cb0c5c243e3",
+    "tier": 2
+  },
+  {
+    "address": "0x954f716e6de059360d278b773138f8e046696721",
+    "tier": 2
+  },
+  {
+    "address": "0x67e5c486b8e614b73555f9b5ab810fd2759639ff",
+    "tier": 2
+  },
+  {
+    "address": "0x16df1f6b22bd283c615ff5dbb661a9169b84e191",
+    "tier": 2
+  },
+  {
+    "address": "0x216222ec646e764da7995ed3c02848568072cb58",
+    "tier": 2
+  },
+  {
+    "address": "0x9c2e009886fec1b9bd98741eefd669817d6fee79",
+    "tier": 2
+  },
+  {
+    "address": "0x196d9987d803263abd56a1adf3f89e2afe111c01",
+    "tier": 2
+  },
+  {
+    "address": "0x46e9beef5dc68dff095eca56dadf90247f1af7ef",
+    "tier": 2
+  },
+  {
+    "address": "0x14623f428c5f173c76f1fad3de42544f5402c794",
+    "tier": 2
+  },
+  {
+    "address": "0x6058edb614504e8fb8b0c81ce4c4f0ef4ef3f75c",
+    "tier": 2
+  },
+  {
+    "address": "0xdd3b3a67c66a5276aacc499ec2abd5241721e008",
+    "tier": 2
+  },
+  {
+    "address": "0xc41b192df74fe564108110fe854b2bee70bb0b3a",
+    "tier": 2
+  },
+  {
+    "address": "0x38c062da3db9f636834c1609df6f5eea45c7f7f9",
+    "tier": 2
+  },
+  {
+    "address": "0xa159ddbd37a081c6af3e0e0f9ca4133478625dd4",
+    "tier": 2
+  },
+  {
+    "address": "0x8d1af12f07dd1b17aba675a052d439b594c6f2a7",
+    "tier": 2
+  },
+  {
+    "address": "0x98bb6321aa10562ba458e9e449485a9d93520263",
+    "tier": 2
+  },
+  {
+    "address": "0xe5d96ae43c0680b2be6c26166235572a48c8ac1d",
+    "tier": 2
+  },
+  {
+    "address": "0x956fa79b6855a4660fcdce28cdf96c0042e6e2af",
+    "tier": 2
+  },
+  {
+    "address": "0x4ee7290a442be8ba264538f4cd12d4cd8125c1b1",
+    "tier": 2
+  },
+  {
+    "address": "0x02779ff0a704538da29d0f5d62599cac6baff148",
+    "tier": 2
+  },
+  {
+    "address": "0x49007c4e4f69ccc5806cac4abf6072ee4c58c5b2",
+    "tier": 2
+  },
+  {
+    "address": "0x4cc1a03191ddf0c39d82098f059ef3412113a36e",
+    "tier": 2
+  },
+  {
+    "address": "0x47e39a473972f306207d29a5334995fa6e7b8d04",
+    "tier": 2
+  },
+  {
+    "address": "0xe18edee0037615b81d48691dbaab69c00047c377",
+    "tier": 2
+  },
+  {
+    "address": "0x913755c3f1aa09202396ec21ebf08fe5d8833b57",
+    "tier": 2
+  },
+  {
+    "address": "0xa272bc9d6f462f4f08849adeaf6e49a5d4430c38",
+    "tier": 2
+  },
+  {
+    "address": "0xd4bf6958538f26266ef2a32db47d296323734b5a",
+    "tier": 2
+  },
+  {
+    "address": "0x1be1271398c355d23c3695a00a6334a1f89b6eec",
+    "tier": 2
+  },
+  {
+    "address": "0x2dacc0b072146b40e60b8596b99756112d45c924",
+    "tier": 2
+  },
+  {
+    "address": "0x1ed07d2ed9011ff46eca31f4288768092008c65b",
+    "tier": 2
+  },
+  {
+    "address": "0x75c88d2149e00a36dddb997faf674ec9b57aeb73",
+    "tier": 2
+  },
+  {
+    "address": "0x177defdca55b524c3c841bd713cabcf8809109e5",
+    "tier": 2
+  },
+  {
+    "address": "0x2925121c06edb925f1e6fbb57fae8b8c9d3adc9b",
+    "tier": 2
+  },
+  {
+    "address": "0x2f486e5c6b8a43e645b0b25f2567725d86d19b7b",
+    "tier": 2
+  },
+  {
+    "address": "0x37d3582e388daccc48ef4674f5e696670bae5b4d",
+    "tier": 2
+  },
+  {
+    "address": "0x89309d1029522ef722270d22490cb1629dd01f54",
+    "tier": 2
+  },
+  {
+    "address": "0x4a30fd2482682cbaea4a6a2c53a5ea34b0cac831",
+    "tier": 2
+  },
+  {
+    "address": "0x9467b927697024ae0b66c8635d967db0acc3d96b",
+    "tier": 2
+  },
+  {
+    "address": "0x04dcef7d9227b1ba8769c781ec46d0f2248c28a6",
+    "tier": 2
+  },
+  {
+    "address": "0x92ec1fb36777ef2725ccb7318ed09e196489939e",
+    "tier": 2
+  },
+  {
+    "address": "0xc143cf8515b87ea88d8db8a9892639b5046cf81c",
+    "tier": 2
+  },
+  {
+    "address": "0xf6e9c766cad8b6ecf06accf64b57f92995be6e50",
+    "tier": 2
+  },
+  {
+    "address": "0xe483f7c09b4707e423f621c0d7453fb2c7eabc03",
+    "tier": 2
+  },
+  {
+    "address": "0xa09c2b4c50d70664ff1386cac6bc3696674f3605",
+    "tier": 2
+  },
+  {
+    "address": "0xebd722b18e0324d646bfc153b048fcdc681ac4f7",
+    "tier": 2
+  },
+  {
+    "address": "0xdc495b3d01bf15b33183124e852c1bfffa36056d",
+    "tier": 2
+  },
+  {
+    "address": "0x1cf41ad63f67f3e7f8a1db240d812f5392b9a9c4",
+    "tier": 2
+  },
+  {
+    "address": "0x933ce6fd6c99165538b37e91786646462e83f089",
+    "tier": 2
+  },
+  {
+    "address": "0x7a527312403dc7c933abf63ac57129a1e908dff4",
+    "tier": 2
+  },
+  {
+    "address": "0xf552d633ac71fabed6dfa3bda85766710446d7d4",
+    "tier": 2
+  },
+  {
+    "address": "0xf89316ba91313d9f09d4e75490713056fbe56d72",
+    "tier": 2
+  },
+  {
+    "address": "0x68288a41b4ba864503860fc33648d787a5c34790",
+    "tier": 2
+  },
+  {
+    "address": "0xd22a81acf55a7b688be1d3314bebc87a8b70e173",
+    "tier": 2
+  },
+  {
+    "address": "0x553dac4270884395762952698e293afc763154ad",
+    "tier": 2
+  },
+  {
+    "address": "0x9adb41e0da07e0c87ff7462b19c09bb9e0e36114",
+    "tier": 2
+  },
+  {
+    "address": "0xbccc968eeebffc2586a50eef0ee1cf12273c9604",
+    "tier": 2
+  },
+  {
+    "address": "0x570124a4f149724e8ea7e99beec4491fecb28c95",
+    "tier": 2
+  },
+  {
+    "address": "0xbcfbd4e6d624452b0fdd39b37fb0dc42a35bcef1",
+    "tier": 2
+  },
+  {
+    "address": "0xdd4247922463b8db50a8ae53f3f6090e044fcbb9",
+    "tier": 2
+  },
+  {
+    "address": "0x1847a58d11903ecd73ee8bf71ad801d7ed82ca97",
+    "tier": 2
+  },
+  {
+    "address": "0x01f4656464aa02e10a48b2e3ee8117749f1cabea",
+    "tier": 2
+  },
+  {
+    "address": "0x04c8a20ef54940e03688fb095edfc6885a7ac546",
+    "tier": 2
+  },
+  {
+    "address": "0x99dbe6eaac6177124537aaf67977cda05af7a925",
+    "tier": 2
+  },
+  {
+    "address": "0x714ddbb04e678528fe56fd664bc139fd18ce5408",
+    "tier": 2
+  },
+  {
+    "address": "0x53ca09ade948067ed48e66e6b7b6d08a42fe01ad",
+    "tier": 2
+  },
+  {
+    "address": "0x5a7eb969044e1513e8737c33f4e34f8690cf9a3e",
+    "tier": 2
+  },
+  {
+    "address": "0x860ae34dca5fa842d348bb4fe149b092e4edd4fe",
+    "tier": 2
+  },
+  {
+    "address": "0x1cfd6eb7696a27e37ba584c0321507585ed63267",
+    "tier": 2
+  },
+  {
+    "address": "0x10d503ffe3b10fc43285396de53d4df66a7a15e5",
+    "tier": 2
+  },
+  {
+    "address": "0x89416f4391388e4e22dcfdb84b8c009fa8aa72be",
+    "tier": 2
+  },
+  {
+    "address": "0xd6eda35274ae5d5394256a384b4efb5e4dd14c5c",
+    "tier": 2
+  },
+  {
+    "address": "0x62ad8eded0fd8a1c6be48762a1211511b3e4851b",
+    "tier": 2
+  },
+  {
+    "address": "0xf0da7d36b7371aa505f5fa5e35002a1a6a15e9fa",
+    "tier": 2
+  },
+  {
+    "address": "0x57907832048f166cfd7c7041c0c61450241be80e",
+    "tier": 2
+  },
+  {
+    "address": "0x063560d831876c9bcebdb1ac48d81815e45a0ab9",
+    "tier": 2
+  },
+  {
+    "address": "0x3569d771db0e911e00d16fdac4df17a84835ce4b",
+    "tier": 2
+  },
+  {
+    "address": "0x342407eb301970a0e81d6bdeba168b663dbd789f",
+    "tier": 2
+  },
+  {
+    "address": "0x274a347149a6abbd8dc5181e027396b6dc269904",
+    "tier": 2
+  },
+  {
+    "address": "0x340ad2f7670d9bb23157adf244112b98cc7558d8",
+    "tier": 2
+  },
+  {
+    "address": "0xd9e22fa93642989fb599318f4a546ab1d3897d37",
+    "tier": 2
+  },
+  {
+    "address": "0x55a45827afe6d77b795e1349b46511905fac52ed",
+    "tier": 2
+  },
+  {
+    "address": "0x1b17a2656e43c16398a4a407fc38691c61f2db79",
+    "tier": 2
+  },
+  {
+    "address": "0x73d251b0a124b1b7e5fced316fff3426be0d7ecc",
+    "tier": 2
+  },
+  {
+    "address": "0xa1f5bfb1d27e63f8484cf77825d9c0e4bd04c092",
+    "tier": 2
+  },
+  {
+    "address": "0xfedcefba31254a572b8e5a2bf97dd0b3bacd819a",
+    "tier": 2
+  },
+  {
+    "address": "0xe92891214242e5792ee26bead2cb15e10337ebad",
+    "tier": 2
+  },
+  {
+    "address": "0x5b01561a519d9924330421598d2c27ed40a6e3d8",
+    "tier": 2
+  },
+  {
+    "address": "0x8298708a93c9a12d744852809b60ea0e4d32b1a1",
+    "tier": 2
+  },
+  {
+    "address": "0x92339459ccbfbce54137a56cc86ccfe63a776bfc",
+    "tier": 2
+  },
+  {
+    "address": "0x0e857be64b5c315776c2b98cc34987eaad639ba4",
+    "tier": 2
+  },
+  {
+    "address": "0x9b7d463b3c11ccba77de669482aaf2384f591222",
+    "tier": 2
+  },
+  {
+    "address": "0xd2c5f8ec3f005ec6b47d4f26d6841f4e3b9d2221",
+    "tier": 2
+  },
+  {
+    "address": "0xe42508cfb3e4eaadfd398d8ff613406b0e7b4b8a",
+    "tier": 2
+  },
+  {
+    "address": "0x1722ada9e359915a1506d8661a2730ab92a3e291",
+    "tier": 2
+  },
+  {
+    "address": "0xaccc08da566dc17618220143b14248cf71c30826",
+    "tier": 2
+  },
+  {
+    "address": "0xa13c2def62c36697407fbe7d574e946bf60d7350",
+    "tier": 2
+  },
+  {
+    "address": "0xd43f553af355bca64eafad03d4ad5e97a54974ef",
+    "tier": 2
+  },
+  {
+    "address": "0x6160f3c84c04e795e802441c4e8b4283b124548a",
+    "tier": 2
+  },
+  {
+    "address": "0x2262d4288f35b75831f0b132a7b1fcf719430274",
+    "tier": 2
+  },
+  {
+    "address": "0xcb6eb98d0533dd42367cd064fc5b988814187527",
+    "tier": 2
+  },
+  {
+    "address": "0xc2acd44202469ed7aec31504b3778079afc3b91f",
+    "tier": 2
+  },
+  {
+    "address": "0x2c2f4e41352b1506f282ca1c414a18546e92d2d4",
+    "tier": 2
+  },
+  {
+    "address": "0x589a4d21780b2ecf0cfd9bc5faa9b5fca88d7a54",
+    "tier": 2
+  },
+  {
+    "address": "0x9a5ebd2f5ebded74f3de0c56f87124a45cec21d4",
+    "tier": 2
+  },
+  {
+    "address": "0xd722d7cef1870733a85e779ab3d306ba286c0af0",
+    "tier": 2
+  },
+  {
+    "address": "0xdf2d9e58227ce5e37ed3e40bc49d4442c970a2d6",
+    "tier": 2
+  },
+  {
+    "address": "0x2f10cff66f98860ad46f5ba4e71eb341fb187a55",
+    "tier": 2
+  },
+  {
+    "address": "0x67da18a05ac3dc9e5dd1f428b043df4673d0b19d",
+    "tier": 2
+  },
+  {
+    "address": "0x8e2913a92deb13d796e6d99d1471af3d2d4353ab",
+    "tier": 2
+  },
+  {
+    "address": "0xf724421b77ce727240fa150eddc9320993daaf68",
+    "tier": 2
+  },
+  {
+    "address": "0xa7dda6a3d0017b7e80964f3a23f37318a9688a8b",
+    "tier": 2
+  },
+  {
+    "address": "0x2da2ed2d76c0d2ca0595d30def13f3f2ae3e4ae3",
+    "tier": 2
+  },
+  {
+    "address": "0xf3bf633759e993d7849b6c25b442432a81139367",
+    "tier": 2
+  },
+  {
+    "address": "0xfcd8f38392866fcebab167e68748ae4b637a6a24",
+    "tier": 2
+  },
+  {
+    "address": "0x61b41947d9105c174dad4548537c58a2cef6c8fa",
+    "tier": 2
+  },
+  {
+    "address": "0xeb8910a9298ea96f85b063560e064da9191af723",
+    "tier": 2
+  },
+  {
+    "address": "0x29e88b9d0d7e1e8e2e1d6abafbfd4f5bdeffc6d2",
+    "tier": 2
+  },
+  {
+    "address": "0x568777c80a34a32c7e90c9b05edc8732232c7e94",
+    "tier": 2
+  },
+  {
+    "address": "0xf0807da85b2af462edd8a1855f4d301fba1f74ae",
+    "tier": 2
+  },
+  {
+    "address": "0x306759262108f3745f19e59646d38c90b891e682",
+    "tier": 2
+  },
+  {
+    "address": "0xbbbe3e20ef2f810dc49f35194207422f3b44dc21",
+    "tier": 2
+  },
+  {
+    "address": "0xb0f154bd171fe8bc01f8a0a4d004c702164741fb",
+    "tier": 2
+  },
+  {
+    "address": "0x56f0eee44dc41ea11ba4f1fc3be30045ce2d70f4",
+    "tier": 2
+  },
+  {
+    "address": "0xf270415d0dbece5380246112674a53da57a7eea9",
+    "tier": 2
+  },
+  {
+    "address": "0x47cd9ff80446fdebc4f9b697ea5858cde5ae01f6",
+    "tier": 2
+  },
+  {
+    "address": "0xbf2031b1ca979f7649db095c6c79945ef5420063",
+    "tier": 2
+  },
+  {
+    "address": "0x79ecb3d922ae7eaa78eb0bda9523fe54e93f9783",
+    "tier": 2
+  },
+  {
+    "address": "0x1b5a25e9cd38cb67a3edbde9fee65cd7b9460af6",
+    "tier": 2
+  },
+  {
+    "address": "0x49112c36ec09cf0f5ed46bc5fe98115ff32c0234",
+    "tier": 2
+  },
+  {
+    "address": "0x5d882ba11d6710916fd3ac9d06b7e708bd8c3fab",
+    "tier": 2
+  },
+  {
+    "address": "0x8eebe38c54fcfa5414d0e65cfd80eebc510cf339",
+    "tier": 2
+  },
+  {
+    "address": "0xf33e058d4fdc5577009fcea0dc25708277912c1b",
+    "tier": 2
+  },
+  {
+    "address": "0x65c4abeacf97978349612022c56498502f997f69",
+    "tier": 2
+  },
+  {
+    "address": "0x15c6a4bf9023ad20c51cbea9992a5bccf83f3e7b",
+    "tier": 2
+  },
+  {
+    "address": "0xb0591d2d5911dafe518b73a0ed8007b377fe32a8",
+    "tier": 2
+  },
+  {
+    "address": "0x5c90b269f26e3b9bb5cf5d910fc774f3698fba35",
+    "tier": 2
+  },
+  {
+    "address": "0x5352bf373a0b18d138d54de67a732592b7d5e85b",
+    "tier": 2
+  },
+  {
+    "address": "0x376df1b457a9d033257dee02f68849a220ec78f9",
+    "tier": 2
+  },
+  {
+    "address": "0x8f57cb7fa720c57f3807c9088893250b58c60581",
+    "tier": 2
+  },
+  {
+    "address": "0x3c0fefc2ecf4fefcbfdade564821040d2f08d8b9",
+    "tier": 2
+  },
+  {
+    "address": "0x60ba240114b825f676d11cc178409cc9c385171c",
+    "tier": 2
+  },
+  {
+    "address": "0xc8d2f911b6cb613e77beb1f9aaac291d4d378804",
+    "tier": 2
+  },
+  {
+    "address": "0xf00b45a931c81662fe4b7a7df071cb5ac5e3ebd1",
+    "tier": 2
+  },
+  {
+    "address": "0xb6754e53ce15df43269f59f21c9c235f1f673d67",
+    "tier": 2
+  },
+  {
+    "address": "0xe0ddc6a8e0c6fb68ff9b0ca5efea0b1c039b8b61",
+    "tier": 2
+  },
+  {
+    "address": "0xef480aacd376e694bc09da0d5a15812d40b6557b",
+    "tier": 2
+  },
+  {
+    "address": "0x0aa55b5405e21dd0c3ebcd06a5d0a982fdb44eea",
+    "tier": 2
+  },
+  {
+    "address": "0x2363745698e05264ba980e7fb8f1165370a6fd62",
+    "tier": 2
+  },
+  {
+    "address": "0x66b328af9ccc331980f874b8a11214207aab623b",
+    "tier": 2
+  },
+  {
+    "address": "0xb56a6bfd9825042faa4ca6da1f60a93895a218cb",
+    "tier": 2
+  },
+  {
+    "address": "0x465eba94ec620c73ea74cbffff1c180d7c676e96",
+    "tier": 2
+  },
+  {
+    "address": "0x34a1fdc370c86fdc5054df540191320cd5ff9fd6",
+    "tier": 2
+  },
+  {
+    "address": "0x2b07789f279e8e5cd64413417a247f8a782331a6",
+    "tier": 2
+  },
+  {
+    "address": "0xfd46cb5dba36b0e2fd09e58eb05655f73dd955ac",
+    "tier": 2
+  },
+  {
+    "address": "0x79349de35efb4d02b2f55cbe8a76266584399462",
+    "tier": 2
+  },
+  {
+    "address": "0xf9e4bc72a7fa0684be2b4a90422e883fe460f7a5",
+    "tier": 2
+  },
+  {
+    "address": "0xa537bfe81c2f91d4fd00520e1179ce6cab38921a",
+    "tier": 2
+  },
+  {
+    "address": "0x961be4ebbbb6bc67919b82ec6c33c10b7364f774",
+    "tier": 2
+  },
+  {
+    "address": "0x795728cb5dbc991b2a6ba8dfedadd169d20c7ce1",
+    "tier": 2
+  },
+  {
+    "address": "0x58cb89c8bbab3ff6b025fc140979cae5da7a53dd",
+    "tier": 2
+  },
+  {
+    "address": "0x169e11199f34f820bba8db54fa548ebd7b50fa54",
+    "tier": 2
+  },
+  {
+    "address": "0xcc9395a5c5d0a11c5e23d0b894b61d03196f6352",
+    "tier": 2
+  },
+  {
+    "address": "0x75f8554d24cc7204414cb21ee003105f7ea6a0f0",
+    "tier": 2
+  },
+  {
+    "address": "0xc6501d59193489f20973e9c69109a1de28883564",
+    "tier": 2
+  },
+  {
+    "address": "0xd65e288fae21529b452a06d7557e058e259c8d98",
+    "tier": 2
+  },
+  {
+    "address": "0x8d13f65c5aa4a19b9aadb850204e7056d2e3d004",
+    "tier": 2
+  },
+  {
+    "address": "0x3d043cfb4f7b0c2465b47431dc43af135be6c41a",
+    "tier": 2
+  },
+  {
+    "address": "0x5125c1a60a1254c4a3b14d92fef943180ee3bcaa",
+    "tier": 2
+  },
+  {
+    "address": "0xc34183ccaadc3b9566a16155c769e814ede01bb1",
+    "tier": 2
+  },
+  {
+    "address": "0xd4aedbbeda3e3425cb616aa7c1805be981132abc",
+    "tier": 2
+  },
+  {
+    "address": "0x13dbc7d5ace21d1eeb5f884666e284138fbff620",
+    "tier": 2
+  },
+  {
+    "address": "0xccd19ae1cc4e80bed4df1efc9a38dee81832b3a9",
+    "tier": 2
+  },
+  {
+    "address": "0x3c39f4b90935c4a5c7dc2c8f1ecb6c2065a54f8b",
+    "tier": 2
+  },
+  {
+    "address": "0x74fed975e5f1cb637d9471d1c5e291c8a428ee57",
+    "tier": 2
+  },
+  {
+    "address": "0x6a2f6c4c10c8af0f0eee8eea8b7859c2a6000902",
+    "tier": 2
+  },
+  {
+    "address": "0x3ae5d538f2e3bba7949e9bfb46ff664a0e68fc06",
+    "tier": 2
+  },
+  {
+    "address": "0x1060e2975f3d784c7823bd421f3f0ebff0d9dfcc",
+    "tier": 2
+  },
+  {
+    "address": "0x3e4fedca9cd0b1e3c9ec994fd9b12b61b582a193",
+    "tier": 2
+  },
+  {
+    "address": "0xfaed18d6170eb58351e2268030c71de13d25b223",
+    "tier": 2
+  },
+  {
+    "address": "0x4c9101cac1dbd5fa5bc83b6f5e6b661f647b83b1",
+    "tier": 2
+  },
+  {
+    "address": "0xce843895fbef9eebb6a7fadc9a7658930df4b9ad",
+    "tier": 2
+  },
+  {
+    "address": "0x1c0cfed366d18c062bcb9abf129983960288044e",
+    "tier": 2
+  },
+  {
+    "address": "0xbb672bbe37c259e7d22b250d6f1310161eefaece",
+    "tier": 2
+  },
+  {
+    "address": "0xe6bea105f50e1ba14f8bfd4781dff3b560a63208",
+    "tier": 2
+  },
+  {
+    "address": "0xc6a4d581bebc5b1f9588f558f83883115ef4a1c9",
+    "tier": 2
+  },
+  {
+    "address": "0x1eda0e782e80c0140b3a60c0e23692911ad15cdc",
+    "tier": 2
+  },
+  {
+    "address": "0x4b4240e0959ac1c5b18f6530f53e461f1d8438d4",
+    "tier": 2
+  },
+  {
+    "address": "0x3788c77789b3e8f1683dad085c64168a7d3e1afe",
+    "tier": 2
+  },
+  {
+    "address": "0x2f7dfe66d76f067a30c89df7ac6e8afb35de12af",
+    "tier": 2
+  },
+  {
+    "address": "0x6dd7ff58dd2abca27f46529471d8efbc8cd5c905",
+    "tier": 2
+  },
+  {
+    "address": "0x507efcd4ab8741f3609e626778929cf2ca3f4628",
+    "tier": 2
+  },
+  {
+    "address": "0xdddb1d4d5cb03d7c250a59f27e354613bc816e2c",
+    "tier": 2
+  },
+  {
+    "address": "0xd7166a0edea869a29881d4d4d1b13c9ac6bcd0e5",
+    "tier": 2
+  },
+  {
+    "address": "0x8f2ab5a8054bd9f337d8a9d83fb977cc589724ed",
+    "tier": 2
+  },
+  {
+    "address": "0x28365405a24996f081369bbbf4c25f830e84badd",
+    "tier": 2
+  },
+  {
+    "address": "0x8fcd8a4ab80fd0b8a4cbf506ac049b03b8de0fb8",
+    "tier": 2
+  },
+  {
+    "address": "0xa174718a4fb396d802ac11b9b68a24e124df1d81",
+    "tier": 2
+  },
+  {
+    "address": "0xb50fe3d7aa59b90f4291207e7c616d346206b398",
+    "tier": 2
+  },
+  {
+    "address": "0x7c9e1a7b7c95b4671bf15ad58b5a5b8ad2c240ad",
+    "tier": 2
+  },
+  {
+    "address": "0xc43651f11e20d9bb1dc5498831846ba3d92cb13f",
+    "tier": 2
+  },
+  {
+    "address": "0xd60ddcd7c7d3820a7653dfabdf456555c63e13dd",
+    "tier": 2
+  },
+  {
+    "address": "0x1cbbdb660d3d033247da688865fc1faebdc5c0b0",
+    "tier": 2
+  },
+  {
+    "address": "0x5dd70b68c85490fb9c78496fa8d448046945321f",
+    "tier": 2
+  },
+  {
+    "address": "0x1979eb392e2264b382c5da5ba507410781ad43b5",
+    "tier": 2
+  },
+  {
+    "address": "0x69d77152842eff2642af99cde5b8513e7c77b1b3",
+    "tier": 2
+  },
+  {
+    "address": "0xe01812d31b02ce42497ed2dea0be316b97d8b593",
+    "tier": 2
+  },
+  {
+    "address": "0xfc5708cb64604dcf6f62de5d63a051ed577e10c1",
+    "tier": 2
+  },
+  {
+    "address": "0x4bc0bd11806ef4108e0bb17f58d19ec62229458e",
+    "tier": 2
+  },
+  {
+    "address": "0x6794c4220791d85f640274b9391d4c70cd92c1b4",
+    "tier": 2
+  },
+  {
+    "address": "0x60a408eb967d87cac3e38e2d2996dfb4eb0baad3",
+    "tier": 2
+  },
+  {
+    "address": "0xbe7bfad8952ae92abb8779aa4d6826839e82fa3d",
+    "tier": 2
+  },
+  {
+    "address": "0xb6df9dae477e6d8d02737536e39aa38aff1f681e",
+    "tier": 2
+  },
+  {
+    "address": "0x4b5b9e729e5eac50b77fbfc48da84c66f44c87e9",
+    "tier": 2
+  },
+  {
+    "address": "0x346e9e0b6f86fe9869735ee5e32b55c6e7779889",
+    "tier": 2
+  },
+  {
+    "address": "0x5b9b05fdbe423d37c99382ab67bf716f559e0dab",
+    "tier": 2
+  },
+  {
+    "address": "0x06500bdfc0f44e1c68fabbc32df72e14c8f8e144",
+    "tier": 2
+  },
+  {
+    "address": "0xc1ab0fa13fa17ab1492aa0867f0c89627e9c0ee7",
+    "tier": 2
+  },
+  {
+    "address": "0x1afdc63b4996bf6346f335ce5380e6576f3d4050",
+    "tier": 2
+  },
+  {
+    "address": "0xb2d29d2b613f251e54b671f269d585f96e1d5e4f",
+    "tier": 2
+  },
+  {
+    "address": "0x3e5e3b583e6439b9726a4a455f2b0053eb0bf328",
+    "tier": 2
+  },
+  {
+    "address": "0xef330150ab4c32e5e770334e942c212956d7f934",
+    "tier": 2
+  },
+  {
+    "address": "0xdc5de54c65d8593d47bee3551bf15f2f969e0d82",
+    "tier": 2
+  },
+  {
+    "address": "0x44f648ce7a5a14a417b9afff9d0712aa735f4d1b",
+    "tier": 2
+  },
+  {
+    "address": "0xb230ffc4fc091bdd41d83d54eb4f7c0f0cc147a3",
+    "tier": 2
+  },
+  {
+    "address": "0xd963bf49e680dc00628341009a80c1eecfa04c45",
+    "tier": 2
+  },
+  {
+    "address": "0x7501d85db5296adf0d0910fb75ec4ffa2160c16e",
+    "tier": 2
+  },
+  {
+    "address": "0x0a9defb7c0ed8ca73dc6d4266ce50d63afe088ba",
+    "tier": 2
+  },
+  {
+    "address": "0xf90d9375033d4ff284f88fc84ed97a416c6502df",
+    "tier": 2
+  },
+  {
+    "address": "0x89721f49743e76b5f5b562a488ecc5f8ac355a3c",
+    "tier": 2
+  },
+  {
+    "address": "0x4e46f57817b3970a44ae4c32b04e80e17290e973",
+    "tier": 2
+  },
+  {
+    "address": "0xe9821d00e727e9f87b8c18910575c0b08640e670",
+    "tier": 2
+  },
+  {
+    "address": "0x2d0f02e96d77ec118d5133088c2226fba319f128",
+    "tier": 2
+  },
+  {
+    "address": "0x0c1e88699b51f965e3906bc74f005c2657660d06",
+    "tier": 2
+  },
+  {
+    "address": "0xc44dd53f0760d3040172ae2b3b34870640b7013b",
+    "tier": 2
+  },
+  {
+    "address": "0x3d1e26c94c5f87c4dc551f5ec52fadcff37b0a84",
+    "tier": 2
+  },
+  {
+    "address": "0xc09780d56457c9b758c3f3b3be09408993f67b62",
+    "tier": 2
+  },
+  {
+    "address": "0x48e8ff4cbe17f33d41a20b86fee50613a575f824",
+    "tier": 2
+  },
+  {
+    "address": "0x34acb0c4a25c49c1b1beddf5a78c9c90b5d85650",
+    "tier": 2
+  },
+  {
+    "address": "0xdd3c33797673d7ebdba25d8e97c12fe9ffbe022f",
+    "tier": 2
+  },
+  {
+    "address": "0x2f4155b27065ea44ae8808697f3e9173026f4c34",
+    "tier": 2
+  },
+  {
+    "address": "0x579f461f555dcb509277978f1a2d587eac51d25c",
+    "tier": 2
+  },
+  {
+    "address": "0xfbc7145e8f98ad65e4b1f95c3fc9e726bc88857b",
+    "tier": 2
+  },
+  {
+    "address": "0x729ad7e09730f69cf3e2c3fb416d8b8f924efef7",
+    "tier": 2
+  },
+  {
+    "address": "0x7ab5a2038302eae42db0d39a7c02aaf986abc968",
+    "tier": 2
+  },
+  {
+    "address": "0xb111fd2ed7461c5957589dd3adf4a9da87e4bc46",
+    "tier": 2
+  },
+  {
+    "address": "0xa20286b88a93594246090c24fcc3179416766438",
+    "tier": 2
+  },
+  {
+    "address": "0x13fca354afb3cfbca447338a8b83954e23dc10bf",
+    "tier": 2
+  },
+  {
+    "address": "0x5143f2585bcf01f7d8d61ca70c378648db558064",
+    "tier": 2
+  },
+  {
+    "address": "0x1437c8c1142efdea60cfe4bae23e7b703d33e3d7",
+    "tier": 2
+  },
+  {
+    "address": "0xd29c790466675153a50df7860b9efdb689a21cde",
+    "tier": 1
+  },
+  {
+    "address": "0x5b3f534e6826efb8fdfbe72d3536cd70c610ca63",
+    "tier": 1
+  },
+  {
+    "address": "0xf2521904b4cbc3ac65578201f28852101f3f1670",
+    "tier": 1
+  },
+  {
+    "address": "0x5bc826cabfe856acd5a980980bdba4010a3f4110",
+    "tier": 2
+  },
+  {
+    "address": "0x91f89cf9477daa21408c87989ee00aacede7574b",
+    "tier": 2
+  },
+  {
+    "address": "0x721442b81e619195cf07a55a001e95cf6b01f90c",
+    "tier": 2
+  },
+  {
+    "address": "0x8e849ebfbf5020067a26dc117d0ef6cf50f6b764",
+    "tier": 2
+  },
+  {
+    "address": "0x6bab7a13acc7d0593285edb997d7e7e04f300f45",
+    "tier": 2
+  },
+  {
+    "address": "0xdc8e7853b3a2dedb9bf5a057ca4377fb40719ad9",
+    "tier": 2
+  },
+  {
+    "address": "0x869dcbcb689cab802badc0740e774da3e88c10dd",
+    "tier": 2
+  },
+  {
+    "address": "0x534cd9ec464ed92f0aac20a26e00449e4b9533c6",
+    "tier": 2
+  },
+  {
+    "address": "0xb282fa880581e3137202123c326d5ef2913de363",
+    "tier": 2
+  },
+  {
+    "address": "0x0df2471b14e06d4e90cfeb2dcba0abd12351f9e6",
+    "tier": 2
+  },
+  {
+    "address": "0xceac422b0db8e2924824b5ca4741c464b9b7b6f4",
+    "tier": 2
+  },
+  {
+    "address": "0xb4395102943169e98c2a4d289f1469b8aeee6c2c",
+    "tier": 2
+  },
+  {
+    "address": "0x85b39f34a0c0c0b3972bd912707af7735eda38cb",
+    "tier": 2
+  },
+  {
+    "address": "0x2c835ff5d689941a86437a173f9dd156f1f4cd0e",
+    "tier": 2
+  },
+  {
+    "address": "0x2883fcabc186afcbe0f0daf8a922eb989ce165bb",
+    "tier": 2
+  },
+  {
+    "address": "0x86e36c9ba3c6a2542fd761bc2b4fd61a110ea6cd",
+    "tier": 2
+  },
+  {
+    "address": "0x47bfc09a934316d14e58cbdadcd49ceed7bc5b05",
+    "tier": 2
+  },
+  {
+    "address": "0xc5cec53f63a257014ff651179671d14324da02e2",
+    "tier": 2
+  },
+  {
+    "address": "0x58ffaa2210f36278f0d97f992889276196c59075",
+    "tier": 2
+  },
+  {
+    "address": "0x508be5b57d6e73cdfe8a400d564e9ffa3d6d6626",
+    "tier": 2
+  },
+  {
+    "address": "0x16219b2c3a11c5833ace1a8b9ddf64c48ddbe3f7",
+    "tier": 2
+  },
+  {
+    "address": "0x10cc91b4ba721d0233203b76e9637c581deac0fc",
+    "tier": 2
+  },
+  {
+    "address": "0x4cf0123d064fe7b4eecd53da779a020d1a44e284",
+    "tier": 2
+  },
+  {
+    "address": "0x03d6681cc415d3fa0ef08569100b46d62315f59d",
+    "tier": 2
+  },
+  {
+    "address": "0xffe16898fc0af80ee9bcf29d2b54a0f20f9498ad",
+    "tier": 2
+  },
+  {
+    "address": "0x6828d9e13b9c5bf166d58f60340fd8c3d1fe7693",
+    "tier": 2
+  },
+  {
+    "address": "0x802f18765d6945b82075241e40b6214331ca3641",
+    "tier": 2
+  },
+  {
+    "address": "0x167fe7f620a82ffec12cc6f1f01ef11cb69c65bd",
+    "tier": 2
+  },
+  {
+    "address": "0xbf02c7ae5ff680d0303fbb19ba6d29b17b0df7e9",
+    "tier": 2
+  },
+  {
+    "address": "0x8390618bc761431a266eb7b2d54c2290c57c653f",
+    "tier": 2
+  },
+  {
+    "address": "0xac38cd832a249e4bf2df6cf01b3c7e0571ca1489",
+    "tier": 2
+  },
+  {
+    "address": "0xb183c17caf23b2563571ef27d125c5f72975679f",
+    "tier": 2
+  },
+  {
+    "address": "0xc4e7e70a3a41c655b1b634da13dd2689af821616",
+    "tier": 2
+  },
+  {
+    "address": "0xdd358f9b5fc745b75e39e450e01757aec54a4b5c",
+    "tier": 2
+  },
+  {
+    "address": "0xa590d98bbee97533bd7dfed19c0a89ffeeeb1384",
+    "tier": 2
+  },
+  {
+    "address": "0xd1ab146981d50adcfe18433500e852af396ea7b1",
+    "tier": 2
+  },
+  {
+    "address": "0xbb480616b347916e1d65aceaeaba899fcd432b2c",
+    "tier": 2
+  },
+  {
+    "address": "0xdff4c57a8d0e025931a725197c9412920b385bbc",
+    "tier": 1
+  },
+  {
+    "address": "0x9a822ed47ea00d9487e63ed3fbe90d4cc45034e0",
+    "tier": 2
+  },
+  {
+    "address": "0xa2648350f3566e4f18a9519734928d08d3ea08c4",
+    "tier": 2
+  },
+  {
+    "address": "0xa2746b2a56f9886925c03af1d1e10b8b3dfbbe29",
+    "tier": 2
+  },
+  {
+    "address": "0xe47ed204b63adfb80c90082c088fc2a430f9a558",
+    "tier": 2
+  },
+  {
+    "address": "0x70d9b2084d24823789073d3732a327b2c18a7e6f",
+    "tier": 2
+  },
+  {
+    "address": "0x154fa6972f3c9eea2adb2e10b512440761e808e7",
+    "tier": 2
+  },
+  {
+    "address": "0xc793ee64e6ac6239c527fd041a78a8fcaa245e4f",
+    "tier": 2
+  },
+  {
+    "address": "0xe55036b78702961e72a27d21c3eb78c71bb6a645",
+    "tier": 2
+  },
+  {
+    "address": "0x1564032600c864e5f254508cc907c40c87db2c05",
+    "tier": 2
+  },
+  {
+    "address": "0xcceb3cda4d338bae545fed6b745c6dadf4df9781",
+    "tier": 2
+  },
+  {
+    "address": "0xdebee557279efedf7b9044292fbb83988060c337",
+    "tier": 2
+  },
+  {
+    "address": "0x8f156296f3f0b3c70a80b7bcf7ce3a75cccc0288",
+    "tier": 2
+  },
+  {
+    "address": "0x495b2fd72a3562b22e8f93d1e7e673273cd7c5f2",
+    "tier": 2
+  },
+  {
+    "address": "0x5b3cec6a5e219674d4485be572cd3faae338bfc6",
+    "tier": 2
+  },
+  {
+    "address": "0x9095de52c39f22b324f0c565d5c6ef1236fc6bc6",
+    "tier": 2
+  },
+  {
+    "address": "0x3f643c8262056f1c68c58d9c6780297c1f7e546f",
+    "tier": 2
+  },
+  {
+    "address": "0x8469e23d6ed617675e7c33aa264cc3d2371400d5",
+    "tier": 2
+  },
+  {
+    "address": "0x9f327969a2aead18c7d0424c537a05c597080261",
+    "tier": 2
+  },
+  {
+    "address": "0xe14ca0632c5430abddd40ba077da5fba8821a950",
+    "tier": 2
+  },
+  {
+    "address": "0xe3135e6a429c6b92f90faef2fc81bc8d148817c7",
+    "tier": 2
+  },
+  {
+    "address": "0x63e0e1312a693a3e113574060c424d1411ab4d55",
+    "tier": 2
+  },
+  {
+    "address": "0x93db1b0ad7365ebab85f3ed98b055af579a589c2",
+    "tier": 2
+  },
+  {
+    "address": "0x1da6a4cf0a189fff6c3bfc383941a898baa2c503",
+    "tier": 2
+  },
+  {
+    "address": "0x5f957ea55911ca2241330bf68c17c60c15b79b27",
+    "tier": 2
+  },
+  {
+    "address": "0x29c9001104561089b199b55f677854ca10ce27b2",
+    "tier": 2
+  },
+  {
+    "address": "0xe697b1bcf17a0edc2df872de1c7258c7cc434745",
+    "tier": 2
+  },
+  {
+    "address": "0x8b2447fe02053d6bb768cf6ca4a29a738baade16",
+    "tier": 2
+  },
+  {
+    "address": "0x5326888ade036224e878745e7e062057b80a9d12",
+    "tier": 2
+  },
+  {
+    "address": "0xca4a7dcfa46b07cf4eba08860e3cd732736a229b",
+    "tier": 2
+  },
+  {
+    "address": "0x75e6b9c57b8d1a136ef6970305dcd20a53581aba",
+    "tier": 2
+  },
+  {
+    "address": "0x6d538c0db342c493f864a42d6e5696a3e5bc8047",
+    "tier": 2
+  },
+  {
+    "address": "0xcda9b278e9e4163ff3a49135888fde386c0b17cc",
+    "tier": 2
+  },
+  {
+    "address": "0xfdb9fd7194921c435e2999187a8627301c45da36",
+    "tier": 2
+  },
+  {
+    "address": "0x982859adf9c20aa4098aff412870eabd0bf8f75c",
+    "tier": 2
+  },
+  {
+    "address": "0xddf9aedc737d396f6463c6af8460cfc87c246a8b",
+    "tier": 2
+  },
+  {
+    "address": "0xeaa2a690fb3e110544017efa02bac6afaa7e5253",
+    "tier": 2
+  },
+  {
+    "address": "0x5826d4ca43045fee71522c91ee4d2215e746c434",
+    "tier": 2
+  },
+  {
+    "address": "0xce6ab060214232e65ec67442e8a9673a279885ae",
+    "tier": 2
+  },
+  {
+    "address": "0xd01f9393b58c99bc4a8ec04feeac5d7084e3d6bd",
+    "tier": 2
+  },
+  {
+    "address": "0x215ea50527c4a0c16cd817653cae52a24aa49e2d",
+    "tier": 2
+  },
+  {
+    "address": "0xe369879d6e2e689bdd330bc2eb6a890aec9fe2b8",
+    "tier": 2
+  },
+  {
+    "address": "0x8e9330e9d0064f05a4039c1aea4d0d284d4e653a",
+    "tier": 2
+  },
+  {
+    "address": "0x38a75d96ef49edbc21dba45f57c05566c9b192d9",
+    "tier": 2
+  },
+  {
+    "address": "0xf969e702e7c5bc58f915ecae2a35d470bf1a31d0",
+    "tier": 2
+  },
+  {
+    "address": "0xc49c0a50fbae5fb6a6805052ed3b7f81db702184",
+    "tier": 2
+  },
+  {
+    "address": "0xae4a01f8567f82a6ec341ec3db4c8e99fea09131",
+    "tier": 1
+  },
+  {
+    "address": "0xd6c64e094c9f7e88356b45fc5ee5ce631c933be9",
+    "tier": 2
+  },
+  {
+    "address": "0x812acfac539c8b309ddf1ead8502fa6328d1519b",
+    "tier": 2
+  },
+  {
+    "address": "0x4fa2e05cda688e2e2f5276b0df0274cfa5c2a325",
+    "tier": 2
+  },
+  {
+    "address": "0x42c48611a2de9f98469946e3368dc4566781bd50",
+    "tier": 2
+  },
+  {
+    "address": "0xbccb842f4f4af6dc29dd49605268c7f39eb4cad0",
+    "tier": 2
+  },
+  {
+    "address": "0x41d059bea892010a79195c811cfea0e8447f044d",
+    "tier": 2
+  },
+  {
+    "address": "0x61ada5dfa67ad93c25e4725b032d6313345001a2",
+    "tier": 2
+  },
+  {
+    "address": "0xb0515d463ef484ae76b108819df68baa112b92aa",
+    "tier": 2
+  },
+  {
+    "address": "0x3a92d4735d61125e64fe83fa5365562627df85a7",
+    "tier": 2
+  },
+  {
+    "address": "0x165cd9856efb28bd7011c4bc94cc5ea825cc1ba0",
+    "tier": 2
+  },
+  {
+    "address": "0x9d6277e24efe034de2f44dd9adfe0f24b8b08bb7",
+    "tier": 1
+  },
+  {
+    "address": "0x6e5b466b68eb66110819c32e3e3db2f8be5c50b3",
+    "tier": 1
+  },
+  {
+    "address": "0xb98f0c9b8522f9295bb26bda0f5490e1872e7fa5",
+    "tier": 1
+  },
+  {
+    "address": "0xf109e709b89b820ac38529bc354aa1f5afb2f1a1",
+    "tier": 1
+  }
 ]

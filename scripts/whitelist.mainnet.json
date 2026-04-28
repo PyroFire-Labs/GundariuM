@@ -1337,7 +1337,7 @@
   },
   {
     "address": "0xdff4c57a8d0e025931a725197c9412920b385bbc",
-    "tier": 2
+    "tier": 1
   },
   {
     "address": "0x9a822ed47ea00d9487e63ed3fbe90d4cc45034e0",
@@ -1521,7 +1521,7 @@
   },
   {
     "address": "0xae4a01f8567f82a6ec341ec3db4c8e99fea09131",
-    "tier": 2
+    "tier": 1
   },
   {
     "address": "0xd6c64e094c9f7e88356b45fc5ee5ce631c933be9",
@@ -1573,6 +1573,10 @@
   },
   {
     "address": "0xb98f0c9b8522f9295bb26bda0f5490e1872e7fa5",
+    "tier": 1
+  },
+  {
+    "address": "0xf109e709b89b820ac38529bc354aa1f5afb2f1a1",
     "tier": 1
   }
 ]
