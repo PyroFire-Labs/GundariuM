@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { CountdownBanner } from "@/components/ui/CountdownTimer";
 import { useEffect, useState } from "react";
 import { formatUnits, parseEther } from "viem";
@@ -31,33 +32,37 @@ export default function Home() {
     <div className="flex flex-col">
 
       {/* ── 1. HERO ─────────────────────────────────────────────────── */}
-      <section className="flex min-h-[calc(100vh-64px)] flex-col items-center justify-center px-4 text-center">
-        <div className="mb-6 font-[family-name:var(--font-orbitron)] text-xs font-bold tracking-[0.3em] text-[var(--accent)]/60 uppercase">
-          Base Network · $GUNR · Gunpla NFT TCG
-        </div>
+      <section className="relative flex min-h-[calc(100vh-64px)] items-end justify-center overflow-hidden bg-[var(--background)]">
+        {/* Full-bleed background — composition handles the wordmark, tagline, and live indicator */}
+        <Image
+          src="/hero-bg.png"
+          alt="GundariuM — AI-generated kitbash mecha NFT battle cards on Base"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-[30%_center]"
+        />
 
-        <h1 className="mb-4 font-[family-name:var(--font-orbitron)] text-5xl font-black leading-tight tracking-tight text-white md:text-7xl">
-          GUNDARIU<span className="text-[var(--accent-2)]">M</span>
-        </h1>
+        {/* Subtle bottom gradient scrim so buttons remain readable over varied art */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[var(--background)]/85 via-[var(--background)]/30 to-transparent" />
 
-        <p className="mb-2 text-lg text-[var(--foreground)]/60 md:text-xl">
-          Roll your traits. Generate your legend.
-        </p>
-        <p className="mb-10 max-w-xl text-sm text-[var(--foreground)]/40 md:text-base">
-          AI-generated kitbash Gundar-Frames minted as unique NFT battle cards on
-          Base. Roll traits, forge your deck, dominate the arena.
-        </p>
-
-        <div className="flex flex-col gap-4 sm:flex-row">
+        {/* CTAs — image has the wordmark, so we keep the section text-light on top */}
+        <div className="relative z-10 flex flex-col gap-4 pb-12 sm:flex-row sm:pb-16">
           <Link
-            href="/buy-gunr"
+            href="/mint"
             className="rounded-full bg-[var(--accent)] px-8 py-3 font-[family-name:var(--font-orbitron)] text-sm font-bold tracking-wider text-black transition-all hover:scale-105 hover:shadow-[0_0_24px_var(--accent)]"
           >
-            BUY GUNR 🔥
+            MINT NOW
+          </Link>
+          <Link
+            href="/buy-gunr"
+            className="rounded-full border border-[var(--accent-2)] bg-[var(--background)]/40 px-8 py-3 font-[family-name:var(--font-orbitron)] text-sm font-bold tracking-wider text-[var(--accent-2)] backdrop-blur-sm transition-all hover:bg-[var(--accent-2)] hover:text-white"
+          >
+            BUY $GUNR
           </Link>
           <a
             href="#game-loop"
-            className="rounded-full border border-[var(--accent-2)] px-8 py-3 font-[family-name:var(--font-orbitron)] text-sm font-bold tracking-wider text-[var(--accent-2)] transition-all hover:bg-[var(--accent-2)] hover:text-white"
+            className="rounded-full border border-white/40 bg-[var(--background)]/40 px-8 py-3 font-[family-name:var(--font-orbitron)] text-sm font-bold tracking-wider text-white backdrop-blur-sm transition-all hover:bg-white/10"
           >
             LEARN MORE
           </a>
