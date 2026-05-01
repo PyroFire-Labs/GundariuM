@@ -34,7 +34,7 @@ export default function Home() {
 
       {/* ── 1. HERO ─────────────────────────────────────────────────── */}
       <section className="relative flex min-h-[calc(100vh-64px)] items-end justify-center overflow-hidden bg-[var(--background)]">
-        {/* Full-bleed background — composition handles the wordmark, tagline, and live indicator */}
+        {/* Full-bleed background — desktop composition has wordmark/tagline/live indicator on the right; mobile crops to mecha only */}
         <Image
           src="/hero-bg.png"
           alt="GundariuM — AI-generated kitbash mecha NFT battle cards on Base"
@@ -44,29 +44,44 @@ export default function Home() {
           className="object-cover object-[30%_center]"
         />
 
-        {/* Subtle bottom gradient scrim so buttons remain readable over varied art */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[var(--background)]/85 via-[var(--background)]/30 to-transparent" />
+        {/* Bottom gradient scrim — taller and stronger on mobile so the HTML brand text reads clearly over the mecha */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-[var(--background)] via-[var(--background)]/70 to-transparent md:h-40 md:from-[var(--background)]/85 md:via-[var(--background)]/30" />
 
-        {/* CTAs — image has the wordmark, so we keep the section text-light on top */}
-        <div className="relative z-10 flex flex-col gap-4 pb-12 sm:flex-row sm:pb-16">
-          <Link
-            href="/mint"
-            className="rounded-full bg-[var(--accent)] px-8 py-3 font-[family-name:var(--font-orbitron)] text-sm font-bold tracking-wider text-black transition-all hover:scale-105 hover:shadow-[0_0_24px_var(--accent)]"
-          >
-            MINT NOW
-          </Link>
-          <Link
-            href="/buy-gunr"
-            className="rounded-full border border-[var(--accent-2)] bg-[var(--background)]/40 px-8 py-3 font-[family-name:var(--font-orbitron)] text-sm font-bold tracking-wider text-[var(--accent-2)] backdrop-blur-sm transition-all hover:bg-[var(--accent-2)] hover:text-white"
-          >
-            BUY $GUNR
-          </Link>
-          <a
-            href="#game-loop"
-            className="rounded-full border border-white/40 bg-[var(--background)]/40 px-8 py-3 font-[family-name:var(--font-orbitron)] text-sm font-bold tracking-wider text-white backdrop-blur-sm transition-all hover:bg-white/10"
-          >
-            LEARN MORE
-          </a>
+        <div className="relative z-10 flex flex-col items-center pb-12 sm:pb-16">
+          {/* Mobile-only brand block — desktop has it in the image */}
+          <div className="mb-8 px-4 text-center md:hidden">
+            <div className="mb-2 font-[family-name:var(--font-orbitron)] text-[10px] font-bold tracking-[0.3em] text-[var(--accent)]/70 uppercase">
+              Gunpla NFT · Battle Cards · Base
+            </div>
+            <h1 className="mb-3 font-[family-name:var(--font-orbitron)] text-5xl font-black leading-tight tracking-tight text-white">
+              GUNDARIU<span className="text-[var(--accent-2)]">M</span>
+            </h1>
+            <p className="text-sm text-[var(--foreground)]/70">
+              Roll your traits. Generate your legend.
+            </p>
+          </div>
+
+          {/* CTAs */}
+          <div className="flex flex-col gap-4 sm:flex-row">
+            <Link
+              href="/mint"
+              className="rounded-full bg-[var(--accent)] px-8 py-3 font-[family-name:var(--font-orbitron)] text-sm font-bold tracking-wider text-black transition-all hover:scale-105 hover:shadow-[0_0_24px_var(--accent)]"
+            >
+              MINT NOW
+            </Link>
+            <Link
+              href="/buy-gunr"
+              className="rounded-full border border-[var(--accent-2)] bg-[var(--background)]/40 px-8 py-3 font-[family-name:var(--font-orbitron)] text-sm font-bold tracking-wider text-[var(--accent-2)] backdrop-blur-sm transition-all hover:bg-[var(--accent-2)] hover:text-white"
+            >
+              BUY $GUNR
+            </Link>
+            <a
+              href="#game-loop"
+              className="rounded-full border border-white/40 bg-[var(--background)]/40 px-8 py-3 font-[family-name:var(--font-orbitron)] text-sm font-bold tracking-wider text-white backdrop-blur-sm transition-all hover:bg-white/10"
+            >
+              LEARN MORE
+            </a>
+          </div>
         </div>
       </section>
 
