@@ -72,6 +72,75 @@ export default function Home() {
       {/* ── LAUNCH COUNTDOWN (top) ──────────────────────────────────── */}
       <CountdownBanner />
 
+      {/* ── 1.5. KITBASH GALLERY ────────────────────────────────────── */}
+      <section className="px-4 py-20 bg-[var(--background)]">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-12 text-center">
+            <div className="mb-3 font-[family-name:var(--font-orbitron)] text-xs font-bold tracking-[0.3em] text-[var(--accent)]/60 uppercase">
+              Live Mints · Real Frames
+            </div>
+            <h2 className="font-[family-name:var(--font-orbitron)] text-3xl font-black text-white tracking-wider md:text-4xl">
+              ~69 MILLION COMBINATIONS
+            </h2>
+            <p className="mt-4 text-sm text-[var(--foreground)]/50 max-w-xl mx-auto md:text-base">
+              Every Gundar-Frame is uniquely rolled, AI-generated, and minted on-chain.
+              A handful from the forge:
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
+            {[
+              { id: 17, name: "White Knight",         faction: "AGE Wolf",        universe: "Advanced Generation", rarity: "Ω GundariuM",   rarityClass: "text-[var(--accent)] border-[var(--accent)]/40 bg-[var(--accent)]/10" },
+              { id: 18, name: "Ω Valkyrie-Frame",     faction: "AEUG",            universe: "Universal Century",   rarity: "Ω GundariuM",   rarityClass: "text-[var(--accent)] border-[var(--accent)]/40 bg-[var(--accent)]/10" },
+              { id: 19, name: "Gundar-Vanguard Type-0", faction: "Neo Zeon",      universe: "Universal Century",   rarity: "Gundar Steel",  rarityClass: "text-zinc-200 border-zinc-300/40 bg-zinc-300/10" },
+              { id: 6,  name: "GNY-508 Gundam",       faction: "EFSF",            universe: "Universal Century",   rarity: "Legendary",     rarityClass: "text-amber-300 border-amber-400/30 bg-amber-400/10" },
+              { id: 11, name: "CB-512 Gundam",        faction: "Celestial Being", universe: "Anno Domini",         rarity: "Legendary",     rarityClass: "text-amber-300 border-amber-400/30 bg-amber-400/10" },
+              { id: 15, name: "ASW-G-415 Gundam",     faction: "Gjallarhorn",     universe: "Iron-Blooded Orphans", rarity: "Legendary",     rarityClass: "text-amber-300 border-amber-400/30 bg-amber-400/10" },
+            ].map((card) => (
+              <div
+                key={card.id}
+                className="group rounded-xl border border-[var(--border)] bg-[var(--surface)] overflow-hidden transition-all hover:border-[var(--accent)]/50 hover:shadow-[0_0_24px_rgba(0,212,255,0.15)]"
+              >
+                <div className="aspect-square relative overflow-hidden bg-[var(--background)]">
+                  <Image
+                    src={`/gallery/token-${card.id}.png`}
+                    alt={`${card.name} — ${card.faction} Gundar-Frame`}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className={`absolute top-3 left-3 rounded border px-2 py-1 backdrop-blur-sm ${card.rarityClass}`}>
+                    <span className="font-[family-name:var(--font-orbitron)] text-[10px] font-bold tracking-widest">
+                      {card.rarity.toUpperCase()}
+                    </span>
+                  </div>
+                </div>
+                <div className="p-5">
+                  <div className="font-[family-name:var(--font-orbitron)] text-[10px] font-bold tracking-widest text-[var(--accent)]/60 uppercase mb-1">
+                    {card.universe}
+                  </div>
+                  <h3 className="font-[family-name:var(--font-orbitron)] text-base font-black text-white tracking-wider mb-1 truncate">
+                    {card.name}
+                  </h3>
+                  <p className="text-xs text-[var(--foreground)]/50">
+                    {card.faction}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-14 text-center">
+            <Link
+              href="/mint"
+              className="inline-block rounded-full border-2 border-[var(--accent)] px-10 py-3 font-[family-name:var(--font-orbitron)] text-sm font-bold tracking-wider text-[var(--accent)] transition-all hover:bg-[var(--accent)] hover:text-black hover:shadow-[0_0_24px_var(--accent)]"
+            >
+              ROLL YOURS &rarr;
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* ── 2. GAME LOOP ────────────────────────────────────────────── */}
       <section id="game-loop" className="px-4 py-20 bg-[var(--surface)]">
         <div className="mx-auto max-w-4xl">
