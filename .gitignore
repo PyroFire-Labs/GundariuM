@@ -43,3 +43,11 @@ next-env.d.ts
 # generated merkle proofs
 scripts/whitelist-proofs.json
 scripts/migration-proofs.json
+
+# claude code superpowers plugin metadata
+.superpowers/
+
+# dev/test image artifacts (logo iterations + kitbash test renders)
+# canonical logo lives at scripts/gndm-token-logoFINAL.png
+scripts/gndm-token-logo-[0-9]*.png
+scripts/kitbash-[0-9]*.png
