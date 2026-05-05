@@ -26,6 +26,10 @@ function buildShareText(card: ShareButtonsProps["card"]): string {
 export function ShareButtons({ card }: ShareButtonsProps = {}) {
   const [isFarcaster, setIsFarcaster] = useState(false);
   const text = buildShareText(card);
+  const embedUrl =
+    card?.tokenId !== undefined && card?.tokenId !== null
+      ? `${SITE_URL}/card/${card.tokenId.toString()}`
+      : SITE_URL;
 
   useEffect(() => {
     import("@farcaster/miniapp-sdk").then(async ({ sdk }) => {
@@ -39,39 +43,39 @@ export function ShareButtons({ card }: ShareButtonsProps = {}) {
       const { sdk } = await import("@farcaster/miniapp-sdk");
       await sdk.actions.composeCast({
         text: `${text}\n\n`,
-        embeds: [SITE_URL],
+        embeds: [embedUrl],
       });
     } else {
       window.open(
-        `https://warpcast.com/~/compose?text=${encodeURIComponent(text)}&embeds[]=${encodeURIComponent(SITE_URL)}`,
+        `https://warpcast.com/~/compose?text=${encodeURIComponent(text)}&embeds[]=${encodeURIComponent(embedUrl)}`,
         "_blank"
       );
     }
-  }, [isFarcaster, text]);
+  }, [isFarcaster, text, embedUrl]);
 
   const shareOnX = useCallback(() => {
     window.open(
-      `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(SITE_URL)}`,
+      `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(embedUrl)}`,
       "_blank"
     );
-  }, [text]);
+  }, [text, embedUrl]);
 
   const shareOnFacebook = useCallback(() => {
     window.open(
-      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(SITE_URL)}`,
+      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(embedUrl)}`,
       "_blank"
     );
-  }, []);
+  }, [embedUrl]);
 
   const shareGeneric = useCallback(async () => {
     if (navigator.share) {
       try {
-        await navigator.share({ title: "GundariuM", text, url: SITE_URL });
+        await navigator.share({ title: "GundariuM", text, url: embedUrl });
       } catch { /* user cancelled */ }
     } else {
-      await navigator.clipboard.writeText(`${text} ${SITE_URL}`);
+      await navigator.clipboard.writeText(`${text} ${embedUrl}`);
     }
-  }, [text]);
+  }, [text, embedUrl]);
 
   return (
     <div className="flex flex-wrap items-center justify-center gap-2">
