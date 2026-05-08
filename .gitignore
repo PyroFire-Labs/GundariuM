@@ -51,3 +51,13 @@ scripts/migration-proofs.json
 # canonical logo lives at scripts/gndm-token-logoFINAL.png
 scripts/gndm-token-logo-[0-9]*.png
 scripts/kitbash-[0-9]*.png
+
+# claude code session / conversation exports — raw conversation logs may contain
+# pasted secrets; NEVER commit these to a public repo
+claudeContext.md
+contextFromYesterday*.MD
+contextFromYesterday*.md
+
+# one-off analysis outputs (Farcaster resolution, whitelist diffs, etc.)
+scripts/recheck-result.json
+scripts/whitelist-missing-addresses.md
