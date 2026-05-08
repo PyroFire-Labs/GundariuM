@@ -49,8 +49,27 @@ export function GenerationReveal() {
 
   const [nameError, setNameError] = useState<string | null>(null);
 
-  if (!traits || !kitbashTraits || !traitRarities || !generatedImageBase64) {
+  if (!traits || !kitbashTraits || !traitRarities) {
     return null;
+  }
+
+  // The base64 image is intentionally not persisted (size). If the user
+  // reloads before reaching the IPFS upload in MintConfirm, we can't recover
+  // the preview — offer a clean restart instead of a blank screen.
+  if (!generatedImageBase64) {
+    return (
+      <div className="flex flex-col items-center gap-4 py-12 max-w-sm text-center">
+        <p className="text-sm text-[var(--foreground)]/70">
+          Your generation session was interrupted. Please reroll to forge a new Mobile Suit.
+        </p>
+        <button
+          onClick={reset}
+          className="px-6 py-3 bg-[var(--accent)] text-black font-[family-name:var(--font-orbitron)] font-bold rounded-xl hover:brightness-110 transition-all"
+        >
+          REROLL
+        </button>
+      </div>
+    );
   }
 
   const imageUrl = `data:${generatedImageMimeType ?? "image/png"};base64,${generatedImageBase64}`;

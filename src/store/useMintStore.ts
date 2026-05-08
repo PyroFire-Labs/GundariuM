@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 import type { TraitSet, KitbashTraits, TraitRarity } from "@/types/nft";
 
 export type MintStep =
@@ -58,35 +59,95 @@ const initialState = {
   error: null,
 };
 
-export const useMintStore = create<MintState>((set) => ({
-  ...initialState,
-  setFaction: (faction) => set({ faction }),
-  setGenerationResult: (result) =>
-    set({
-      traits: result.traits,
-      fallbackName: result.traits.name,
-      customName: "",
-      kitbashTraits: result.kitbashTraits,
-      traitRarities: result.traitRarities,
-      generatedImageBase64: result.imageBase64,
-      generatedImageMimeType: result.imageMimeType,
-      step: "reveal",
-      error: null,
+// Some mobile-wallet flows (Farcaster mini-app, deep-linking wallet apps)
+// reload the parent page when the wallet UI dismisses after a transaction
+// approval. Without persistence the in-memory Zustand store reset to
+// `initialState` after the reload, dropping the user back onto the faction
+// picker mid-transaction. Persisting to localStorage lets the mint flow
+// resume on reload. Heavy fields (`generatedImageBase64`,
+// `generatedImageMimeType`) are deliberately *not* persisted — a single
+// 1–2 MB base64 PNG would chew through localStorage's ~5 MB origin cap.
+// Components that need to display the image after rehydration fall back
+// to the IPFS gateway via `imageIpfsHash`.
+export const useMintStore = create<MintState>()(
+  persist(
+    (set) => ({
+      ...initialState,
+      setFaction: (faction) => set({ faction }),
+      setGenerationResult: (result) =>
+        set({
+          traits: result.traits,
+          fallbackName: result.traits.name,
+          customName: "",
+          kitbashTraits: result.kitbashTraits,
+          traitRarities: result.traitRarities,
+          generatedImageBase64: result.imageBase64,
+          generatedImageMimeType: result.imageMimeType,
+          step: "reveal",
+          error: null,
+        }),
+      setTraits: (traits) => set({ traits }),
+      setCustomName: (name) =>
+        set((state) => {
+          if (!state.traits || !state.fallbackName) return { customName: name };
+          const effective = name.trim() || state.fallbackName;
+          return {
+            customName: name,
+            traits: { ...state.traits, name: effective },
+          };
+        }),
+      setImageIpfsHash: (hash) => set({ imageIpfsHash: hash }),
+      setMetadataUri: (uri) => set({ metadataUri: uri }),
+      setMintedTokenId: (id) => set({ mintedTokenId: id }),
+      setError: (error) => set({ error }),
+      goTo: (step) => set({ step, error: null }),
+      reset: () => set(initialState),
     }),
-  setTraits: (traits) => set({ traits }),
-  setCustomName: (name) =>
-    set((state) => {
-      if (!state.traits || !state.fallbackName) return { customName: name };
-      const effective = name.trim() || state.fallbackName;
-      return {
-        customName: name,
-        traits: { ...state.traits, name: effective },
-      };
-    }),
-  setImageIpfsHash: (hash) => set({ imageIpfsHash: hash }),
-  setMetadataUri: (uri) => set({ metadataUri: uri }),
-  setMintedTokenId: (id) => set({ mintedTokenId: id }),
-  setError: (error) => set({ error }),
-  goTo: (step) => set({ step, error: null }),
-  reset: () => set(initialState),
-}));
+    {
+      name: "gundarium-mint-state",
+      version: 1,
+      storage: createJSONStorage(() => {
+        if (typeof window === "undefined") {
+          // SSR fallback — no-op storage that always returns null.
+          return {
+            getItem: () => null,
+            setItem: () => {},
+            removeItem: () => {},
+          };
+        }
+        return localStorage;
+      }),
+      // Cast through `unknown` because we serialize `mintedTokenId` (bigint)
+      // as a string for JSON-safety; `merge` below converts it back.
+      partialize: (state) =>
+        ({
+          step: state.step,
+          faction: state.faction,
+          kitbashTraits: state.kitbashTraits,
+          traitRarities: state.traitRarities,
+          traits: state.traits,
+          fallbackName: state.fallbackName,
+          customName: state.customName,
+          imageIpfsHash: state.imageIpfsHash,
+          metadataUri: state.metadataUri,
+          mintedTokenId:
+            state.mintedTokenId !== null
+              ? state.mintedTokenId.toString()
+              : null,
+        }) as unknown as MintState,
+      merge: (persistedState, currentState) => {
+        const persisted = (persistedState ?? {}) as Partial<MintState> & {
+          mintedTokenId?: string | null;
+        };
+        return {
+          ...currentState,
+          ...persisted,
+          mintedTokenId:
+            persisted.mintedTokenId != null && persisted.mintedTokenId !== ""
+              ? BigInt(persisted.mintedTokenId)
+              : null,
+        };
+      },
+    }
+  )
+);

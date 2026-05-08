@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useMintStore } from "@/store/useMintStore";
 import { displayRarity, type Rarity } from "@/types/nft";
 import { ShareButtons } from "@/components/ui/ShareButtons";
+import { ipfsToHttp } from "@/lib/ipfs";
 
 const RARITY_CLASS: Record<Rarity, string> = {
   Common: "rarity-common",
@@ -26,12 +27,24 @@ const RARITY_GLOW: Record<Rarity, string> = {
 };
 
 export function MintSuccess() {
-  const { traits, generatedImageBase64, generatedImageMimeType, mintedTokenId, reset } = useMintStore();
+  const {
+    traits,
+    generatedImageBase64,
+    generatedImageMimeType,
+    imageIpfsHash,
+    mintedTokenId,
+    reset,
+  } = useMintStore();
   const [flipped, setFlipped] = useState(false);
 
+  // Prefer the in-memory base64; fall back to the IPFS gateway after a
+  // rehydrated session (wallet-reload mid-flow). See useMintStore for why
+  // we don't persist the base64 itself.
   const imageUrl = generatedImageBase64
     ? `data:${generatedImageMimeType ?? "image/png"};base64,${generatedImageBase64}`
-    : undefined;
+    : imageIpfsHash
+      ? ipfsToHttp(`ipfs://${imageIpfsHash}`)
+      : undefined;
   const rarityClass = traits ? RARITY_CLASS[traits.rarity] : "rarity-common";
   const glowColor = traits ? RARITY_GLOW[traits.rarity] : "#6b7280";
 

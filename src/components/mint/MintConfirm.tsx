@@ -5,12 +5,14 @@ import { useAccount, useChainId, useSwitchChain } from "wagmi";
 import { useMintStore } from "@/store/useMintStore";
 import { useMint } from "@/lib/contracts/hooks/useMint";
 import { CardFrame } from "@/components/card/CardFrame";
+import { ipfsToHttp } from "@/lib/ipfs";
 
 export function MintConfirm() {
   const {
     traits,
     generatedImageBase64,
     generatedImageMimeType,
+    imageIpfsHash,
     metadataUri,
     setMetadataUri,
     setImageIpfsHash,
@@ -122,9 +124,14 @@ export function MintConfirm() {
     }
   };
 
+  // Prefer the in-memory base64 (instant), but fall back to the IPFS gateway
+  // when state was rehydrated from localStorage after a wallet-induced reload
+  // (we don't persist the base64 — see useMintStore for the size rationale).
   const imageUrl = generatedImageBase64
     ? `data:${generatedImageMimeType ?? "image/png"};base64,${generatedImageBase64}`
-    : undefined;
+    : imageIpfsHash
+      ? ipfsToHttp(`ipfs://${imageIpfsHash}`)
+      : undefined;
 
   const usdcAmount = effectivePrice ? Number(effectivePrice) / 1_000_000 : 5;
   const isUploading = !metadataUri && !storeError;
