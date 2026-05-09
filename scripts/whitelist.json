@@ -1578,5 +1578,117 @@
   {
     "address": "0xf109e709b89b820ac38529bc354aa1f5afb2f1a1",
     "tier": 1
+  },
+  {
+    "address": "0x06dd5f3efe921dde0f3ca96450e6361b10d3e6e6",
+    "tier": 1
+  },
+  {
+    "address": "0xbd680338b781ccbdaafdf25e902f54b4a4974600",
+    "tier": 1
+  },
+  {
+    "address": "0x6a8a7343474b54f6c401cb68df4ecd28f52c6fea",
+    "tier": 1
+  },
+  {
+    "address": "0x8ffe1ea26cad106ccc345663318c9a95da9f24b0",
+    "tier": 1
+  },
+  {
+    "address": "0xd114ec34e2e3d51c0e467af581931841e82798af",
+    "tier": 1
+  },
+  {
+    "address": "0xf11a157de11d1d3d4d2876f03601be3d09c5515f",
+    "tier": 1
+  },
+  {
+    "address": "0x09567d535b90bf4b1f431d094988343fa0298c3e",
+    "tier": 1
+  },
+  {
+    "address": "0xb05c837a58d05082b478c2bb5b48c09b82e3a1b8",
+    "tier": 1
+  },
+  {
+    "address": "0x538bef4e82412601a365fa860af2954eef5f0349",
+    "tier": 1
+  },
+  {
+    "address": "0x8d2a6a559c81facec14641c85179e7f73964288c",
+    "tier": 1
+  },
+  {
+    "address": "0xee93040b3e8ecb3ab2bb2165f39f98aa2747f7f2",
+    "tier": 1
+  },
+  {
+    "address": "0xdb24b2bfa7462f0a220e40d60b0ff8849bd018c0",
+    "tier": 1
+  },
+  {
+    "address": "0xe205a2bc3c03e7bfc9c9185a4117bb6b4c639890",
+    "tier": 1
+  },
+  {
+    "address": "0xe30bdebb27cf6e45898d3987e06bd7584239e992",
+    "tier": 1
+  },
+  {
+    "address": "0x33e36ae1bd888623c5a2b67ba033fd1627abe4c2",
+    "tier": 1
+  },
+  {
+    "address": "0x941fcd7a3902398f7cab0f3d51f27949a97bfd1d",
+    "tier": 1
+  },
+  {
+    "address": "0xd8d62934d1ea4c07a76dd2a0576186815f02cc85",
+    "tier": 1
+  },
+  {
+    "address": "0x3e93017fa45337f1558295d03e7d303e9f7d1455",
+    "tier": 1
+  },
+  {
+    "address": "0x9070d02e86a1ff96c5f5bc629007a0e1dc9c660c",
+    "tier": 1
+  },
+  {
+    "address": "0xb8302d38faf9d1133c06d8e3b51bb57fe73c69e6",
+    "tier": 1
+  },
+  {
+    "address": "0x82b7805195619f487459852bf9dd7191abd67c83",
+    "tier": 1
+  },
+  {
+    "address": "0x07756ca32094a0510bf884b1b35ff5525c628296",
+    "tier": 1
+  },
+  {
+    "address": "0xda940effa52fa2e8a3e615cbe4ee9e3226de7e00",
+    "tier": 1
+  },
+  {
+    "address": "0xb385580655282df3c8b37c013712e2f77b50c752",
+    "tier": 1
+  },
+  {
+    "address": "0x2f5dca3860156c3d85f280e48a61f5b1b5fdf690",
+    "tier": 1
+  },
+  {
+    "address": "0x0caa104b7fb875f5adb588d226fb542cb4667c27",
+    "tier": 1
+  },
+  {
+    "address": "0xa1067c858eca2433d8f8bcd7a3bcf511bd592114",
+    "tier": 1
+  },
+  {
+    "address": "0x3c06e8fb94e11c32ce595f3560c56ea3cffd321a",
+    "tier": 1
   }
 ]
