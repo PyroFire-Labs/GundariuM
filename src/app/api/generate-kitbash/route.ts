@@ -30,13 +30,27 @@ export async function POST(req: Request) {
       }
     }
 
-    // Rate limit: 10 generations per hour per IP
+    // Two-layer rate limit per IP: 5 generations/hour AND 20 generations/day.
+    // The hourly bucket throttles burst abuse; the daily bucket is the
+    // backstop that prevents slow-roll attacks under the hourly ceiling.
+    // NOTE: the underlying store is in-memory per Vercel serverless instance,
+    // so the effective ceiling is N × max where N is the active instance
+    // count. Move to Vercel KV / Upstash post-launch for cross-instance
+    // accuracy. Defense-in-depth for now: hard daily budget cap on the
+    // Google AI Studio account bounds total spend even if the limit leaks.
     const ip = req.headers.get("x-forwarded-for") ?? "unknown";
-    const limit = checkRateLimit(`gen:${ip}`, 10, 60 * 60 * 1000);
-    if (!limit.allowed) {
+    const hourly = checkRateLimit(`gen:hour:${ip}`, 5, 60 * 60 * 1000);
+    const daily = checkRateLimit(`gen:day:${ip}`, 20, 24 * 60 * 60 * 1000);
+    if (!hourly.allowed || !daily.allowed) {
+      const retryAfterMs = !hourly.allowed
+        ? hourly.retryAfterMs
+        : daily.retryAfterMs;
       return NextResponse.json(
         { error: "Rate limit exceeded. Try again later." },
-        { status: 429, headers: { "Retry-After": String(Math.ceil(limit.retryAfterMs / 1000)) } }
+        {
+          status: 429,
+          headers: { "Retry-After": String(Math.ceil(retryAfterMs / 1000)) },
+        }
       );
     }
 
