@@ -124,7 +124,10 @@ contract GunplaCard is
         emit CardMinted(to, tokenId, traits.name, traits.rarity);
     }
 
-    /// @notice Mint during whitelist phase with Merkle proof
+    /// @notice Whitelist-eligible mint with Merkle proof. Available during
+    ///         WHITELIST phase and during PUBLIC phase (so VIPs retain their
+    ///         tier discount even after public mint opens). Reverts when phase
+    ///         is PAUSED.
     function mintCardWhitelist(
         address to,
         string calldata tokenUri,
@@ -132,7 +135,7 @@ contract GunplaCard is
         uint8 tier,
         bytes32[] calldata proof
     ) external returns (uint256 tokenId) {
-        require(mintPhase == MintPhase.WHITELIST, "GunplaCard: not in whitelist phase");
+        require(mintPhase != MintPhase.PAUSED, "GunplaCard: minting paused");
         require(whitelistMintCap == 0 || whitelistMintCount[msg.sender] < whitelistMintCap, "GunplaCard: mint cap reached");
         require(tierPrice[tier] > 0, "GunplaCard: invalid tier");
 

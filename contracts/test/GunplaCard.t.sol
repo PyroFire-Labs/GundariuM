@@ -298,8 +298,53 @@ contract GunplaCardTest is Test {
         card.setMintPhase(GunplaCard.MintPhase.PAUSED);
 
         vm.prank(alice);
-        vm.expectRevert("GunplaCard: not in whitelist phase");
+        vm.expectRevert("GunplaCard: minting paused");
         card.mintCardWhitelist(alice, "ipfs://test", _defaultTraits(), 1, aliceProof);
+    }
+
+    // VIPs must keep their discount after public mint opens. The contract
+    // upgrade in feat/wl-mint-during-public-phase changes the require in
+    // mintCardWhitelist from `phase == WHITELIST` to `phase != PAUSED` so a
+    // whitelisted user can still mint at tier price during PUBLIC phase.
+    function test_publicPhaseAllowsWhitelistMint() public {
+        // setUp already sets phase to PUBLIC
+        assertEq(uint8(card.mintPhase()), uint8(GunplaCard.MintPhase.PUBLIC));
+
+        uint256 balanceBefore = usdc.balanceOf(alice);
+        vm.prank(alice);
+        uint256 tokenId = card.mintCardWhitelist(alice, "ipfs://vip-during-public", _defaultTraits(), 1, aliceProof);
+
+        assertEq(card.ownerOf(tokenId), alice);
+        assertEq(card.whitelistMintCount(alice), 1);
+        // Confirm she paid tier 1 price ($1) not the public price ($2)
+        assertEq(usdc.balanceOf(alice), balanceBefore - 1_000_000);
+    }
+
+    function test_publicPhaseStillRejectsInvalidProof() public {
+        // Phase is PUBLIC from setUp
+        // Fund and approve charlie (not on whitelist)
+        vm.prank(owner);
+        usdc.transfer(charlie, 10_000_000);
+        vm.prank(charlie);
+        usdc.approve(address(card), type(uint256).max);
+
+        bytes32[] memory fakeProof = new bytes32[](1);
+        fakeProof[0] = bytes32(uint256(0xdead));
+
+        vm.prank(charlie);
+        vm.expectRevert("GunplaCard: invalid proof");
+        card.mintCardWhitelist(charlie, "ipfs://fake", _defaultTraits(), 2, fakeProof);
+    }
+
+    function test_publicPhaseStillEnforcesMintCap() public {
+        // Phase is PUBLIC from setUp
+        vm.startPrank(alice);
+        for (uint256 i = 0; i < 5; i++) {
+            card.mintCardWhitelist(alice, "ipfs://test", _defaultTraits(), 1, aliceProof);
+        }
+        vm.expectRevert("GunplaCard: mint cap reached");
+        card.mintCardWhitelist(alice, "ipfs://test", _defaultTraits(), 1, aliceProof);
+        vm.stopPrank();
     }
 
     function test_whitelistPhaseAllowsWLMint() public {
