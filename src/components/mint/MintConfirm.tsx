@@ -58,8 +58,15 @@ export function MintConfirm() {
   // Whitelist proof loading
   const [proofData, setProofData] = useState<{ tier: number; proof: string[] } | null>(null);
 
+  // Load whitelist proof for the connected wallet regardless of mint phase.
+  // After the contract upgrade in feat/wl-mint-during-public-phase, VIPs can
+  // continue using mintCardWhitelist during PUBLIC phase to retain their
+  // tier discount. Pre-upgrade, mintCardWhitelist would revert in PUBLIC
+  // phase — but loading the proof eagerly is harmless either way; the
+  // executeWhitelistMint() call at handleMint() is what would fail, and it's
+  // gated below.
   useEffect(() => {
-    if (!account.address || currentPhase !== 1) return;
+    if (!account.address) return;
     fetch(proofsFile)
       .then((r) => r.json())
       .then((data) => {
@@ -67,13 +74,15 @@ export function MintConfirm() {
         if (entry) setProofData(entry);
       })
       .catch(() => {});
-  }, [account.address, currentPhase, proofsFile]);
+  }, [account.address, proofsFile]);
 
-  const effectivePrice = currentPhase === 1 && proofData
+  // VIP/WL tier price applies whenever the wallet has a valid proof and the
+  // contract isn't paused — i.e. WHITELIST or PUBLIC phase post-upgrade.
+  const effectivePrice = proofData && currentPhase !== 0
     ? (proofData.tier === 1 ? vipPrice : wlPrice) ?? mintPrice
     : mintPrice;
 
-  const tierLabel = currentPhase === 1 && proofData
+  const tierLabel = proofData && currentPhase !== 0
     ? proofData.tier === 1 ? "VIP (50% off)" : "Whitelist (25% off)"
     : "Public";
 
@@ -108,7 +117,12 @@ export function MintConfirm() {
   const handleMint = async () => {
     if (!metadataUri || !traits) return;
     let tokenId: bigint | null = null;
-    if (currentPhase === 1 && proofData) {
+    // Use the whitelist mint path whenever the wallet has a valid proof and
+    // the contract isn't paused. Post-upgrade, this works in both WHITELIST
+    // and PUBLIC phases (VIPs keep their tier discount even after public mint
+    // opens). Public mintCard() is the fallback for non-whitelisted wallets
+    // and only succeeds in PUBLIC phase.
+    if (proofData && currentPhase !== 0) {
       tokenId = await executeWhitelistMint(
         metadataUri,
         traits,
@@ -155,7 +169,7 @@ export function MintConfirm() {
           <span className="text-[var(--foreground)]/60">Tier</span>
           <span className="font-mono text-[var(--accent)]">{tierLabel}</span>
         </div>
-        {currentPhase === 1 && whitelistMintCap !== undefined && (
+        {proofData && whitelistMintCap !== undefined && (
           <div className="flex justify-between">
             <span className="text-[var(--foreground)]/60">WL mints</span>
             <span className="font-mono">
