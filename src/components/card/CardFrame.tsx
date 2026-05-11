@@ -3,6 +3,10 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { displayRarity, type Rarity, type TraitSet } from "@/types/nft";
+import {
+  useRunnerProfile,
+  resolveRunnerDisplayName,
+} from "@/lib/hooks/useRunnerProfile";
 
 export interface CosmeticOverrides {
   frameColor?: string;    // override frame color (from selected frame skin)
@@ -16,6 +20,13 @@ interface CardFrameProps {
   imageUrl: string;
   traits: TraitSet;
   cosmetics?: CosmeticOverrides;
+  /**
+   * Address of the card's current owner (or, during the mint flow, the
+   * connected wallet that's about to mint). When provided, the card's
+   * RUNNER label resolves to that wallet's Farcaster identity (Phase 1)
+   * or custom profile (future phases). Falls back to traits.pilotName.
+   */
+  ownerAddress?: string | null;
 }
 
 const RARITY_COLOR: Record<Rarity, string> = {
@@ -42,7 +53,23 @@ function hexGridSvg(color: string): string {
   return `url("data:image/svg+xml,${encodeURIComponent(hex)}")`;
 }
 
-export function CardFrame({ imageUrl, traits, cosmetics }: CardFrameProps) {
+export function CardFrame({
+  imageUrl,
+  traits,
+  cosmetics,
+  ownerAddress,
+}: CardFrameProps) {
+  // Phase 1 Runner Dossier: resolve the display name from Farcaster identity
+  // (or future custom profile) when an owner address is available. Falls
+  // back to the on-chain pilotName trait if no owner is known or the lookup
+  // returns no identity.
+  const { profile: runnerProfile } = useRunnerProfile(ownerAddress);
+  const runnerDisplayName = resolveRunnerDisplayName(
+    runnerProfile,
+    traits.pilotName,
+    ownerAddress
+  );
+
   // Frame color: use cosmetic override if provided, otherwise rarity default
   const color = cosmetics?.frameColor ?? RARITY_COLOR[traits.rarity];
   const rarityClass = cosmetics?.frameColor ? undefined : RARITY_CLASS[traits.rarity];
@@ -209,7 +236,7 @@ export function CardFrame({ imageUrl, traits, cosmetics }: CardFrameProps) {
         {/* Runner + Armor */}
         <div className="flex items-center justify-between">
           <span className="font-mono truncate" style={{ color: "#94a3b8", fontSize: "7px" }}>
-            RUNNER: {traits.pilotName.toUpperCase()}
+            RUNNER: {runnerDisplayName.toUpperCase()}
           </span>
           <span className="font-mono" style={{ color, fontSize: "7px", opacity: 0.8 }}>
             {traits.armorType.toUpperCase()}

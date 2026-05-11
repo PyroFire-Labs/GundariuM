@@ -155,7 +155,11 @@ export function MintConfirm() {
       {/* Card preview with frame */}
       {imageUrl && traits && (
         <div className="w-full max-w-xs">
-          <CardFrame imageUrl={imageUrl} traits={traits} />
+          <CardFrame
+            imageUrl={imageUrl}
+            traits={traits}
+            ownerAddress={account.address}
+          />
         </div>
       )}
 
