@@ -18,7 +18,7 @@ export async function uploadMetadata(
 ): Promise<string> {
   const metadata: GunplaCardMetadata = {
     name: traits.name,
-    description: `${traits.name} — ${traits.series}. Piloted by ${traits.pilotName}.`,
+    description: `${traits.name} — ${traits.series}. Runner: ${traits.pilotName}.`,
     image: `ipfs://${imageIpfsHash}`,
     attributes: buildOpenSeaAttributes(traits),
   };

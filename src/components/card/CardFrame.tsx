@@ -206,10 +206,10 @@ export function CardFrame({ imageUrl, traits, cosmetics }: CardFrameProps) {
           {traits.name}
         </p>
 
-        {/* Pilot + Armor */}
+        {/* Runner + Armor */}
         <div className="flex items-center justify-between">
           <span className="font-mono truncate" style={{ color: "#94a3b8", fontSize: "7px" }}>
-            PILOT: {traits.pilotName.toUpperCase()}
+            RUNNER: {traits.pilotName.toUpperCase()}
           </span>
           <span className="font-mono" style={{ color, fontSize: "7px", opacity: 0.8 }}>
             {traits.armorType.toUpperCase()}

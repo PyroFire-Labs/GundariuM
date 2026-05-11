@@ -119,7 +119,7 @@ export function buildOpenSeaAttributes(traits: TraitSet): OpenSeaAttribute[] {
     { trait_type: "Faction", value: traits.faction },
     { trait_type: "Grade", value: traits.grade ?? "HG" },
     { trait_type: "Rarity", value: displayRarity(traits.rarity) },
-    { trait_type: "Pilot", value: traits.pilotName },
+    { trait_type: "Runner", value: traits.pilotName },
     { trait_type: "Armor Type", value: traits.armorType },
     { trait_type: "HP", display_type: "number", value: traits.hp, max_value: 2000 },
     { trait_type: "Primary Weapon", value: traits.primaryWeapon },
