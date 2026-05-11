@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useAccount } from "wagmi";
 import { useMintStore } from "@/store/useMintStore";
 import { CardFrame } from "@/components/card/CardFrame";
 import { displayRarity, type KitbashTraits, type TraitRarity } from "@/types/nft";
@@ -47,6 +48,7 @@ export function GenerationReveal() {
     reset,
   } = useMintStore();
 
+  const { address } = useAccount();
   const [nameError, setNameError] = useState<string | null>(null);
 
   if (!traits || !kitbashTraits || !traitRarities) {
@@ -86,7 +88,7 @@ export function GenerationReveal() {
     <div className="flex flex-col lg:flex-row gap-6 items-center lg:items-start justify-center w-full px-2">
       {/* Card preview */}
       <div className="flex-shrink-0 w-full max-w-[92vw] sm:max-w-sm lg:max-w-md">
-        <CardFrame imageUrl={imageUrl} traits={traits} />
+        <CardFrame imageUrl={imageUrl} traits={traits} ownerAddress={address} />
       </div>
 
       {/* Trait breakdown */}

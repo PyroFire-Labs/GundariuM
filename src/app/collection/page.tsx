@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useChainId, useSwitchChain } from "wagmi";
+import { useAccount, useChainId, useSwitchChain } from "wagmi";
 import { CountdownPage } from "@/components/ui/CountdownTimer";
 import { CollectionCard } from "@/components/collection/CollectionCard";
 import { useCollection } from "@/lib/contracts/hooks/useCollection";
@@ -18,6 +18,7 @@ export default function CollectionPage() {
 
   const chainId = useChainId();
   const { switchChain } = useSwitchChain();
+  const { address } = useAccount();
   const { cards, isLoading, isConnected, count } = useCollection();
   const walletReady = mounted && isConnected;
 
@@ -87,7 +88,11 @@ export default function CollectionPage() {
       {walletReady && !wrongChain && cards.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full max-w-6xl">
           {cards.map((card) => (
-            <CollectionCard key={card.tokenId.toString()} card={card} />
+            <CollectionCard
+              key={card.tokenId.toString()}
+              card={card}
+              ownerAddress={address}
+            />
           ))}
         </div>
       )}
