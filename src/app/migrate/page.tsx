@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAccount, useReadContract, useWriteContract, usePublicClient } from "wagmi";
 import { formatUnits, parseUnits, erc20Abi } from "viem";
 import { base } from "viem/chains";
@@ -9,17 +9,11 @@ import { getContracts, isPlaceholder } from "@/lib/contracts/addresses";
 
 const GNDM_ADDRESS = "0xfc7008f9157257a17a9fb3c602b1cd56c27a4ba3" as const;
 
-// Set to false once the new GNDMtoGUNR contract is deployed with the corrected
-// merkle root (0x9d1fce24...) and addresses.ts + public/migration-proofs.json
-// are updated to match. Until then, the live contract rejects every proof.
+// Flip to false after the v2 contract is deployed AND addresses.ts has
+// been updated with the new mainnet migration address.
 const MIGRATION_PAUSED = true;
 
-type Phase = "idle" | "loading" | "approving" | "migrating" | "done" | "error";
-
-interface ProofData {
-  cap: string;
-  proof: string[];
-}
+type Phase = "idle" | "approving" | "migrating" | "done" | "error";
 
 export default function MigratePage() {
   if (MIGRATION_PAUSED) return <MigrationPausedNotice />;
@@ -40,15 +34,14 @@ function MigrationPausedNotice() {
         </div>
         <div className="space-y-3 text-sm text-[var(--foreground)]/80 leading-relaxed">
           <p>
-            We caught a leaf-encoding bug in the deployed migration contract &mdash; it rejects every migration attempt, not just specific holders. The fix is in the codebase and a corrected contract is ready to redeploy.
+            Migration v2 is being redeployed with a simplified, time-gated 1:1 swap. Any GNDM holder will be able to migrate &mdash; no whitelist required.
           </p>
           <p>
             <span className="font-bold text-[var(--accent)]">Your GNDM is safe.</span>{" "}
-            Your whitelist allocation is preserved.{" "}
             <span className="font-bold text-[var(--accent)]">No action needed from you.</span>
           </p>
           <p>
-            We are redeploying after May 15, 2026, when the original contract&apos;s deadline expires and the locked GUNR can be recovered to fund the new contract. Watch{" "}
+            Watch{" "}
             <a
               className="text-[var(--accent)] hover:underline"
               href="https://farcaster.xyz/pyrofirezero"
@@ -77,7 +70,6 @@ function MigratePageInner() {
   const [phase, setPhase] = useState<Phase>("idle");
   const [error, setError] = useState<string | null>(null);
   const [txHash, setTxHash] = useState<string | null>(null);
-  const [proofData, setProofData] = useState<ProofData | null>(null);
 
   let contracts: ReturnType<typeof getContracts> | null = null;
   let migrationReady = false;
@@ -92,13 +84,6 @@ function MigratePageInner() {
     address: GNDM_ADDRESS,
     abi: erc20Abi,
     functionName: "balanceOf",
-    args: address ? [address] : undefined,
-  });
-
-  const { data: alreadyMigrated } = useReadContract({
-    address: migrationAddress,
-    abi: MIGRATION_ABI,
-    functionName: "migrated",
     args: address ? [address] : undefined,
   });
 
@@ -121,23 +106,9 @@ function MigratePageInner() {
     functionName: "deadline",
   });
 
-  useEffect(() => {
-    if (!address) return;
-    fetch("/migration-proofs.json")
-      .then((r) => r.json())
-      .then((data) => {
-        const entry = data.proofs?.[address.toLowerCase()];
-        if (entry) setProofData(entry);
-        else setProofData(null);
-      })
-      .catch(() => setProofData(null));
-  }, [address]);
-
-  const capWei = proofData ? BigInt(proofData.cap) : 0n;
-  const migratedWei = (alreadyMigrated as bigint) ?? 0n;
-  const remainingCap = capWei > migratedWei ? capWei - migratedWei : 0n;
   const balanceWei = (gndmBalance as bigint) ?? 0n;
-  const maxAmount = remainingCap < balanceWei ? remainingCap : balanceWei;
+  const contractGunrWei = (gunrInContract as bigint) ?? 0n;
+  const maxAmount = balanceWei < contractGunrWei ? balanceWei : contractGunrWei;
 
   const deadlineDate = deadline ? new Date(Number(deadline as bigint) * 1000) : null;
   const isExpired = deadlineDate ? deadlineDate.getTime() <= Date.now() : false;
@@ -159,7 +130,7 @@ function MigratePageInner() {
   }
 
   async function handleMigrate() {
-    if (!address || !proofData || !migrationAddress || !publicClient) return;
+    if (!address || !migrationAddress || !publicClient) return;
     const amountWei = parseUnits(amount, 18);
     if (amountWei <= 0n) return;
 
@@ -180,7 +151,7 @@ function MigratePageInner() {
         address: migrationAddress,
         abi: MIGRATION_ABI,
         functionName: "migrate",
-        args: [amountWei, BigInt(proofData.cap), proofData.proof as `0x${string}`[]],
+        args: [amountWei],
       });
       await publicClient.waitForTransactionReceipt({ hash: migrateHash });
 
@@ -243,11 +214,10 @@ function MigratePageInner() {
           )}
         </div>
 
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 gap-2">
           {[
             { label: "Your GNDM", value: isConnected ? fmt(balanceWei) : "—" },
-            { label: "Your Cap", value: isConnected && proofData ? fmt(capWei) : "—" },
-            { label: "GUNR Left", value: gunrInContract ? fmt(gunrInContract as bigint) : "—" },
+            { label: "GUNR Left", value: gunrInContract ? fmt(contractGunrWei) : "—" },
           ].map((s) => (
             <div key={s.label} className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-3 text-center">
               <div className="text-[10px] text-[var(--foreground)]/40 uppercase tracking-widest mb-1">{s.label}</div>
@@ -257,24 +227,7 @@ function MigratePageInner() {
         </div>
 
         <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-6 space-y-5">
-          {isConnected && proofData && migratedWei > 0n && (
-            <div className="text-xs text-[var(--foreground)]/40 text-center">
-              Already migrated: {fmt(migratedWei)} / {fmt(capWei)}
-            </div>
-          )}
-
-          {isConnected && !proofData && (
-            <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-center">
-              <p className="text-red-400 text-sm font-bold font-[family-name:var(--font-orbitron)]">
-                NOT ON WHITELIST
-              </p>
-              <p className="text-xs text-red-400/60 mt-1">
-                Only verified GNDM holders can migrate. Contact @PyroFireZerox on Farcaster.
-              </p>
-            </div>
-          )}
-
-          {isConnected && proofData && !isExpired && (
+          {isConnected && !isExpired && (
             <>
               <div className="space-y-2">
                 <label className="text-xs font-bold text-[var(--foreground)]/50 uppercase tracking-widest">
