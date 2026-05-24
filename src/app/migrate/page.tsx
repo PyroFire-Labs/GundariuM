@@ -11,7 +11,7 @@ const GNDM_ADDRESS = "0xfc7008f9157257a17a9fb3c602b1cd56c27a4ba3" as const;
 
 // Flip to false after the v2 contract is deployed AND addresses.ts has
 // been updated with the new mainnet migration address.
-const MIGRATION_PAUSED = true;
+const MIGRATION_PAUSED = false;
 
 type Phase = "idle" | "approving" | "migrating" | "done" | "error";
 
