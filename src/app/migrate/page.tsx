@@ -81,6 +81,7 @@ function MigratePageInner() {
   const migrationAddress = migrationReady ? contracts!.migration : undefined;
 
   const { data: gndmBalance } = useReadContract({
+    chainId: base.id,
     address: GNDM_ADDRESS,
     abi: erc20Abi,
     functionName: "balanceOf",
@@ -88,12 +89,14 @@ function MigratePageInner() {
   });
 
   const { data: gunrAddr } = useReadContract({
+    chainId: base.id,
     address: migrationAddress,
     abi: MIGRATION_ABI,
     functionName: "gunr",
   });
 
   const { data: gunrInContract } = useReadContract({
+    chainId: base.id,
     address: gunrAddr as `0x${string}` | undefined,
     abi: erc20Abi,
     functionName: "balanceOf",
@@ -101,6 +104,7 @@ function MigratePageInner() {
   });
 
   const { data: deadline } = useReadContract({
+    chainId: base.id,
     address: migrationAddress,
     abi: MIGRATION_ABI,
     functionName: "deadline",
@@ -139,6 +143,7 @@ function MigratePageInner() {
 
     try {
       const approveHash = await writeContractAsync({
+        chainId: base.id,
         address: GNDM_ADDRESS,
         abi: erc20Abi,
         functionName: "approve",
@@ -148,6 +153,7 @@ function MigratePageInner() {
 
       setPhase("migrating");
       const migrateHash = await writeContractAsync({
+        chainId: base.id,
         address: migrationAddress,
         abi: MIGRATION_ABI,
         functionName: "migrate",
