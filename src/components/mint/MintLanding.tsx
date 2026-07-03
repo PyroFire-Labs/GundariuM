@@ -105,7 +105,7 @@ export function MintLanding() {
         disabled={generating}
         className="px-8 py-4 bg-[var(--accent)] text-black font-[family-name:var(--font-orbitron)] font-bold text-lg rounded-xl hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {generating ? "GENERATING..." : "MINT YOUR GUNPLA"}
+        {generating ? "GENERATING..." : "MINT YOUR GUNDAR-FRAME"}
       </button>
 
       <p className="text-xs text-[var(--foreground)]/40 text-center max-w-sm">
@@ -114,7 +114,7 @@ export function MintLanding() {
       </p>
 
       <p className="text-[10px] text-[var(--foreground)]/30 text-center max-w-sm">
-        By pressing &quot;MINT YOUR GUNPLA&quot; you agree to our{" "}
+        By pressing &quot;MINT YOUR GUNDAR-FRAME&quot; you agree to our{" "}
         <a href="/terms" className="underline hover:text-[var(--foreground)]/50 transition-colors">
           Terms of Use
         </a>{" "}

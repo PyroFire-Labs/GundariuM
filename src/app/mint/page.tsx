@@ -12,7 +12,7 @@ const MINT_ENABLED = process.env.NEXT_PUBLIC_MINT_ENABLED === "true";
 const STEP_LABELS: Record<string, string> = {
   idle: "Mint a unique kitbash Mobile Suit",
   generating: "AI is forging your Mobile Suit...",
-  reveal: "Your Gunpla has been forged",
+  reveal: "Your Gundar-Frame has been forged",
   confirming: "Approve & mint on-chain",
   success: "Your card is live!",
 };
@@ -38,7 +38,7 @@ function MintFlow() {
       {/* Header */}
       <div className="text-center space-y-2">
         <h1 className="font-[family-name:var(--font-orbitron)] text-3xl font-bold text-[var(--accent)]">
-          MINT YOUR GUNPLA
+          MINT YOUR GUNDAR-FRAME
         </h1>
         <p className="text-[var(--foreground)]/60 text-sm">
           {STEP_LABELS[step]}
