@@ -3974,5 +3974,25 @@
   {
     "address": "0xdd769de7460f0def54972db53429ee0d8d9e3f38",
     "tier": 1
+  },
+  {
+    "address": "0x9a97068d25987ec6ba36afb3f36a9c784529526a",
+    "tier": 1
+  },
+  {
+    "address": "0xe5c230cbcb64fc7e9c009288622073dad2dac113",
+    "tier": 1
+  },
+  {
+    "address": "0xa30c6afd28d9e87bfd6ef67fab508893a4ecdc59",
+    "tier": 1
+  },
+  {
+    "address": "0xb7ec6b9d8e105032278c53ff7858eb4df466417a",
+    "tier": 1
+  },
+  {
+    "address": "0x67fc2b8bb584e2b38977f8b170fddc73ed94fd53",
+    "tier": 1
   }
 ]
