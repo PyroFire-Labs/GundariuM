@@ -69,6 +69,14 @@ New, standalone, UUPS upgradeable contract (per [[feedback_uups_default]]) — n
     6. **Share your dossier** — new OG image route (e.g. `src/app/api/og/dossier/[address]/route.tsx`), reusing the existing Satori pipeline (`src/lib/og/generateOgImage.tsx`) to render current streak/EXP on a card, plus a "Share to Farcaster" button matching the existing per-token share-button pattern.
 - Frame-Runner EXP formula: computed client-side from the three real on-chain sources (check-in contract, GunplaCard balance, GNDMStaking position). Exact weighting is an implementation detail, not an architectural fork.
 
+### Arena — "Share Victory" button
+
+New addition to `BattleOutcome` (`src/app/arena/page.tsx`), alongside the existing "BATTLE AGAIN" and "MINT YOUR OWN" buttons, shown only when `playerWon` is true. Removes the worst part of task 3 — instead of screenshotting manually and separately finding your way to compose a cast, the player taps one button right at the moment of victory and the cast composer opens pre-filled with a result image.
+
+Shares infrastructure with task 6's dossier share: same underlying Satori rendering utility (`src/lib/og/generateOgImage.tsx`), same Farcaster share-intent pattern already proven by the existing per-token share buttons. Distinct route and content — a new `/api/og/victory` endpoint rendering this specific battle's result (player card, opponent card, outcome, HP remaining), separate from the dossier's streak/EXP card.
+
+One real constraint: there's no persisted battle result anywhere (Arena has zero backend, per this spec's non-goals, and the battle itself is pure client-side state in `arena/page.tsx`). The victory OG image can't look anything up — it has to be generated entirely from URL-encoded battle-state query params passed at share time (e.g. player/enemy names, result, HP remaining), constructed client-side from the `BattleState` already in memory when the share button is tapped.
+
 ## Data flow
 
 Wallet connects on `/tasks` → page reads three on-chain sources in parallel via wagmi hooks (`DailyCheckIn.getStreak`, GunplaCard balance, GNDMStaking position) → computes EXP and per-task completion state client-side → renders header stats and checklist → user actions (`checkIn()` tx, mint/form link-outs, dossier share) trigger on-chain writes or external navigation → affected state is re-read and the page updates.
