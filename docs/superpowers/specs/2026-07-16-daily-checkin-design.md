@@ -25,7 +25,7 @@ This session already has an explicit budget constraint — the bigger backend-se
 - No spendable/redeemable EXP balance. Unlike TYSM's "Glow" (confirmed backend-stored, spent to claim bonus NFTs), Frame-Runner EXP has no planned use beyond display — a deliberate difference, not an oversight.
 - No on-chain task registry. Task metadata (names, EXP values, active/placeholder flags) lives in frontend code; changes ship through normal git/Vercel deploys, gated by repo access alone. Decided explicitly over building on-chain task config.
 - Tasks 2 (Buy GNRM) and 5 (Stake) are not implemented this round — placeholder UI rows only.
-- Task 3 (Demo + Form) is not on-chain-verifiable. Self-reported only; UI copy should say so rather than implying false rigor.
+- Task 3 (Demo + Form) is not fully verifiable, but is stronger than plain self-report. The form requires a link to a **Farcaster cast** (not an arbitrary image host) of the demo battle screenshot. Casts are signed and checked against the on-chain-registered public key for the poster's FID (identity/keys live on Optimism; cast content itself lives on Snapchain, Farcaster's off-chain message-ordering layer — not a blockchain ledger). That proves *who* posted the screenshot and *when*, which rules out someone claiming credit for another player's win. It does not prove the screenshot's content wasn't staged or doctored before casting — that gap has no fix at this layer, so UI copy should still avoid implying full rigor.
 
 ## Architecture
 
@@ -63,7 +63,7 @@ New, standalone, UUPS upgradeable contract (per [[feedback_uups_default]]) — n
   - Six-item task checklist:
     1. **Check In** — live. Button calls `checkIn()`. Once done today, shows a countdown to the next UTC day (computed, not stored).
     2. **Buy GNRM** — disabled row, "Coming Soon" badge. No logic.
-    3. **Run demo + submit form** — links out to the Google Form (URL to be filled in once written). No completion verification — explicitly labeled self-reported in the UI copy.
+    3. **Run demo + submit form** — links out to the Google Form (URL to be filled in once written). The form's screenshot field requires a Farcaster cast link specifically, not an arbitrary image host — see Non-goals for what that does and doesn't verify. No on-chain completion tracking either way.
     4. **Mint a Gundar-Frame** — reads existing GunplaCard balance via the existing `useCollection` hook; marked done if balance > 0; links to `/mint` otherwise.
     5. **Stake token** — disabled row, "Coming Soon" badge. No logic.
     6. **Share your dossier** — new OG image route (e.g. `src/app/api/og/dossier/[address]/route.tsx`), reusing the existing Satori pipeline (`src/lib/og/generateOgImage.tsx`) to render current streak/EXP on a card, plus a "Share to Farcaster" button matching the existing per-token share-button pattern.
