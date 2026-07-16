@@ -14,7 +14,7 @@
 - Contract owner for `DailyCheckIn` is the existing deployer wallet (`0x9D6277E24eFE034dE2F44dD9aDfE0f24b8B08bB7`) — same as every other GundariuM contract, per the approved spec. No new keystore involved in this plan.
 - TypeScript everywhere in `src/`, path alias `@/` → `src/`.
 - No new backend, database, or stored EXP balance — Frame-Runner EXP is computed client-side on every page load from on-chain reads only.
-- Tasks "Buy GNRM" and "Stake Token" are UI placeholders only in this plan — no logic, no contract calls.
+- Task "Stake Token" is a UI placeholder only in this plan — no logic, no contract calls. "Buy GNRM" is live (Task 5) — GNRM staking's Streme-side indexing bug was fixed, and Joshua confirmed the buy flow should go live too, verified against a real on-chain purchase (30,000 GNRM/day minimum) rather than trusted on claim.
 - React 19 + React Compiler is enabled (`reactCompiler: true`) — avoid new manual `useMemo`/`useCallback` in freshly-written files. The existing `ShareButtons.tsx` already uses `useCallback`; when modifying that file, match its existing style rather than removing it.
 - Every new/modified Solidity file must compile with `forge build` (run from `contracts/`) before its task is considered done. Every new/modified TypeScript file must pass `npx tsc --noEmit` (run from repo root) before its task is considered done.
 
@@ -587,7 +587,7 @@ git commit -m "$(cat <<'EOF'
 feat(contracts-frontend): wire DailyCheckIn ABI, address slot, and hook
 
 Mirrors useStaking's phase/error/contractReady shape. Address entries
-are placeholder zero addresses until Task 8's Sepolia deploy.
+are placeholder zero addresses until Task 10's Sepolia deploy.
 
 Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
 EOF
@@ -596,13 +596,124 @@ EOF
 
 ---
 
-### Task 5: `/tasks` page
+### Task 5: GNRM daily-buy verification hook
+
+**Files:**
+- Create: `src/lib/contracts/hooks/useGnrmPurchaseCheck.ts`
+
+**Interfaces:**
+- Produces: `useGnrmPurchaseCheck()` returning `{ phase: "idle"|"checking"|"verified"|"not-met"|"error", error: string|null, check: () => Promise<void>, reset: () => void }`.
+- Consumes: nothing from earlier tasks — GNRM is a Streme-launched token independent of the GundariuM contract suite in `addresses.ts`, so the token and pool addresses are hardcoded constants in this hook, not read from `getContracts()`.
+
+GNRM/WETH pool: `0x72d3338600cf47766e4f9e435be4879593870181` (confirmed on-chain, see [[project_gnrm_streme_launch]]). GNRM token: `0x271b01cc11032a4e23f0200f8f57eb45176ab491`. Minimum daily buy: 30,000 GNRM (18 decimals).
+
+- [ ] **Step 1: Write the hook**
+
+```typescript
+"use client";
+
+import { useState } from "react";
+import { usePublicClient, useAccount } from "wagmi";
+import { parseAbiItem } from "viem";
+
+const GNRM_ADDRESS = "0x271b01cc11032a4e23f0200f8f57eb45176ab491" as const;
+const GNRM_POOL_ADDRESS = "0x72d3338600cf47766e4f9e435be4879593870181" as const;
+const MIN_DAILY_BUY = 30_000n * 10n ** 18n; // 30,000 GNRM, 18 decimals
+const BASE_BLOCKS_PER_DAY = 45_000n; // ~2s blocks on Base, buffered above the exact 43,200
+
+const TRANSFER_EVENT = parseAbiItem("event Transfer(address indexed from, address indexed to, uint256 value)");
+
+export type GnrmCheckPhase = "idle" | "checking" | "verified" | "not-met" | "error";
+
+/**
+ * Verifies a GNRM purchase by checking for a Transfer event from the
+ * GNRM/WETH pool directly to the connected wallet — proves a real swap,
+ * not just any incoming transfer. Window is an approximate rolling ~24h
+ * (Base block times make exact UTC-midnight boundaries impractical to
+ * pin down without an indexer), not a precise calendar-day check.
+ */
+export function useGnrmPurchaseCheck() {
+  const [phase, setPhase] = useState<GnrmCheckPhase>("idle");
+  const [error, setError] = useState<string | null>(null);
+
+  const { address } = useAccount();
+  const publicClient = usePublicClient();
+
+  const check = async () => {
+    if (!address || !publicClient) {
+      setError("Wallet not connected");
+      setPhase("error");
+      return;
+    }
+    setPhase("checking");
+    setError(null);
+    try {
+      const currentBlock = await publicClient.getBlockNumber();
+      const fromBlock = currentBlock > BASE_BLOCKS_PER_DAY ? currentBlock - BASE_BLOCKS_PER_DAY : 0n;
+
+      const logs = await publicClient.getLogs({
+        address: GNRM_ADDRESS,
+        event: TRANSFER_EVENT,
+        args: { from: GNRM_POOL_ADDRESS, to: address },
+        fromBlock,
+        toBlock: "latest",
+      });
+
+      const total = logs.reduce((sum, log) => sum + (log.args.value ?? 0n), 0n);
+      setPhase(total >= MIN_DAILY_BUY ? "verified" : "not-met");
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Check failed";
+      setError(msg);
+      setPhase("error");
+    }
+  };
+
+  return {
+    phase,
+    error,
+    check,
+    reset: () => {
+      setPhase("idle");
+      setError(null);
+    },
+  };
+}
+```
+
+- [ ] **Step 2: Typecheck**
+
+Run (from repo root): `npx tsc --noEmit`
+Expected: no errors in `useGnrmPurchaseCheck.ts`.
+
+- [ ] **Step 3: Manual sanity check**
+
+Run `npm run dev`. Since this hook has no UI yet (Task 6 wires the button), exercise it directly: open the browser console on any page while connected as `0x9D6277E24eFE034dE2F44dD9aDfE0f24b8B08bB7` (bought ~100.02M GNRM at launch — comfortably over the 30,000 minimum) and temporarily call the hook from a throwaway test component, or just confirm `publicClient.getLogs(...)` with the same parameters returns at least one log with `args.value` when run ad hoc in the console. Whether `phase` lands on `"verified"` depends on whether that launch-day purchase is still inside the ~45,000-block rolling window by the time you test — if it's aged out, that's expected, not a bug; a fresh small purchase (30,000+ GNRM) from any wallet is the reliable way to confirm `"verified"` end-to-end.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add src/lib/contracts/hooks/useGnrmPurchaseCheck.ts
+git commit -m "$(cat <<'EOF'
+feat(tasks): add GNRM daily-buy verification hook
+
+Confirms a real purchase via Transfer-from-pool event, not just any
+incoming transfer. Rolling ~24h window (block-estimated, not exact
+UTC-midnight) and a 30,000 GNRM/day minimum, per Joshua's spec.
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+EOF
+)"
+```
+
+---
+
+### Task 6: `/tasks` page
 
 **Files:**
 - Create: `src/app/tasks/page.tsx`
 
 **Interfaces:**
-- Consumes: `useDailyCheckIn()` (Task 4), `useCollection()` (existing — returns `{ cards, isLoading, isConnected, count }`), `useStaking()` (existing — returns includes `staked: string`).
+- Consumes: `useDailyCheckIn()` (Task 4), `useGnrmPurchaseCheck()` (Task 5), `useCollection()` (existing — returns `{ cards, isLoading, isConnected, count }`), `useStaking()` (existing — returns includes `staked: string`).
 
 - [ ] **Step 1: Write the page**
 
@@ -613,6 +724,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAccount } from "wagmi";
 import { useDailyCheckIn } from "@/lib/contracts/hooks/useDailyCheckIn";
+import { useGnrmPurchaseCheck } from "@/lib/contracts/hooks/useGnrmPurchaseCheck";
 import { useCollection } from "@/lib/contracts/hooks/useCollection";
 import { useStaking } from "@/lib/contracts/hooks/useStaking";
 import { ShareButtons } from "@/components/ui/ShareButtons";
@@ -650,10 +762,13 @@ export default function TasksPage() {
   const { currentStreak, totalCheckIns, checkedInToday, phase, checkIn, contractReady } = useDailyCheckIn();
   const { count: mintedCount } = useCollection();
   const { staked } = useStaking();
+  const { phase: gnrmPhase, check: checkGnrmBuy } = useGnrmPurchaseCheck();
 
   const hasStaked = parseFloat(staked || "0") > 0;
+  const gnrmVerified = gnrmPhase === "verified";
   const countdown = useCountdownToNextUtcDay(checkedInToday);
-  const exp = currentStreak * 10 + totalCheckIns * 5 + mintedCount * 25 + (hasStaked ? 50 : 0);
+  const exp =
+    currentStreak * 10 + totalCheckIns * 5 + mintedCount * 25 + (hasStaked ? 50 : 0) + (gnrmVerified ? 12 : 0);
 
   if (!isConnected) {
     return (
@@ -706,7 +821,17 @@ export default function TasksPage() {
             onAction={checkIn}
             disabled={!contractReady || phase === "checking-in"}
           />
-          <TaskRow title="Buy GNRM" expLabel="+12 EXP" placeholder />
+          <TaskRow
+            title="Buy GNRM"
+            subtitle="Buy 30,000+ GNRM today"
+            expLabel="+12 EXP"
+            done={gnrmVerified}
+            actionLabel={
+              gnrmPhase === "checking" ? "Checking..." : gnrmPhase === "not-met" ? "Not Met — Recheck" : "Check"
+            }
+            onAction={checkGnrmBuy}
+            disabled={gnrmPhase === "checking"}
+          />
           <TaskRow
             title="Run Demo + Submit Form"
             expLabel="+15 EXP"
@@ -730,6 +855,7 @@ export default function TasksPage() {
 
 function TaskRow({
   title,
+  subtitle,
   expLabel,
   done,
   countdown,
@@ -741,6 +867,7 @@ function TaskRow({
   placeholder,
 }: {
   title: string;
+  subtitle?: string;
   expLabel: string;
   done?: boolean;
   countdown?: string;
@@ -759,6 +886,7 @@ function TaskRow({
     >
       <div>
         <div className="font-[family-name:var(--font-orbitron)] text-sm font-bold text-white">{title}</div>
+        {subtitle && <div className="text-[10px] text-[var(--foreground)]/50">{subtitle}</div>}
         <div className="font-mono text-[10px] text-[var(--accent)]">{expLabel}</div>
       </div>
       {placeholder ? (
@@ -812,7 +940,7 @@ function DossierTaskRow({ address, streak, exp }: { address: `0x${string}` | und
 - [ ] **Step 2: Typecheck**
 
 Run (from repo root): `npx tsc --noEmit`
-Expected: errors only about `ShareButtons`'s missing `dossier` prop (resolved by Task 7) — no other errors in `tasks/page.tsx`.
+Expected: errors only about `ShareButtons`'s missing `dossier` prop (resolved by Task 8) — no other errors in `tasks/page.tsx`.
 
 - [ ] **Step 3: Commit**
 
@@ -832,7 +960,7 @@ EOF
 
 ---
 
-### Task 6: OG image routes (dossier + victory)
+### Task 7: OG image routes (dossier + victory)
 
 **Files:**
 - Create: `src/app/api/og/dossier/[address]/route.tsx`
@@ -983,7 +1111,7 @@ EOF
 
 ---
 
-### Task 7: Extend `ShareButtons` with `battle` and `dossier` variants
+### Task 8: Extend `ShareButtons` with `battle` and `dossier` variants
 
 **Files:**
 - Modify: `src/components/ui/ShareButtons.tsx`
@@ -1060,7 +1188,7 @@ Leave everything below this (the `useEffect` Farcaster-context detection, `share
 - [ ] **Step 4: Typecheck**
 
 Run (from repo root): `npx tsc --noEmit`
-Expected: no errors in `ShareButtons.tsx`, and the errors from Task 5's `tasks/page.tsx` (missing `dossier` prop) are now gone.
+Expected: no errors in `ShareButtons.tsx`, and the errors from Task 6's `tasks/page.tsx` (missing `dossier` prop) are now gone.
 
 - [ ] **Step 5: Commit**
 
@@ -1079,13 +1207,13 @@ EOF
 
 ---
 
-### Task 8: "Share Victory" button on the Arena outcome screen
+### Task 9: "Share Victory" button on the Arena outcome screen
 
 **Files:**
 - Modify: `src/app/arena/page.tsx`
 
 **Interfaces:**
-- Consumes: `ShareButtons` with the `battle` variant (Task 7).
+- Consumes: `ShareButtons` with the `battle` variant (Task 8).
 
 - [ ] **Step 1: Add the import**
 
@@ -1210,7 +1338,7 @@ EOF
 
 ---
 
-### Task 9: Deploy `DailyCheckIn` to Base Sepolia (user-executed)
+### Task 10: Deploy `DailyCheckIn` to Base Sepolia (user-executed)
 
 This task involves broadcasting a real transaction from the deployer keystore — run it yourself rather than having it executed on your behalf, same as tonight's earlier `setMerkleRoot` broadcast.
 
