@@ -11,7 +11,7 @@ const NAV_LINKS = [
   { href: "/stake", label: "Stake" },
   { href: "/migrate", label: "Migrate" },
   { href: "/mint", label: "Mint" },
-  { href: "/arena", label: "Arena" },
+  { href: "/arena", label: "Arena (Demo)" },
   { href: "/battle", label: "Battle" },
   { href: "/collection", label: "Collection" },
   { href: "/leaderboard", label: "Leaderboard" },
