@@ -39,10 +39,18 @@ function useCountdownToNextUtcDay(active: boolean): string {
 
 export default function TasksPage() {
   const { address, isConnected } = useAccount();
-  const { currentStreak, totalCheckIns, checkedInToday, phase, checkIn, contractReady } = useDailyCheckIn();
+  const {
+    currentStreak,
+    totalCheckIns,
+    checkedInToday,
+    phase,
+    checkIn,
+    contractReady,
+    error: checkInError,
+  } = useDailyCheckIn();
   const { count: mintedCount } = useCollection();
   const { staked } = useStaking();
-  const { phase: gnrmPhase, check: checkGnrmBuy } = useGnrmPurchaseCheck();
+  const { phase: gnrmPhase, check: checkGnrmBuy, error: gnrmError } = useGnrmPurchaseCheck();
 
   const hasStaked = staked > 0;
   const gnrmVerified = gnrmPhase === "verified";
@@ -100,6 +108,7 @@ export default function TasksPage() {
             actionLabel={contractReady ? (phase === "checking-in" ? "Checking In..." : "Check In") : "Unavailable"}
             onAction={checkIn}
             disabled={!contractReady || phase === "checking-in"}
+            error={checkInError}
           />
           <TaskRow
             title="Buy GNRM"
@@ -111,6 +120,7 @@ export default function TasksPage() {
             }
             onAction={checkGnrmBuy}
             disabled={gnrmPhase === "checking"}
+            error={gnrmError}
           />
           <TaskRow
             title="Run Demo + Submit Form"
@@ -145,6 +155,7 @@ function TaskRow({
   linkHref,
   linkLabel,
   placeholder,
+  error,
 }: {
   title: string;
   subtitle?: string;
@@ -157,6 +168,7 @@ function TaskRow({
   linkHref?: string;
   linkLabel?: string;
   placeholder?: boolean;
+  error?: string | null;
 }) {
   return (
     <div
@@ -168,6 +180,7 @@ function TaskRow({
         <div className="font-[family-name:var(--font-orbitron)] text-sm font-bold text-white">{title}</div>
         {subtitle && <div className="text-[10px] text-[var(--foreground)]/50">{subtitle}</div>}
         <div className="font-mono text-[10px] text-[var(--accent)]">{expLabel}</div>
+        {error && <div className="text-[10px] text-red-400 mt-1">{error}</div>}
       </div>
       {placeholder ? (
         <span className="font-[family-name:var(--font-orbitron)] text-[10px] font-bold tracking-widest text-[var(--foreground)]/40 uppercase">
@@ -185,6 +198,7 @@ function TaskRow({
         <Link
           href={linkHref}
           target={linkHref.startsWith("http") ? "_blank" : undefined}
+          rel={linkHref.startsWith("http") ? "noopener noreferrer" : undefined}
           className="rounded-full bg-[var(--accent)] px-4 py-2 font-[family-name:var(--font-orbitron)] text-[10px] font-bold tracking-wider text-black transition-all hover:scale-105"
         >
           {linkLabel}

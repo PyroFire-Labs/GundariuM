@@ -129,6 +129,16 @@ contract DailyCheckInTest is Test {
         assertEq(bobStreak, 0);
     }
 
+    // ─── Event emission ──────────────────────────────────────────────────────
+
+    function test_checkIn_emitsCheckedInEvent() public {
+        vm.expectEmit(true, false, false, true);
+        emit DailyCheckIn.CheckedIn(alice, block.timestamp / 1 days, 1);
+
+        vm.prank(alice);
+        checkIn.checkIn();
+    }
+
     // ─── Upgrade authorization ────────────────────────────────────────────────
 
     function test_upgrade_nonOwner_reverts() public {

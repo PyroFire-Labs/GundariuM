@@ -16,10 +16,11 @@ export type GnrmCheckPhase = "idle" | "checking" | "verified" | "not-met" | "err
 
 /**
  * Verifies a GNRM purchase by checking for a Transfer event from the
- * GNRM/WETH pool directly to the connected wallet — proves a real swap,
- * not just any incoming transfer. Window is an approximate rolling ~24h
- * (Base block times make exact UTC-midnight boundaries impractical to
- * pin down without an indexer), not a precise calendar-day check.
+ * GNRM/WETH pool directly to the connected wallet — proves the tokens
+ * came from the pool contract itself (a swap or an LP action), not an
+ * arbitrary wallet. Window is an approximate rolling ~24h (Base block
+ * times make exact UTC-midnight boundaries impractical to pin down
+ * without an indexer), not a precise calendar-day check.
  */
 export function useGnrmPurchaseCheck() {
   const [phase, setPhase] = useState<GnrmCheckPhase>("idle");
