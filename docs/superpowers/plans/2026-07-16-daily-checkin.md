@@ -221,16 +221,26 @@ contract DailyCheckInTest is Test {
     // ─── Longest streak survives a reset ─────────────────────────────────────
 
     function test_checkIn_longestStreak_survivesReset() public {
+        // Pure numeric-literal warp targets, matching setUp()'s own
+        // 1_000_000 days literal exactly — no arithmetic expression, no
+        // re-read of block.timestamp, no accumulated local. Two prior
+        // attempts using block.timestamp-derived expressions produced
+        // wrong values on the 3rd/4th warp in this function specifically
+        // (verified via trace) despite working in every single-warp test
+        // elsewhere in this file; literals are the only pattern confirmed
+        // reliable here.
         vm.prank(alice);
         checkIn.checkIn(); // streak = 1
-        vm.warp(block.timestamp + 1 days);
+
+        vm.warp(1_000_001 days);
         vm.prank(alice);
         checkIn.checkIn(); // streak = 2
-        vm.warp(block.timestamp + 1 days);
+
+        vm.warp(1_000_002 days);
         vm.prank(alice);
         checkIn.checkIn(); // streak = 3
 
-        vm.warp(block.timestamp + 3 days); // gap
+        vm.warp(1_000_005 days); // gap
         vm.prank(alice);
         checkIn.checkIn(); // streak resets to 1
 
