@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { usePublicClient, useAccount } from "wagmi";
 import { parseAbiItem } from "viem";
+import { base } from "viem/chains";
 
 const GNRM_ADDRESS = "0x271b01cc11032a4e23f0200f8f57eb45176ab491" as const;
 const GNRM_POOL_ADDRESS = "0x72d3338600cf47766e4f9e435be4879593870181" as const;
@@ -25,7 +26,7 @@ export function useGnrmPurchaseCheck() {
   const [error, setError] = useState<string | null>(null);
 
   const { address } = useAccount();
-  const publicClient = usePublicClient();
+  const publicClient = usePublicClient({ chainId: base.id });
 
   const check = async () => {
     if (!address || !publicClient) {
