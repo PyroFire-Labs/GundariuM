@@ -10,6 +10,7 @@ export const CONTRACT_ADDRESSES: Record<
     gunrStaking: `0x${string}`;
     gunrToken: `0x${string}`;
     migration: `0x${string}`;
+    dailyCheckIn: `0x${string}`;
   }
 > = {
   // Base Sepolia (testnet)
@@ -20,6 +21,7 @@ export const CONTRACT_ADDRESSES: Record<
     gunrStaking: "0x4fFFF1428f49Ae73a21AA103C992533BA24E48E7",
     gunrToken: "0x6Add3cF424f9D2927721B13110164a3e019efFa4",
     migration: "0x0000000000000000000000000000000000000000",
+    dailyCheckIn: "0x0000000000000000000000000000000000000000",
   },
   // Base mainnet
   8453: {
@@ -29,6 +31,7 @@ export const CONTRACT_ADDRESSES: Record<
     gunrStaking: "0x2F61D7EaC30E44ed33df3a441aDfC69C47Bd5B02",
     gunrToken: "0x825E54c23CCbE0f697854b9A53FB4E6cE3e0DB07",
     migration: "0x8CCbd8EEA766d564fC0AD09D2cB99e4cD4107230",
+    dailyCheckIn: "0x0000000000000000000000000000000000000000",
   },
 };
 
