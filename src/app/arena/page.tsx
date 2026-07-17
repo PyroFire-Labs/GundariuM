@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Swords, Sparkles, Zap, Shield, Dices, Trophy } from "lucide-react";
+import { ShareButtons } from "@/components/ui/ShareButtons";
 
 type Card = {
   id: number;
@@ -378,6 +379,7 @@ export default function ArenaPage() {
               winner={b.winner}
               playerName={b.player.name}
               enemyName={b.enemy.name}
+              playerHpPct={playerHpPct}
               onAgain={pickRandomBattle}
             />
           )}
@@ -561,11 +563,13 @@ function BattleOutcome({
   winner,
   playerName,
   enemyName,
+  playerHpPct,
   onAgain,
 }: {
   winner: "player" | "enemy";
   playerName: string;
   enemyName: string;
+  playerHpPct: number;
   onAgain: () => void;
 }) {
   const playerWon = winner === "player";
@@ -596,6 +600,11 @@ function BattleOutcome({
           MINT YOUR OWN
         </Link>
       </div>
+      {playerWon && (
+        <div className="mt-4">
+          <ShareButtons battle={{ playerName, enemyName, hpPct: playerHpPct }} />
+        </div>
+      )}
     </div>
   );
 }
