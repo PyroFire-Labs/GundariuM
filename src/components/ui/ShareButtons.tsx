@@ -15,21 +15,43 @@ interface ShareButtonsProps {
     rarity: Rarity;
     tokenId: bigint | null;
   };
+  /** Optional Arena battle context — shown as a Share Victory button. */
+  battle?: {
+    playerName: string;
+    enemyName: string;
+    hpPct: number;
+  };
+  /** Optional Frame-Runner dossier context. */
+  dossier?: {
+    address: `0x${string}`;
+    streak: number;
+    exp: number;
+  };
 }
 
-function buildShareText(card: ShareButtonsProps["card"]): string {
-  if (!card) return DEFAULT_TEXT;
-  const tokenSuffix = card.tokenId !== null ? ` (#${card.tokenId.toString()})` : "";
-  return `Just forged ${card.name}${tokenSuffix} — ${displayRarity(card.rarity)} tier — on GundariuM. Mint your own Gundar-Frame at gundarium.xyz/mint`;
+function buildShareText(props: Pick<ShareButtonsProps, "card" | "battle" | "dossier">): string {
+  if (props.battle) {
+    const { playerName, enemyName, hpPct } = props.battle;
+    return `${playerName} just defeated ${enemyName} in the GundariuM Arena — ${Math.round(hpPct)}% HP remaining. Battle your own Gundar-Frame at gundarium.xyz/arena`;
+  }
+  if (props.dossier) {
+    return `${props.dossier.streak}-day check-in streak, ${props.dossier.exp.toLocaleString()} Frame-Runner EXP. Building mine at gundarium.xyz/tasks`;
+  }
+  if (!props.card) return DEFAULT_TEXT;
+  const tokenSuffix = props.card.tokenId !== null ? ` (#${props.card.tokenId.toString()})` : "";
+  return `Just forged ${props.card.name}${tokenSuffix} — ${displayRarity(props.card.rarity)} tier — on GundariuM. Mint your own Gundar-Frame at gundarium.xyz/mint`;
 }
 
-export function ShareButtons({ card }: ShareButtonsProps = {}) {
+export function ShareButtons({ card, battle, dossier }: ShareButtonsProps = {}) {
   const [isFarcaster, setIsFarcaster] = useState(false);
-  const text = buildShareText(card);
-  const embedUrl =
-    card?.tokenId !== undefined && card?.tokenId !== null
-      ? `${SITE_URL}/card/${card.tokenId.toString()}`
-      : SITE_URL;
+  const text = buildShareText({ card, battle, dossier });
+  const embedUrl = battle
+    ? `${SITE_URL}/api/og/victory?player=${encodeURIComponent(battle.playerName)}&enemy=${encodeURIComponent(battle.enemyName)}&hp=${Math.round(battle.hpPct)}`
+    : dossier
+      ? `${SITE_URL}/api/og/dossier/${dossier.address}`
+      : card?.tokenId !== undefined && card?.tokenId !== null
+        ? `${SITE_URL}/card/${card.tokenId.toString()}`
+        : SITE_URL;
 
   useEffect(() => {
     import("@farcaster/miniapp-sdk").then(async ({ sdk }) => {
