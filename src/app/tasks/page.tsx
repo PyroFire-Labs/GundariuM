@@ -6,8 +6,8 @@ import { useAccount } from "wagmi";
 import { useDailyCheckIn } from "@/lib/contracts/hooks/useDailyCheckIn";
 import { useGnrmPurchaseCheck } from "@/lib/contracts/hooks/useGnrmPurchaseCheck";
 import { useMintedTodayCheck } from "@/lib/contracts/hooks/useMintedTodayCheck";
+import { useStakedTodayCheck } from "@/lib/contracts/hooks/useStakedTodayCheck";
 import { useCollection } from "@/lib/contracts/hooks/useCollection";
-import { useStaking } from "@/lib/contracts/hooks/useStaking";
 import { ShareButtons } from "@/components/ui/ShareButtons";
 
 const GOOGLE_FORM_URL =
@@ -51,19 +51,19 @@ export default function TasksPage() {
     error: checkInError,
   } = useDailyCheckIn();
   const { count: mintedCount } = useCollection();
-  const { staked } = useStaking();
   const { phase: gnrmPhase, check: checkGnrmBuy, error: gnrmError } = useGnrmPurchaseCheck();
   const { phase: mintPhase, check: checkMintedToday, error: mintError } = useMintedTodayCheck();
+  const { phase: stakePhase, check: checkStakedToday, error: stakeError } = useStakedTodayCheck();
 
-  const hasStaked = staked > 0;
   const gnrmVerified = gnrmPhase === "verified";
   const mintedToday = mintPhase === "verified";
+  const stakedToday = stakePhase === "verified";
   const countdown = useCountdownToNextUtcDay(checkedInToday);
   const exp =
     currentStreak * 10 +
     totalCheckIns * 5 +
     mintedCount * 25 +
-    (hasStaked ? 50 : 0) +
+    (stakedToday ? 50 : 0) +
     (gnrmVerified ? 12 : 0) +
     (perfectWeek ? 200 : 0);
 
@@ -151,7 +151,18 @@ export default function TasksPage() {
             disabled={mintPhase === "checking"}
             error={mintError}
           />
-          <TaskRow title="Stake Token" expLabel="+10 EXP" placeholder />
+          <TaskRow
+            title="Stake Token"
+            subtitle="Stake GNRM today"
+            expLabel="+50 EXP"
+            done={stakedToday}
+            actionLabel={
+              stakePhase === "checking" ? "Checking..." : stakePhase === "not-met" ? "Not Met — Recheck" : "Check"
+            }
+            onAction={checkStakedToday}
+            disabled={stakePhase === "checking"}
+            error={stakeError}
+          />
           <DossierTaskRow address={address} streak={currentStreak} exp={exp} />
         </div>
       </div>
