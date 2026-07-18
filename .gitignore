@@ -57,6 +57,9 @@ scripts/kitbash-[0-9]*.png
 claudeContext.md
 contextFromYesterday*.MD
 contextFromYesterday*.md
+context*.MD
+context*.md
+contextcompacted.MD
 
 # one-off analysis outputs (Farcaster resolution, whitelist diffs, etc.)
 scripts/recheck-result.json
