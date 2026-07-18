@@ -68,9 +68,22 @@ export function ShareButtons({ card, battle, dossier }: ShareButtonsProps = {}) 
     import("@farcaster/miniapp-sdk").then(async ({ sdk }) => {
       const context = await sdk.context;
       setIsFarcaster(!!context?.user?.fid);
-      setFarcasterUsername(context?.user?.username ?? null);
+      if (context?.user?.username) {
+        setFarcasterUsername(context.user.username);
+        return;
+      }
+      // Not embedded in a Farcaster client — the connected wallet can
+      // still have a verified Farcaster account attached to it.
+      if (dossier?.address) {
+        fetch(`/api/farcaster-username?address=${dossier.address}`)
+          .then((r) => r.json())
+          .then((data) => {
+            if (data?.username) setFarcasterUsername(data.username);
+          })
+          .catch(() => {});
+      }
     }).catch(() => {});
-  }, []);
+  }, [dossier?.address]);
 
   const shareOnFarcaster = useCallback(async () => {
     if (isFarcaster) {
