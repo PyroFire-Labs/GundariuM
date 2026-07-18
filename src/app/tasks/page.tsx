@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAccount } from "wagmi";
 import { useDailyCheckIn } from "@/lib/contracts/hooks/useDailyCheckIn";
 import { useGnrmPurchaseCheck } from "@/lib/contracts/hooks/useGnrmPurchaseCheck";
+import { useMintedTodayCheck } from "@/lib/contracts/hooks/useMintedTodayCheck";
 import { useCollection } from "@/lib/contracts/hooks/useCollection";
 import { useStaking } from "@/lib/contracts/hooks/useStaking";
 import { ShareButtons } from "@/components/ui/ShareButtons";
@@ -52,9 +53,11 @@ export default function TasksPage() {
   const { count: mintedCount } = useCollection();
   const { staked } = useStaking();
   const { phase: gnrmPhase, check: checkGnrmBuy, error: gnrmError } = useGnrmPurchaseCheck();
+  const { phase: mintPhase, check: checkMintedToday, error: mintError } = useMintedTodayCheck();
 
   const hasStaked = staked > 0;
   const gnrmVerified = gnrmPhase === "verified";
+  const mintedToday = mintPhase === "verified";
   const countdown = useCountdownToNextUtcDay(checkedInToday);
   const exp =
     currentStreak * 10 +
@@ -136,10 +139,17 @@ export default function TasksPage() {
           />
           <TaskRow
             title="Mint a Gundar-Frame"
+            subtitle="Mint today to complete this task"
             expLabel="+25 EXP"
-            done={mintedCount > 0}
-            linkHref={mintedCount > 0 ? undefined : "/mint"}
+            done={mintedToday}
+            linkHref={mintedCount === 0 ? "/mint" : undefined}
             linkLabel="Mint Now"
+            actionLabel={
+              mintPhase === "checking" ? "Checking..." : mintPhase === "not-met" ? "Not Met — Recheck" : "Check"
+            }
+            onAction={checkMintedToday}
+            disabled={mintPhase === "checking"}
+            error={mintError}
           />
           <TaskRow title="Stake Token" expLabel="+10 EXP" placeholder />
           <DossierTaskRow address={address} streak={currentStreak} exp={exp} />
