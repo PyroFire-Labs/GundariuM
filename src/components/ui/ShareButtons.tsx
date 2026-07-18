@@ -29,13 +29,23 @@ interface ShareButtonsProps {
   };
 }
 
-function buildShareText(props: Pick<ShareButtonsProps, "card" | "battle" | "dossier">): string {
+function buildShareText(
+  props: Pick<ShareButtonsProps, "card" | "battle" | "dossier">,
+  farcasterUsername: string | null
+): string {
   if (props.battle) {
     const { playerName, enemyName, hpPct } = props.battle;
     return `${playerName} just defeated ${enemyName} in the GundariuM Arena — ${Math.round(hpPct)}% HP remaining. Battle your own Gundar-Frame at gundarium.xyz/arena`;
   }
   if (props.dossier) {
-    return `${props.dossier.streak}-day check-in streak, ${props.dossier.exp.toLocaleString()} Frame-Runner EXP. Building mine at gundarium.xyz/tasks`;
+    const { address, streak, exp } = props.dossier;
+    const name = farcasterUsername ?? `${address.slice(0, 6)}...${address.slice(-4)}`;
+    return [
+      `Frame-Runner: ${name}`,
+      `Currently Daily Streak = ${streak}`,
+      `Join the GundariuM game now and get your uniquely generated Gundar-Frame and battle me for a chance at glory!`,
+      `My current XP is ${exp.toLocaleString()}!`,
+    ].join("\n");
   }
   if (!props.card) return DEFAULT_TEXT;
   const tokenSuffix = props.card.tokenId !== null ? ` (#${props.card.tokenId.toString()})` : "";
@@ -44,7 +54,8 @@ function buildShareText(props: Pick<ShareButtonsProps, "card" | "battle" | "doss
 
 export function ShareButtons({ card, battle, dossier }: ShareButtonsProps = {}) {
   const [isFarcaster, setIsFarcaster] = useState(false);
-  const text = buildShareText({ card, battle, dossier });
+  const [farcasterUsername, setFarcasterUsername] = useState<string | null>(null);
+  const text = buildShareText({ card, battle, dossier }, farcasterUsername);
   const embedUrl = battle
     ? `${SITE_URL}/api/og/victory?player=${encodeURIComponent(battle.playerName)}&enemy=${encodeURIComponent(battle.enemyName)}&hp=${Math.round(battle.hpPct)}`
     : dossier
@@ -57,6 +68,7 @@ export function ShareButtons({ card, battle, dossier }: ShareButtonsProps = {}) 
     import("@farcaster/miniapp-sdk").then(async ({ sdk }) => {
       const context = await sdk.context;
       setIsFarcaster(!!context?.user?.fid);
+      setFarcasterUsername(context?.user?.username ?? null);
     }).catch(() => {});
   }, []);
 
