@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/stake", label: "Stake" },
-  { href: "/migrate", label: "Migrate" },
+  { href: "/tasks", label: "Tasks" },
   { href: "/mint", label: "Mint" },
   { href: "/arena", label: "Arena (Demo)" },
   { href: "/battle", label: "Battle" },
