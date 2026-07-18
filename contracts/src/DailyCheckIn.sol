@@ -25,6 +25,8 @@ contract DailyCheckIn is OwnableUpgradeable, UUPSUpgradeable {
     mapping(address => uint256) public currentStreak;
     mapping(address => uint256) public longestStreak;
     mapping(address => uint256) public totalCheckIns;
+    mapping(address => uint256) public currentWeek;
+    mapping(address => uint256) public checkInsThisWeek;
 
     // ─── Initializer ────────────────────────────────────────────────────────
 
@@ -57,18 +59,36 @@ contract DailyCheckIn is OwnableUpgradeable, UUPSUpgradeable {
         totalCheckIns[msg.sender] += 1;
         lastCheckInDay[msg.sender] = today;
 
+        // Rolling 7-day bucket, not a calendar week — Solidity has no
+        // native calendar math. A bucket can only ever reach 7 check-ins
+        // since checkIn() is capped at once per "today".
+        uint256 week = today / 7;
+        if (week == currentWeek[msg.sender]) {
+            checkInsThisWeek[msg.sender] += 1;
+        } else {
+            currentWeek[msg.sender] = week;
+            checkInsThisWeek[msg.sender] = 1;
+        }
+
         emit CheckedIn(msg.sender, today, newStreak);
     }
 
     // ─── Views ──────────────────────────────────────────────────────────────
 
-    /// @notice Single-call read of a user's full check-in state.
+    /// @notice Single-call read of a user's full check-in state, including
+    ///         the current rolling-week check-in count (1-7).
     function getStreak(address user)
         external
         view
-        returns (uint256 current, uint256 longest, uint256 total, uint256 lastDay)
+        returns (uint256 current, uint256 longest, uint256 total, uint256 lastDay, uint256 weekCount)
     {
-        return (currentStreak[user], longestStreak[user], totalCheckIns[user], lastCheckInDay[user]);
+        return (
+            currentStreak[user],
+            longestStreak[user],
+            totalCheckIns[user],
+            lastCheckInDay[user],
+            checkInsThisWeek[user]
+        );
     }
 
     // ─── UUPS ───────────────────────────────────────────────────────────────

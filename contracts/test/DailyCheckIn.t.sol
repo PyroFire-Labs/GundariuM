@@ -27,11 +27,12 @@ contract DailyCheckInTest is Test {
         vm.prank(alice);
         checkIn.checkIn();
 
-        (uint256 current, uint256 longest, uint256 total, uint256 lastDay) = checkIn.getStreak(alice);
+        (uint256 current, uint256 longest, uint256 total, uint256 lastDay, uint256 weekCount) = checkIn.getStreak(alice);
         assertEq(current, 1);
         assertEq(longest, 1);
         assertEq(total, 1);
         assertEq(lastDay, block.timestamp / 1 days);
+        assertEq(weekCount, 1);
     }
 
     // ─── Consecutive days ────────────────────────────────────────────────────
@@ -44,7 +45,7 @@ contract DailyCheckInTest is Test {
         vm.prank(alice);
         checkIn.checkIn();
 
-        (uint256 current,,,) = checkIn.getStreak(alice);
+        (uint256 current,,,,) = checkIn.getStreak(alice);
         assertEq(current, 2);
     }
 
@@ -58,7 +59,7 @@ contract DailyCheckInTest is Test {
         vm.prank(alice);
         checkIn.checkIn();
 
-        (uint256 current,,,) = checkIn.getStreak(alice);
+        (uint256 current,,,,) = checkIn.getStreak(alice);
         assertEq(current, 1);
     }
 
@@ -99,7 +100,7 @@ contract DailyCheckInTest is Test {
         vm.prank(alice);
         checkIn.checkIn(); // streak resets to 1
 
-        (uint256 current, uint256 longest,,) = checkIn.getStreak(alice);
+        (uint256 current, uint256 longest,,,) = checkIn.getStreak(alice);
         assertEq(current, 1);
         assertEq(longest, 3);
     }
@@ -113,7 +114,7 @@ contract DailyCheckInTest is Test {
         vm.prank(alice);
         checkIn.checkIn();
 
-        (,, uint256 total,) = checkIn.getStreak(alice);
+        (,, uint256 total,,) = checkIn.getStreak(alice);
         assertEq(total, 2);
     }
 
@@ -123,10 +124,44 @@ contract DailyCheckInTest is Test {
         vm.prank(alice);
         checkIn.checkIn();
 
-        (uint256 aliceStreak,,,) = checkIn.getStreak(alice);
-        (uint256 bobStreak,,,) = checkIn.getStreak(bob);
+        (uint256 aliceStreak,,,,) = checkIn.getStreak(alice);
+        (uint256 bobStreak,,,,) = checkIn.getStreak(bob);
         assertEq(aliceStreak, 1);
         assertEq(bobStreak, 0);
+    }
+
+    // ─── Weekly rolling counter ─────────────────────────────────────────────
+
+    function test_checkIn_weeklyCounter_reachesSevenWithinWeek() public {
+        // 1_000_006 / 7 == 142_858 exactly — a clean week-bucket start, so
+        // the next 7 consecutive days all land in the same bucket.
+        uint256[7] memory testDays =
+            [uint256(1_000_006), 1_000_007, 1_000_008, 1_000_009, 1_000_010, 1_000_011, 1_000_012];
+
+        for (uint256 i = 0; i < 7; i++) {
+            vm.warp(testDays[i] * 1 days);
+            vm.prank(alice);
+            checkIn.checkIn();
+        }
+
+        (,,,, uint256 weekCount) = checkIn.getStreak(alice);
+        assertEq(weekCount, 7);
+    }
+
+    function test_checkIn_weeklyCounter_resetsOnNewWeek() public {
+        vm.warp(1_000_012 days); // last day of the 142_858 bucket
+        vm.prank(alice);
+        checkIn.checkIn();
+
+        (,,,, uint256 weekCountBefore) = checkIn.getStreak(alice);
+        assertEq(weekCountBefore, 1);
+
+        vm.warp(1_000_013 days); // first day of the next bucket (142_859)
+        vm.prank(alice);
+        checkIn.checkIn();
+
+        (,,,, uint256 weekCountAfter) = checkIn.getStreak(alice);
+        assertEq(weekCountAfter, 1);
     }
 
     // ─── Event emission ──────────────────────────────────────────────────────

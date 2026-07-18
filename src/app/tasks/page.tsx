@@ -42,6 +42,7 @@ export default function TasksPage() {
   const {
     currentStreak,
     totalCheckIns,
+    perfectWeek,
     checkedInToday,
     phase,
     checkIn,
@@ -56,7 +57,12 @@ export default function TasksPage() {
   const gnrmVerified = gnrmPhase === "verified";
   const countdown = useCountdownToNextUtcDay(checkedInToday);
   const exp =
-    currentStreak * 10 + totalCheckIns * 5 + mintedCount * 25 + (hasStaked ? 50 : 0) + (gnrmVerified ? 12 : 0);
+    currentStreak * 10 +
+    totalCheckIns * 5 +
+    mintedCount * 25 +
+    (hasStaked ? 50 : 0) +
+    (gnrmVerified ? 12 : 0) +
+    (perfectWeek ? 200 : 0);
 
   if (!isConnected) {
     return (

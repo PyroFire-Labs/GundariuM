@@ -18,6 +18,7 @@ export const DAILY_CHECKIN_ABI = [
       { name: "longest", type: "uint256" },
       { name: "total", type: "uint256" },
       { name: "lastDay", type: "uint256" },
+      { name: "weekCount", type: "uint256" },
     ],
     stateMutability: "view",
   },

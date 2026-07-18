@@ -34,9 +34,10 @@ export function useDailyCheckIn() {
     query: { enabled: contractReady && !!address },
   });
 
-  const [current, longest, total, lastDay] = streakData ?? [0n, 0n, 0n, 0n];
+  const [current, longest, total, lastDay, weekCount] = streakData ?? [0n, 0n, 0n, 0n, 0n];
   const today = BigInt(Math.floor(Date.now() / 86_400_000));
   const checkedInToday = lastDay === today;
+  const perfectWeek = weekCount === 7n;
 
   const checkIn = async () => {
     if (!contracts || !contractReady) return;
@@ -69,6 +70,8 @@ export function useDailyCheckIn() {
     currentStreak: Number(current),
     longestStreak: Number(longest),
     totalCheckIns: Number(total),
+    checkInsThisWeek: Number(weekCount),
+    perfectWeek,
     checkedInToday,
     phase,
     error,
