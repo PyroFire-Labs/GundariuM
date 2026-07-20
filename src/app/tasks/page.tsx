@@ -13,7 +13,6 @@ import { ShareButtons } from "@/components/ui/ShareButtons";
 const GOOGLE_FORM_URL =
   "https://docs.google.com/forms/d/e/1FAIpQLSf0XmuUIJ9IC4CymaSdLv761No_U9o5GOMTK71bmdyyC3R9zA/viewform";
 
-const GNRM_CAIP19 = "eip155:8453/erc20:0x271b01cc11032a4e23f0200f8f57eb45176ab491";
 const STREME_GNRM_URL = "https://streme.fun/token/0x271b01cc11032a4e23f0200f8f57eb45176ab491";
 
 const FORM_SUBMITTED_KEY = "gundarium-form-submitted-date";
@@ -101,23 +100,16 @@ export default function TasksPage() {
     (formDone ? 15 : 0) +
     (perfectWeek ? 200 : 0);
 
-  // If the check comes back not-met, hand off to Farcaster's native swap
-  // inside a miniapp; outside one (swapToken isn't available in a plain
-  // browser tab), fall back to GNRM's Streme.fun page instead of a dead end.
+  // Farcaster's native swapToken action can't route GNRM reliably (it
+  // resolves to the retired/liquidity-withdrawn GUNR token instead of
+  // GNRM's real, actively-liquid pool — a Farcaster-side resolution issue,
+  // not something fixable from the buyToken param we pass it). Skip it
+  // entirely and always send to GNRM's Streme.fun page instead.
   const handleGnrmCheck = async () => {
     const result = await checkGnrmBuy();
-    if (result !== "not-met") return;
-    try {
-      const { sdk } = await import("@farcaster/miniapp-sdk");
-      const ctx = await sdk.context;
-      if (ctx?.user?.fid) {
-        await sdk.actions.swapToken({ buyToken: GNRM_CAIP19 });
-        return;
-      }
-    } catch {
-      /* sdk unavailable outside a Farcaster miniapp — fall through below */
+    if (result === "not-met") {
+      window.open(STREME_GNRM_URL, "_blank", "noopener,noreferrer");
     }
-    window.open(STREME_GNRM_URL, "_blank", "noopener,noreferrer");
   };
 
   // No Farcaster miniapp action exists for staking — always send to
