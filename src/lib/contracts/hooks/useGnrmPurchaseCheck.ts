@@ -16,15 +16,20 @@ const TRANSFER_EVENT = parseAbiItem("event Transfer(address indexed from, addres
 export type GnrmCheckPhase = "idle" | "checking" | "verified" | "not-met" | "error";
 
 /**
- * Verifies a GNRM purchase by checking for a Transfer event from the
- * GNRM/WETH pool directly to the connected wallet — proves the tokens
- * came from the pool contract itself (a swap or an LP action), not an
- * arbitrary wallet. Window is bounded by an estimated block for today's
- * UTC 00:00 (approximate, since Base's block time isn't perfectly
- * constant), not a rolling N-blocks-ago window. Runs automatically
- * whenever the connected wallet changes, so the verified/not-met result
- * reflects real on-chain state on every page load rather than resetting
- * to idle until manually re-checked.
+ * Verifies a GNRM purchase by checking for a Transfer to the connected
+ * wallet that landed in the same transaction as a Transfer OUT of the
+ * GNRM/WETH pool — proves the tokens genuinely originated from the pool
+ * (a real swap), without requiring the pool to be the direct sender.
+ * Real purchases are routinely routed through an aggregator/router
+ * contract (e.g. Farcaster's native swap), so a strict from:pool match
+ * misses them; scoping by shared transaction hash instead catches any
+ * routing path while still ruling out an arbitrary wallet-to-wallet
+ * transfer (which never touches the pool at all). Window is bounded by
+ * an estimated block for today's UTC 00:00 (approximate, since Base's
+ * block time isn't perfectly constant), not a rolling N-blocks-ago
+ * window. Runs automatically whenever the connected wallet changes, so
+ * the verified/not-met result reflects real on-chain state on every
+ * page load rather than resetting to idle until manually re-checked.
  */
 export function useGnrmPurchaseCheck() {
   const [phase, setPhase] = useState<GnrmCheckPhase>("idle");
@@ -54,15 +59,31 @@ export function useGnrmPurchaseCheck() {
         const chunkEnd =
           chunkStart + MAX_LOG_RANGE - 1n > currentBlock ? currentBlock : chunkStart + MAX_LOG_RANGE - 1n;
 
-        const logs = await publicClient.getLogs({
+        const toUserLogs = await publicClient.getLogs({
           address: GNRM_ADDRESS,
           event: TRANSFER_EVENT,
-          args: { from: GNRM_POOL_ADDRESS, to: address },
+          args: { to: address },
           fromBlock: chunkStart,
           toBlock: chunkEnd,
         });
 
-        total += logs.reduce((sum, log) => sum + (log.args.value ?? 0n), 0n);
+        if (toUserLogs.length > 0) {
+          const fromPoolLogs = await publicClient.getLogs({
+            address: GNRM_ADDRESS,
+            event: TRANSFER_EVENT,
+            args: { from: GNRM_POOL_ADDRESS },
+            fromBlock: chunkStart,
+            toBlock: chunkEnd,
+          });
+          const poolTxHashes = new Set(fromPoolLogs.map((log) => log.transactionHash));
+
+          for (const log of toUserLogs) {
+            if (poolTxHashes.has(log.transactionHash)) {
+              total += log.args.value ?? 0n;
+            }
+          }
+        }
+
         chunkStart = chunkEnd + 1n;
       }
 
