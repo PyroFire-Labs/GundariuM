@@ -14,6 +14,7 @@ const GOOGLE_FORM_URL =
   "https://docs.google.com/forms/d/e/1FAIpQLSf0XmuUIJ9IC4CymaSdLv761No_U9o5GOMTK71bmdyyC3R9zA/viewform";
 
 const GNRM_CAIP19 = "eip155:8453/erc20:0x271b01cc11032a4e23f0200f8f57eb45176ab491";
+const STREME_GNRM_URL = "https://streme.fun/token/0x271b01cc11032a4e23f0200f8f57eb45176ab491";
 
 const FORM_SUBMITTED_KEY = "gundarium-form-submitted-date";
 
@@ -101,19 +102,30 @@ export default function TasksPage() {
     (perfectWeek ? 200 : 0);
 
   // If the check comes back not-met, hand off to Farcaster's native swap
-  // so the user can actually go buy GNRM right then — only meaningful
-  // inside a Farcaster miniapp context, since swapToken isn't available
-  // in a plain browser tab.
+  // inside a miniapp; outside one (swapToken isn't available in a plain
+  // browser tab), fall back to GNRM's Streme.fun page instead of a dead end.
   const handleGnrmCheck = async () => {
     const result = await checkGnrmBuy();
     if (result !== "not-met") return;
     try {
       const { sdk } = await import("@farcaster/miniapp-sdk");
       const ctx = await sdk.context;
-      if (!ctx?.user?.fid) return;
-      await sdk.actions.swapToken({ buyToken: GNRM_CAIP19 });
+      if (ctx?.user?.fid) {
+        await sdk.actions.swapToken({ buyToken: GNRM_CAIP19 });
+        return;
+      }
     } catch {
-      /* not in a Farcaster miniapp, or swap was dismissed — no-op */
+      /* sdk unavailable outside a Farcaster miniapp — fall through below */
+    }
+    window.open(STREME_GNRM_URL, "_blank", "noopener,noreferrer");
+  };
+
+  // No Farcaster miniapp action exists for staking — always send to
+  // Streme's token page, which is where GNRM staking actually happens.
+  const handleStakeCheck = async () => {
+    const result = await checkStakedToday();
+    if (result === "not-met") {
+      window.open(STREME_GNRM_URL, "_blank", "noopener,noreferrer");
     }
   };
 
@@ -209,9 +221,9 @@ export default function TasksPage() {
             expLabel="+50 EXP"
             done={stakedToday}
             actionLabel={
-              stakePhase === "checking" ? "Checking..." : stakePhase === "not-met" ? "Not Met — Recheck" : "Check"
+              stakePhase === "checking" ? "Checking..." : stakePhase === "not-met" ? "Not Met — Stake GNRM" : "Check"
             }
-            onAction={checkStakedToday}
+            onAction={handleStakeCheck}
             disabled={stakePhase === "checking"}
             error={stakeError}
           />

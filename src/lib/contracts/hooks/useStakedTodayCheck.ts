@@ -29,11 +29,11 @@ export function useStakedTodayCheck() {
   const { address } = useAccount();
   const publicClient = usePublicClient({ chainId: base.id });
 
-  const check = async () => {
+  const check = async (): Promise<StakedTodayPhase> => {
     if (!address || !publicClient) {
       setError("Wallet not connected");
       setPhase("error");
-      return;
+      return "error";
     }
     setPhase("checking");
     setError(null);
@@ -59,11 +59,14 @@ export function useStakedTodayCheck() {
         chunkStart = chunkEnd + 1n;
       }
 
-      setPhase(found ? "verified" : "not-met");
+      const result: StakedTodayPhase = found ? "verified" : "not-met";
+      setPhase(result);
+      return result;
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Check failed";
       setError(msg);
       setPhase("error");
+      return "error";
     }
   };
 
