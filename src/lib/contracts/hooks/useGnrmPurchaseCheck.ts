@@ -33,11 +33,11 @@ export function useGnrmPurchaseCheck() {
   const { address } = useAccount();
   const publicClient = usePublicClient({ chainId: base.id });
 
-  const check = async () => {
+  const check = async (): Promise<GnrmCheckPhase> => {
     if (!address || !publicClient) {
       setError("Wallet not connected");
       setPhase("error");
-      return;
+      return "error";
     }
     setPhase("checking");
     setError(null);
@@ -66,11 +66,14 @@ export function useGnrmPurchaseCheck() {
         chunkStart = chunkEnd + 1n;
       }
 
-      setPhase(total >= MIN_DAILY_BUY ? "verified" : "not-met");
+      const result: GnrmCheckPhase = total >= MIN_DAILY_BUY ? "verified" : "not-met";
+      setPhase(result);
+      return result;
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Check failed";
       setError(msg);
       setPhase("error");
+      return "error";
     }
   };
 

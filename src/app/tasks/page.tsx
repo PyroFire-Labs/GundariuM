@@ -13,6 +13,8 @@ import { ShareButtons } from "@/components/ui/ShareButtons";
 const GOOGLE_FORM_URL =
   "https://docs.google.com/forms/d/e/1FAIpQLSf0XmuUIJ9IC4CymaSdLv761No_U9o5GOMTK71bmdyyC3R9zA/viewform";
 
+const GNRM_CAIP19 = "eip155:8453/erc20:0x271b01cc11032a4e23f0200f8f57eb45176ab491";
+
 const FORM_SUBMITTED_KEY = "gundarium-form-submitted-date";
 
 function todayUtcDateString(): string {
@@ -98,6 +100,23 @@ export default function TasksPage() {
     (formDone ? 15 : 0) +
     (perfectWeek ? 200 : 0);
 
+  // If the check comes back not-met, hand off to Farcaster's native swap
+  // so the user can actually go buy GNRM right then — only meaningful
+  // inside a Farcaster miniapp context, since swapToken isn't available
+  // in a plain browser tab.
+  const handleGnrmCheck = async () => {
+    const result = await checkGnrmBuy();
+    if (result !== "not-met") return;
+    try {
+      const { sdk } = await import("@farcaster/miniapp-sdk");
+      const ctx = await sdk.context;
+      if (!ctx?.user?.fid) return;
+      await sdk.actions.swapToken({ buyToken: GNRM_CAIP19 });
+    } catch {
+      /* not in a Farcaster miniapp, or swap was dismissed — no-op */
+    }
+  };
+
   if (!isConnected) {
     return (
       <main className="flex min-h-screen items-center justify-center px-4">
@@ -156,9 +175,9 @@ export default function TasksPage() {
             expLabel="+12 EXP"
             done={gnrmVerified}
             actionLabel={
-              gnrmPhase === "checking" ? "Checking..." : gnrmPhase === "not-met" ? "Not Met — Recheck" : "Check"
+              gnrmPhase === "checking" ? "Checking..." : gnrmPhase === "not-met" ? "Not Met — Buy GNRM" : "Check"
             }
-            onAction={checkGnrmBuy}
+            onAction={handleGnrmCheck}
             disabled={gnrmPhase === "checking"}
             error={gnrmError}
           />
