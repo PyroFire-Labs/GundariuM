@@ -6,6 +6,9 @@ import { CountdownBanner } from "@/components/ui/CountdownTimer";
 import { useEffect, useState } from "react";
 import { formatUnits, parseEther } from "viem";
 import { Dices, Sparkles, Swords, Trophy, Wrench } from "lucide-react";
+import { openInMiniAppOrBrowser } from "@/lib/openInMiniAppOrBrowser";
+
+const STREME_GNRM_URL = "https://streme.fun/token/0x271b01cc11032a4e23f0200f8f57eb45176ab491";
 
 export default function Home() {
   const [tickerGunr, setTickerGunr] = useState<string | null>(null);
@@ -69,12 +72,12 @@ export default function Home() {
             >
               MINT NOW
             </Link>
-            <Link
-              href="/buy-gunr"
+            <button
+              onClick={() => openInMiniAppOrBrowser(STREME_GNRM_URL)}
               className="rounded-full border border-[var(--accent-2)] bg-[var(--background)]/40 px-8 py-3 font-[family-name:var(--font-orbitron)] text-sm font-bold tracking-wider text-[var(--accent-2)] backdrop-blur-sm transition-all hover:bg-[var(--accent-2)] hover:text-white"
             >
-              BUY $GUNR
-            </Link>
+              BUY $GNRM
+            </button>
             <a
               href="#game-loop"
               className="rounded-full border border-white/40 bg-[var(--background)]/40 px-8 py-3 font-[family-name:var(--font-orbitron)] text-sm font-bold tracking-wider text-white backdrop-blur-sm transition-all hover:bg-white/10"
@@ -277,23 +280,23 @@ export default function Home() {
             Ready to fight?
           </h2>
           <p className="mb-10 text-[var(--foreground)]/50">
-            Get your $GUNR. Mint your Gunpla. Enter the arena.
+            Get your $GNRM. Mint your Gunpla. Enter the arena.
           </p>
-          <Link
-            href="/buy-gunr"
+          <button
+            onClick={() => openInMiniAppOrBrowser(STREME_GNRM_URL)}
             className="inline-block rounded-full bg-[var(--accent)] px-12 py-4 font-[family-name:var(--font-orbitron)] text-lg font-black tracking-wider text-black transition-all hover:scale-105 hover:shadow-[0_0_40px_var(--accent)]"
           >
-            BUY GUNR 🔥
-          </Link>
+            BUY GNRM 🔥
+          </button>
           <p className="mt-6 text-xs text-[var(--foreground)]/30">
-            Powered by Base · Routed via 0x · GUNR:{" "}
+            Powered by Base · Via Streme.fun · GNRM:{" "}
             <a
-              href="https://basescan.org/token/0x825E54c23CCbE0f697854b9A53FB4E6cE3e0DB07"
+              href="https://basescan.org/token/0x271b01cc11032a4e23f0200f8f57eb45176ab491"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-[var(--accent)] transition-colors"
             >
-              0x825E…DB07
+              0x271b…ab491
             </a>
           </p>
         </div>
