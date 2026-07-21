@@ -3,35 +3,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { CountdownBanner } from "@/components/ui/CountdownTimer";
-import { useEffect, useState } from "react";
-import { formatUnits, parseEther } from "viem";
 import { Dices, Sparkles, Swords, Trophy, Wrench } from "lucide-react";
 import { openInMiniAppOrBrowser } from "@/lib/openInMiniAppOrBrowser";
 
 const STREME_GNRM_URL = "https://streme.fun/token/0x271b01cc11032a4e23f0200f8f57eb45176ab491";
 
 export default function Home() {
-  const [tickerGunr, setTickerGunr] = useState<string | null>(null);
-
-  useEffect(() => {
-    const TICKER_SELL = parseEther("0.01").toString();
-    const fetchTicker = async () => {
-      try {
-        const res = await fetch(`/api/gunr-quote?sellAmount=${TICKER_SELL}`);
-        const json = await res.json();
-        if (json.buyAmount) {
-          const n = parseFloat(formatUnits(BigInt(json.buyAmount), 18));
-          if (n >= 1_000_000) setTickerGunr(`${(n / 1_000_000).toFixed(2)}M`);
-          else if (n >= 1_000) setTickerGunr(`${(n / 1_000).toFixed(1)}K`);
-          else setTickerGunr(n.toLocaleString(undefined, { maximumFractionDigits: 0 }));
-        }
-      } catch { /* non-critical */ }
-    };
-    fetchTicker();
-    const id = setInterval(fetchTicker, 30_000);
-    return () => clearInterval(id);
-  }, []);
-
   return (
     <div className="flex flex-col">
 
@@ -213,8 +190,8 @@ export default function Home() {
               },
               {
                 Icon: Trophy,
-                title: "$GUNR Economy",
-                desc: "Stake $GUNR to enter PVP, upgrade your suit, and claim from daily, weekly, and monthly prize pools.",
+                title: "$GNRM Economy",
+                desc: "Stake $GNRM to enter PVP, upgrade your suit, and claim from daily, weekly, and monthly prize pools.",
               },
             ].map((f) => (
               <div
@@ -234,32 +211,22 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── 4. GUNR TOKEN ───────────────────────────────────────────── */}
+      {/* ── 4. GNRM TOKEN ───────────────────────────────────────────── */}
       <section className="px-4 py-20 bg-[var(--surface)]">
         <div className="mx-auto max-w-4xl">
           <h2 className="mb-2 text-center font-[family-name:var(--font-orbitron)] text-2xl font-black text-[var(--accent)] tracking-wider">
-            $GUNR TOKEN
+            $GNRM TOKEN
           </h2>
           <p className="mb-12 text-center text-sm text-[var(--foreground)]/50">
             The fuel of the GundariuM economy · Live on Base
           </p>
 
-          {/* Live ticker */}
-          <div className="mb-10 flex items-center justify-center gap-3 rounded-xl border border-[var(--border)] bg-[var(--background)] px-6 py-4 mx-auto max-w-sm">
-            <span className="inline-block w-2 h-2 rounded-full bg-green-400 animate-pulse shrink-0" />
-            <span className="text-sm text-[var(--foreground)]/50 font-mono">0.01 ETH =</span>
-            <span className="font-[family-name:var(--font-orbitron)] text-lg font-black text-[var(--accent)]">
-              {tickerGunr ? `${tickerGunr} GUNR` : "—"}
-            </span>
-            <span className="text-xs text-[var(--foreground)]/30 font-mono">OKX DEX</span>
-          </div>
-
           {/* Token utility grid */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-12">
             {[
-              { Icon: Swords,  label: "PVP Entry",     desc: "Stake GUNR to enter ranked battles and tournaments" },
-              { Icon: Wrench,  label: "Suit Upgrades", desc: "Spend GUNR to boost stats and unlock special weapons" },
-              { Icon: Trophy,  label: "Prize Pools",   desc: "Daily, weekly, and monthly GUNR pools for top commanders" },
+              { Icon: Swords,  label: "PVP Entry",     desc: "Stake GNRM to enter ranked battles and tournaments" },
+              { Icon: Wrench,  label: "Suit Upgrades", desc: "Spend GNRM to boost stats and unlock special weapons" },
+              { Icon: Trophy,  label: "Prize Pools",   desc: "Daily, weekly, and monthly GNRM pools for top commanders" },
             ].map((u) => (
               <div key={u.label} className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-5 text-center">
                 <div className="mb-2 flex justify-center">

@@ -5,10 +5,14 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { ConnectButton } from "@/components/wallet/ConnectButton";
 import { cn } from "@/lib/utils";
+import { openInMiniAppOrBrowser } from "@/lib/openInMiniAppOrBrowser";
 
+const STREME_GNRM_URL = "https://streme.fun/token/0x271b01cc11032a4e23f0200f8f57eb45176ab491";
+
+// "Stake" opens GNRM staking on Streme.fun directly rather than an
+// internal route — there's no in-app staking page, staking happens there.
 const NAV_LINKS = [
   { href: "/", label: "Home" },
-  { href: "/stake", label: "Stake" },
   { href: "/tasks", label: "Tasks" },
   { href: "/mint", label: "Mint" },
   { href: "/arena", label: "Arena (Demo)" },
@@ -34,6 +38,12 @@ export function Navbar() {
 
         {/* Desktop nav */}
         <div className="hidden items-center gap-5 md:flex">
+          <button
+            onClick={() => openInMiniAppOrBrowser(STREME_GNRM_URL)}
+            className="text-sm font-medium tracking-wide text-[var(--foreground)]/60 transition-colors hover:text-[var(--accent)]"
+          >
+            Stake
+          </button>
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
@@ -48,17 +58,12 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
-          <Link
-            href="/buy-gunr"
-            className={cn(
-              "text-sm font-bold tracking-wide transition-colors",
-              pathname === "/buy-gunr"
-                ? "text-[var(--accent)]"
-                : "text-[var(--accent)]/80 hover:text-[var(--accent)]"
-            )}
+          <button
+            onClick={() => openInMiniAppOrBrowser(STREME_GNRM_URL)}
+            className="text-sm font-bold tracking-wide text-[var(--accent)]/80 transition-colors hover:text-[var(--accent)]"
           >
-            Buy GUNR 🔥
-          </Link>
+            Buy GNRM 🔥
+          </button>
         </div>
 
         {/* Desktop wallet + mobile hamburger */}
@@ -81,6 +86,15 @@ export function Navbar() {
       {/* Mobile dropdown */}
       {menuOpen && (
         <div className="md:hidden border-t border-[var(--border)] bg-[var(--surface)] px-4 py-4 flex flex-col gap-3">
+          <button
+            onClick={() => {
+              setMenuOpen(false);
+              openInMiniAppOrBrowser(STREME_GNRM_URL);
+            }}
+            className="text-sm font-medium py-1 text-left text-[var(--foreground)]/70 transition-colors hover:text-[var(--accent)]"
+          >
+            Stake
+          </button>
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
@@ -94,13 +108,15 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
-          <Link
-            href="/buy-gunr"
-            onClick={() => setMenuOpen(false)}
-            className="text-sm font-bold text-[var(--accent)] py-1"
+          <button
+            onClick={() => {
+              setMenuOpen(false);
+              openInMiniAppOrBrowser(STREME_GNRM_URL);
+            }}
+            className="text-sm font-bold text-[var(--accent)] py-1 text-left"
           >
-            Buy GUNR 🔥
-          </Link>
+            Buy GNRM 🔥
+          </button>
           <div className="pt-2 border-t border-[var(--border)]">
             <ConnectButton />
           </div>

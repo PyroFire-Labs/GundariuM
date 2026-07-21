@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 const manifest = {
   frame: {
     name: "GundariuM",
-    tags: ["nft", "tcg", "gundam", "gunr", "arena"],
+    tags: ["nft", "tcg", "gundam", "gnrm", "arena"],
     homeUrl: "https://gundarium.xyz",
     iconUrl: "https://gundarium.xyz/icon.png",
     ogTitle: "GundariuM - NFT TCG",
