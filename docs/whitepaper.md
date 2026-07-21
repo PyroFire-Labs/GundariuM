@@ -369,7 +369,7 @@ GundariuM entered the crypto ecosystem through Farcaster in November 2025, and B
 
 ### PyroFire Labs
 
-**Joshua Grubbs — Founder & Lead Developer**
+**Joshua Grubbs — Founder & CEO**
 
 Full-stack developer handling smart contracts (Solidity/Foundry), frontend (Next.js/React), and system architecture. Entered crypto development in November 2025 through the Farcaster community. Shipped a working MVP with mainnet contracts and a complete mint flow in under a year — solo, with an AI development partner.
 
@@ -379,9 +379,21 @@ GundariuM is built in collaboration with "Larry," an AI development partner powe
 
 Larry is a core collaborator on architecture decisions, contract design, battle system planning, and documentation. This partnership is how a solo founder ships at studio velocity — the entire codebase, smart contracts, battle simulation engine, and this whitepaper were developed through this collaboration.
 
-**Kayonfire (Farcaster) — Social Media & Brand**
+**Kayonfire (Farcaster) — Chief Marketing Officer**
 
-Handles GundariuM's social media presence, brand and visual design, and community campaigning.
+Leads GundariuM's marketing strategy, brand and visual design, and community campaigning across social channels.
+
+### Community Leadership
+
+**Papusiek1111 (Farcaster) — Guild & Channel Moderator**
+
+Moderator for the GundariuM Frame-Runners Guild and the GundariuM Guardians leadership channel. Founder of Quizzy, a Farcaster-native quiz mini app, and an active collaborator on GundariuM's community initiatives.
+
+**darganmage35 (Farcaster) — Guild & Channel Moderator**
+
+Moderator for the GundariuM Frame-Runners Guild and the GundariuM Guardians leadership channel.
+
+### Advisors
 
 **NomadicFrame (Farcaster) — Advisor**
 
