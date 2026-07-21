@@ -75,10 +75,10 @@ export function ShareButtons({ card, battle, dossier }: ShareButtonsProps = {}) 
       // Not embedded in a Farcaster client — the connected wallet can
       // still have a verified Farcaster account attached to it.
       if (dossier?.address) {
-        fetch(`/api/farcaster-username?address=${dossier.address}`)
+        fetch(`/api/runner-profile/${dossier.address}`)
           .then((r) => r.json())
           .then((data) => {
-            if (data?.username) setFarcasterUsername(data.username);
+            if (data?.farcasterUsername) setFarcasterUsername(data.farcasterUsername);
           })
           .catch(() => {});
       }
