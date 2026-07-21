@@ -42,7 +42,7 @@ export interface BattleState {
   currentTurn: number;
   winner: string | null;
   arcId?: number; // PVE only
-  gunrStaked: bigint;
+  gnrmStaked: bigint;
 }
 
 export interface BattleResult {
