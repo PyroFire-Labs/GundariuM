@@ -7,7 +7,7 @@ import {DailyCheckIn} from "../src/DailyCheckIn.sol";
 
 /**
  * @notice Deploys DailyCheckIn as a UUPS proxy. Standalone — does not touch
- *         GunplaCard, GundaniumGame, GNDMStaking, or PrizePool.
+ *         GunplaCard, GundaniumGame, or PrizePool.
  *
  * Key injection (two options — pick one):
  *   A) cast wallet keystore (recommended):
