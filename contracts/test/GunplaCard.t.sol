@@ -431,4 +431,87 @@ contract GunplaCardTest is Test {
         uint256 tokenId = card.mintCard(charlie, "ipfs://public", _defaultTraits());
         assertEq(card.ownerOf(tokenId), charlie);
     }
+
+    // ─── Auto-VIP mint ────────────────────────────────────────────────────
+
+    address constant STGNRM = 0x7EFDd2724910eD0e0614FA0c084eABD30c644C1D;
+
+    function _mockStaking(address who, uint256 balance) internal {
+        vm.mockCall(
+            STGNRM,
+            abi.encodeWithSignature("balanceOf(address)", who),
+            abi.encode(balance)
+        );
+    }
+
+    function test_mintCardAutoVip_succeedsWhenBothConditionsMet() public {
+        _mintAsAlice(); // alice now owns a card
+        _mockStaking(alice, 1); // alice is staking (any nonzero balance)
+
+        uint256 balanceBefore = usdc.balanceOf(alice);
+
+        vm.prank(alice);
+        uint256 tokenId = card.mintCardAutoVip(alice, "ipfs://autovip", _defaultTraits());
+
+        assertEq(card.ownerOf(tokenId), alice);
+        assertEq(usdc.balanceOf(alice), balanceBefore - 1_000_000); // VIP price, $1
+        // Independent of the whitelist counter entirely
+        assertEq(card.whitelistMintCount(alice), 0);
+    }
+
+    function test_mintCardAutoVip_revertsWithoutExistingCard() public {
+        _mockStaking(alice, 1); // staking, but never minted
+
+        vm.expectRevert("GunplaCard: must own a card already");
+        vm.prank(alice);
+        card.mintCardAutoVip(alice, "ipfs://fail", _defaultTraits());
+    }
+
+    function test_mintCardAutoVip_revertsWithoutStaking() public {
+        _mintAsAlice(); // owns a card
+        _mockStaking(alice, 0); // explicitly not staking
+
+        vm.expectRevert("GunplaCard: must be staking GNRM");
+        vm.prank(alice);
+        card.mintCardAutoVip(alice, "ipfs://fail", _defaultTraits());
+    }
+
+    function test_mintCardAutoVip_revertsWhenPaused() public {
+        _mintAsAlice();
+        _mockStaking(alice, 1);
+
+        vm.prank(owner);
+        card.setMintPhase(GunplaCard.MintPhase.PAUSED);
+
+        vm.expectRevert("GunplaCard: minting paused");
+        vm.prank(alice);
+        card.mintCardAutoVip(alice, "ipfs://fail", _defaultTraits());
+    }
+
+    function test_mintCardAutoVip_emitsEvent() public {
+        _mintAsAlice();
+        _mockStaking(alice, 1);
+
+        vm.expectEmit(true, true, false, true);
+        emit GunplaCard.CardMinted(alice, 2, "RX-78-2 Gundam", 2);
+
+        vm.prank(alice);
+        card.mintCardAutoVip(alice, "ipfs://autovip", _defaultTraits());
+    }
+
+    function test_mintCardAutoVip_doesNotRequireWhitelist() public {
+        // charlie is not on the whitelist at all (no proof exists for him)
+        vm.prank(owner);
+        usdc.transfer(charlie, 10_000_000);
+        vm.prank(charlie);
+        usdc.approve(address(card), type(uint256).max);
+
+        vm.prank(charlie);
+        card.mintCard(charlie, "ipfs://first", _defaultTraits()); // owns a card via public mint
+        _mockStaking(charlie, 500);
+
+        vm.prank(charlie);
+        uint256 tokenId = card.mintCardAutoVip(charlie, "ipfs://second", _defaultTraits());
+        assertEq(card.ownerOf(tokenId), charlie);
+    }
 }

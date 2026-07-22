@@ -65,6 +65,11 @@ contract GunplaCard is
     mapping(uint8 => uint256) public tierPrice;
     uint256 public whitelistMintCap;
 
+    // ─── Auto-VIP ──────────────────────────────────────────────────
+    // Streme's stGNRM receipt token (Base mainnet). `constant` — occupies no
+    // storage slot, so referencing it here is safe for a UUPS upgrade.
+    IERC20 constant STGNRM = IERC20(0x7EFDd2724910eD0e0614FA0c084eABD30c644C1D);
+
     // ─── Events ─────────────────────────────────────────────────────────────
 
     event CardMinted(address indexed to, uint256 indexed tokenId, string name, uint8 rarity);
@@ -148,6 +153,34 @@ contract GunplaCard is
         );
 
         whitelistMintCount[msg.sender]++;
+
+        tokenId = _nextTokenId++;
+        _safeMint(to, tokenId);
+        _setTokenURI(tokenId, tokenUri);
+        _traits[tokenId] = traits;
+
+        emit CardMinted(to, tokenId, traits.name, traits.rarity);
+    }
+
+    /// @notice Auto-VIP mint path for wallets that have already minted at
+    ///         least one card AND are currently staking GNRM (any nonzero
+    ///         stGNRM balance) — no whitelist entry required. Purely
+    ///         additive: both conditions must hold, and the Merkle whitelist
+    ///         above is untouched, remaining a separate way to earn the VIP
+    ///         price.
+    function mintCardAutoVip(
+        address to,
+        string calldata tokenUri,
+        CardTraits calldata traits
+    ) external returns (uint256 tokenId) {
+        require(mintPhase != MintPhase.PAUSED, "GunplaCard: minting paused");
+        require(balanceOf(msg.sender) > 0, "GunplaCard: must own a card already");
+        require(STGNRM.balanceOf(msg.sender) > 0, "GunplaCard: must be staking GNRM");
+
+        require(
+            usdc.transferFrom(msg.sender, address(this), tierPrice[1]),
+            "GunplaCard: USDC transfer failed"
+        );
 
         tokenId = _nextTokenId++;
         _safeMint(to, tokenId);
