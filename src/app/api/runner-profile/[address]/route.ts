@@ -16,6 +16,7 @@
 
 import { NextResponse } from "next/server";
 import { lookupFarcasterByAddress } from "@/lib/neynar";
+import { getLineup } from "@/lib/lineupStore";
 import { emptyRunnerProfile } from "@/types/runner";
 
 export const revalidate = 1800; // 30 minutes
@@ -38,23 +39,32 @@ export async function GET(
   }
 
   const normalized = address.toLowerCase();
-  const farcasterProfile = await lookupFarcasterByAddress(normalized);
+  const [farcasterProfile, lineup] = await Promise.all([
+    lookupFarcasterByAddress(normalized),
+    getLineup(normalized),
+  ]);
 
   if (farcasterProfile) {
-    return NextResponse.json(farcasterProfile, {
-      headers: {
-        "Cache-Control": "public, s-maxage=1800, stale-while-revalidate=3600",
-      },
-    });
+    return NextResponse.json(
+      { ...farcasterProfile, lineup },
+      {
+        headers: {
+          "Cache-Control": "public, s-maxage=1800, stale-while-revalidate=3600",
+        },
+      }
+    );
   }
 
   // No Farcaster identity — return empty profile so the client can render
   // the fallback (truncated address) without null-checking.
-  return NextResponse.json(emptyRunnerProfile(normalized), {
-    headers: {
-      // Shorter cache for empties — a user might link a Farcaster account
-      // soon and we want their profile to surface within the hour.
-      "Cache-Control": "public, s-maxage=600, stale-while-revalidate=1800",
-    },
-  });
+  return NextResponse.json(
+    { ...emptyRunnerProfile(normalized), lineup },
+    {
+      headers: {
+        // Shorter cache for empties — a user might link a Farcaster account
+        // soon and we want their profile to surface within the hour.
+        "Cache-Control": "public, s-maxage=600, stale-while-revalidate=1800",
+      },
+    }
+  );
 }

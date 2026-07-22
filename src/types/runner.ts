@@ -49,6 +49,19 @@ export interface RunnerProfile {
 
   /** Other verified addresses for this Farcaster account (cross-reference for badges, etc.). */
   verifiedAddresses?: string[];
+
+  /**
+   * Starting lineup — a hero Gundar-Frame plus up to 4 support cards, in
+   * deploy order (hero first; support[0] deploys if the hero falls, then
+   * support[1], etc.). Purely cosmetic/profile-only today — no battle
+   * system reads this yet. Stored in KV (Phase 2), owner-editable only.
+   */
+  lineup?: RunnerLineup | null;
+}
+
+export interface RunnerLineup {
+  hero: number; // tokenId
+  support: number[]; // tokenIds, in fall-back order, max 4
 }
 
 /**

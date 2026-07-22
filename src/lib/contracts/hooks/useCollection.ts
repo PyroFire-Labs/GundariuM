@@ -21,8 +21,9 @@ export interface OwnedCard {
   traits: TraitSet;
 }
 
-export function useCollection() {
-  const { address } = useAccount();
+export function useCollection(addressOverride?: `0x${string}`) {
+  const { address: connectedAddress } = useAccount();
+  const address = addressOverride ?? connectedAddress;
   const chainId = useChainId();
 
   let contracts: ReturnType<typeof getContracts> | null = null;
