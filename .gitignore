@@ -60,6 +60,7 @@ contextFromYesterday*.md
 context*.MD
 context*.md
 contextcompacted.MD
+READ THIS LARRY.MD
 
 # one-off analysis outputs (Farcaster resolution, whitelist diffs, etc.)
 scripts/recheck-result.json

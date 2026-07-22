@@ -375,6 +375,122 @@ export const GUNPLA_CARD_ABI = [
   },
   {
     "type": "function",
+    "name": "mintCardAutoVip",
+    "inputs": [
+      {
+        "name": "to",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "tokenUri",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "traits",
+        "type": "tuple",
+        "internalType": "struct GunplaCard.CardTraits",
+        "components": [
+          {
+            "name": "name",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "series",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "faction",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "pilotName",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "rarity",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "armorType",
+            "type": "uint8",
+            "internalType": "uint8"
+          },
+          {
+            "name": "hp",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "primaryWeapon",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "primaryDamage",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "secondaryWeapon",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "secondaryDamage",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "tertiaryWeapon",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "tertiaryDamage",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "specialAttack",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "specialDamage",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "repaintColor",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "decalId",
+            "type": "string",
+            "internalType": "string"
+          }
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "mintCardWhitelist",
     "inputs": [
       {

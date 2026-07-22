@@ -29,6 +29,8 @@ export function MintConfirm() {
     approveMint,
     executeMint,
     executeWhitelistMint,
+    executeAutoVipMint,
+    isAutoVipEligible,
     currentPhase,
     whitelistMintCount,
     whitelistMintCap,
@@ -78,13 +80,22 @@ export function MintConfirm() {
 
   // VIP/WL tier price applies whenever the wallet has a valid proof and the
   // contract isn't paused — i.e. WHITELIST or PUBLIC phase post-upgrade.
+  // Auto-VIP is the additive fallback for wallets with no whitelist proof
+  // that already own a card and are staking GNRM — same gating (not
+  // paused) as mintCardAutoVip enforces on-chain.
+  const autoVipUsable = isAutoVipEligible && currentPhase !== 0;
+
   const effectivePrice = proofData && currentPhase !== 0
     ? (proofData.tier === 1 ? vipPrice : wlPrice) ?? mintPrice
-    : mintPrice;
+    : autoVipUsable
+      ? vipPrice ?? mintPrice
+      : mintPrice;
 
   const tierLabel = proofData && currentPhase !== 0
     ? proofData.tier === 1 ? "VIP (50% off)" : "Whitelist (25% off)"
-    : "Public";
+    : autoVipUsable
+      ? "VIP (auto — staking GNRM)"
+      : "Public";
 
   // Upload to IPFS on mount (if not already done)
   useEffect(() => {
@@ -129,6 +140,8 @@ export function MintConfirm() {
         proofData.tier,
         proofData.proof as `0x${string}`[]
       );
+    } else if (autoVipUsable) {
+      tokenId = await executeAutoVipMint(metadataUri, traits);
     } else {
       tokenId = await executeMint(metadataUri, traits);
     }
@@ -195,8 +208,8 @@ export function MintConfirm() {
         </div>
       </div>
 
-      {/* Not on whitelist */}
-      {currentPhase === 1 && !proofData && (
+      {/* Not on whitelist and doesn't qualify for auto-VIP */}
+      {currentPhase === 1 && !proofData && !autoVipUsable && (
         <p className="text-center text-red-400 font-[family-name:var(--font-orbitron)]">
           Your wallet is not on the whitelist.
         </p>
@@ -240,7 +253,7 @@ export function MintConfirm() {
         ) : (
           <button
             onClick={() => approveMint(effectivePrice)}
-            disabled={currentPhase === 1 && !proofData}
+            disabled={currentPhase === 1 && !proofData && !autoVipUsable}
             className="w-full py-3 bg-[var(--accent)] text-black font-bold font-[family-name:var(--font-orbitron)] text-sm rounded-lg hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             1 / 2 — APPROVE USDC
