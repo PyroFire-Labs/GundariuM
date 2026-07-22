@@ -1,6 +1,6 @@
 "use client";
 
-import { CountdownPage } from "@/components/ui/CountdownTimer";
+import { ComingSoon } from "@/components/ui/ComingSoon";
 import { useMintStore } from "@/store/useMintStore";
 import { MintLanding } from "@/components/mint/MintLanding";
 import { GenerationReveal } from "@/components/mint/GenerationReveal";
@@ -96,10 +96,9 @@ function MintFlow() {
 export default function MintPage() {
   if (!MINT_ENABLED) {
     return (
-      <CountdownPage
-        pageTitle="MINT"
-        missionLabel="MINTING BEGINS"
-        description="Forge unique AI-generated kitbash Mobile Suits as on-chain NFT battle cards."
+      <ComingSoon
+        title="MINT"
+        subtitle="Forge unique AI-generated kitbash Mobile Suits as on-chain NFT battle cards."
       />
     );
   }

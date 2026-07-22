@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { CountdownBanner } from "@/components/ui/CountdownTimer";
 import { Dices, Sparkles, Swords, Trophy, Wrench } from "lucide-react";
 import { openInMiniAppOrBrowser } from "@/lib/openInMiniAppOrBrowser";
 
@@ -64,9 +63,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* ── LAUNCH COUNTDOWN (top) ──────────────────────────────────── */}
-      <CountdownBanner />
 
       {/* ── 1.5. KITBASH GALLERY ────────────────────────────────────── */}
       <section className="px-4 py-20 bg-[var(--background)]">
@@ -268,9 +264,6 @@ export default function Home() {
           </p>
         </div>
       </section>
-
-      {/* ── LAUNCH COUNTDOWN (bottom) ───────────────────────────────── */}
-      <CountdownBanner />
 
       {/* ── FOOTER ─────────────────────────────────────────────────── */}
       <footer className="border-t border-[var(--border)] bg-[var(--surface)] px-4 py-8">

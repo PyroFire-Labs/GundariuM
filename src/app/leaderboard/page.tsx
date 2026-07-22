@@ -1,11 +1,10 @@
-import { CountdownPage } from "@/components/ui/CountdownTimer";
+import { ComingSoon } from "@/components/ui/ComingSoon";
 
 export default function LeaderboardPage() {
   return (
-    <CountdownPage
-      pageTitle="LEADERBOARD"
-      missionLabel="RANKINGS GO LIVE"
-      description="Daily, weekly, and monthly prize pools for the top commanders on Base."
+    <ComingSoon
+      title="LEADERBOARD"
+      subtitle="Real rankings are coming once PVP battle staking is live on mainnet. Daily, weekly, and monthly prize pools for the top commanders on Base."
     />
   );
 }

@@ -7,5 +7,5 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default function OgImage() {
-  return generateOgImage({ pageTitle: "LEADERBOARD", missionLabel: "RANKINGS GO LIVE · MAY 10, 2026" });
+  return generateOgImage({ pageTitle: "LEADERBOARD", missionLabel: "RANKINGS · COMING SOON" });
 }

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAccount, useChainId, useSwitchChain } from "wagmi";
-import { CountdownPage } from "@/components/ui/CountdownTimer";
+import { ComingSoon } from "@/components/ui/ComingSoon";
 import { CollectionCard } from "@/components/collection/CollectionCard";
 import { useCollection } from "@/lib/contracts/hooks/useCollection";
 
@@ -24,10 +24,9 @@ export default function CollectionPage() {
 
   if (!MINT_ENABLED) {
     return (
-      <CountdownPage
-        pageTitle="COLLECTION"
-        missionLabel="COLLECTION UNLOCKS"
-        description="View and manage your Gunpla NFT card collection."
+      <ComingSoon
+        title="COLLECTION"
+        subtitle="View and manage your Gunpla NFT card collection."
       />
     );
   }
