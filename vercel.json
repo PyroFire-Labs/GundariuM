@@ -1,3 +1,9 @@
 {
-  "alias": ["gundarium.xyz"]
+  "alias": ["gundarium.xyz"],
+  "crons": [
+    {
+      "path": "/api/cron/refresh-leaderboard",
+      "schedule": "*/15 * * * *"
+    }
+  ]
 }

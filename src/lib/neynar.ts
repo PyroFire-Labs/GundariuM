@@ -85,6 +85,55 @@ export async function lookupFarcasterByAddress(
   }
 }
 
+const BULK_BATCH_SIZE = 100; // conservative — Neynar's bulk-by-address endpoint accepts more, but this keeps individual requests light
+
+/**
+ * Bulk Farcaster identity lookup for many addresses at once — used by the
+ * leaderboard refresh job so ranking N wallets costs a handful of requests
+ * instead of N individual ones (Neynar's free tier is 500 requests/day).
+ * Returns a map of lowercased address -> RunnerProfile for every address
+ * that resolved to a Farcaster identity; addresses with no identity are
+ * simply absent from the map (caller falls back to truncated address).
+ */
+export async function lookupFarcasterByAddresses(
+  addresses: string[]
+): Promise<Map<string, RunnerProfile>> {
+  const result = new Map<string, RunnerProfile>();
+  const apiKey = process.env.NEYNAR_API_KEY;
+  if (!apiKey || addresses.length === 0) return result;
+
+  const normalized = [...new Set(addresses.map((a) => a.toLowerCase()))];
+
+  for (let i = 0; i < normalized.length; i += BULK_BATCH_SIZE) {
+    const batch = normalized.slice(i, i + BULK_BATCH_SIZE);
+    const url = `${NEYNAR_BASE}/user/bulk-by-address?addresses=${batch.join(",")}`;
+
+    try {
+      const res = await fetch(url, {
+        headers: { accept: "application/json", api_key: apiKey },
+        next: { revalidate: 1800 },
+      });
+      if (!res.ok) {
+        if (res.status !== 404) {
+          console.error(`Neynar bulk lookup failed: ${res.status} ${res.statusText}`);
+        }
+        continue;
+      }
+      const data: Record<string, NeynarUser[]> = await res.json();
+      for (const address of batch) {
+        const users = data[address];
+        if (users && users.length > 0) {
+          result.set(address, neynarUserToProfile(users[0], address));
+        }
+      }
+    } catch (err) {
+      console.error(`Neynar bulk fetch error:`, err);
+    }
+  }
+
+  return result;
+}
+
 function neynarUserToProfile(
   user: NeynarUser,
   address: string
