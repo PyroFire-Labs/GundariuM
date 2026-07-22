@@ -14,6 +14,7 @@ const STREME_GNRM_URL = "https://streme.fun/token/0x271b01cc11032a4e23f0200f8f57
 const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/tasks", label: "Tasks" },
+  { href: "/dossier", label: "Dossier" },
   { href: "/mint", label: "Mint" },
   { href: "/arena", label: "Arena (Demo)" },
   { href: "/battle", label: "Battle" },
