@@ -281,7 +281,11 @@ export async function GET(_req: Request, { params }: RouteContext) {
         </div>
       </div>
     ),
-    { width: 1200, height: 630 }
+    {
+      width: 1200,
+      height: 630,
+      headers: { "Access-Control-Allow-Origin": "*" },
+    }
   );
 }
 

@@ -79,6 +79,10 @@ export async function generateOgImage({
         </div>
       </div>
     ),
-    { width: 1200, height: 630 }
+    {
+      width: 1200,
+      height: 630,
+      headers: { "Access-Control-Allow-Origin": "*" },
+    }
   );
 }

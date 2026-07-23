@@ -31,6 +31,10 @@ export async function GET(req: Request) {
         <div style={{ display: "flex", fontSize: 32, marginTop: 24, color: "#00d4ff" }}>{hp}% HP remaining</div>
       </div>
     ),
-    { width: 1200, height: 630 }
+    {
+      width: 1200,
+      height: 630,
+      headers: { "Access-Control-Allow-Origin": "*" },
+    }
   );
 }
