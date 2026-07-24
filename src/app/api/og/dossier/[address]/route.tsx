@@ -13,9 +13,12 @@ export const runtime = "nodejs";
 export const contentType = "image/png";
 export const dynamic = "force-dynamic";
 
+// Prefer the dedicated RPC endpoint over the free public one — this route
+// batches multiple contract reads per request, and mainnet.base.org's free
+// tier intermittently rejects those with "RPC Request failed" under load.
 const publicClient = createPublicClient({
   chain: base,
-  transport: http("https://mainnet.base.org"),
+  transport: http(process.env.BASE_RPC_URL || "https://mainnet.base.org"),
 });
 
 interface RouteContext {
@@ -89,15 +92,34 @@ export async function GET(_req: Request, { params }: RouteContext) {
     }
   }
 
+  // Batch all tokenURI reads into a single multicall instead of firing them
+  // concurrently — Base's free public RPC (no API key, no retry logic)
+  // intermittently rejects concurrent eth_call requests with "RPC Request
+  // failed" under load, which was silently dropping 1-2 of the 5 squad
+  // cards every render. One multicall is one HTTP request, not five, but
+  // the free endpoint can still occasionally reject that single request —
+  // one retry after a short delay covers that remaining transient case.
+  const multicallContracts = squadTokenIds.map((tokenId) => ({
+    address: contracts.gunplaCard,
+    abi: GUNPLA_CARD_ABI,
+    functionName: "tokenURI" as const,
+    args: [tokenId],
+  }));
+  let tokenUriResults = await publicClient
+    .multicall({ contracts: multicallContracts })
+    .catch(() => multicallContracts.map(() => ({ status: "failure" as const, error: new Error(), result: undefined })));
+  if (tokenUriResults.every((r) => r.status !== "success")) {
+    await new Promise((r) => setTimeout(r, 400));
+    tokenUriResults = await publicClient
+      .multicall({ contracts: multicallContracts })
+      .catch(() => multicallContracts.map(() => ({ status: "failure" as const, error: new Error(), result: undefined })));
+  }
+
   const squadCardsRaw = await Promise.all(
-    squadTokenIds.map(async (tokenId, i) => {
+    tokenUriResults.map(async (result, i) => {
+      if (result.status !== "success") return null;
       try {
-        const tokenUri = (await publicClient.readContract({
-          address: contracts.gunplaCard,
-          abi: GUNPLA_CARD_ABI,
-          functionName: "tokenURI",
-          args: [tokenId],
-        })) as string;
+        const tokenUri = result.result as string;
         const res = await fetch(ipfsToHttp(tokenUri), { cache: "no-store" });
         if (!res.ok) return null;
         const metadata = (await res.json()) as GunplaCardMetadata;
