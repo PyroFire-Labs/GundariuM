@@ -156,7 +156,7 @@ export function DossierClient({ address }: { address: `0x${string}` }) {
         </div>
 
         {!editing && (
-          <div className="flex flex-wrap gap-4 items-start">
+          <div className="flex flex-wrap gap-4 items-start justify-center">
             <LineupSlot card={heroCard} label="HERO" empty={!heroTokenId} large />
             {Array.from({ length: MAX_SUPPORT }).map((_, i) => (
               <LineupSlot
