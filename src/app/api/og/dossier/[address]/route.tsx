@@ -11,6 +11,7 @@ import type { GunplaCardMetadata } from "@/types/nft";
 
 export const runtime = "nodejs";
 export const contentType = "image/png";
+export const dynamic = "force-dynamic";
 
 const publicClient = createPublicClient({
   chain: base,
@@ -97,7 +98,7 @@ export async function GET(_req: Request, { params }: RouteContext) {
           functionName: "tokenURI",
           args: [tokenId],
         })) as string;
-        const res = await fetch(ipfsToHttp(tokenUri), { next: { revalidate: 3600 } });
+        const res = await fetch(ipfsToHttp(tokenUri), { cache: "no-store" });
         if (!res.ok) return null;
         const metadata = (await res.json()) as GunplaCardMetadata;
         return {

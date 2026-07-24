@@ -59,7 +59,7 @@ export function ShareButtons({ card, battle, dossier }: ShareButtonsProps = {}) 
   const embedUrl = battle
     ? `${SITE_URL}/api/og/victory?player=${encodeURIComponent(battle.playerName)}&enemy=${encodeURIComponent(battle.enemyName)}&hp=${Math.round(battle.hpPct)}`
     : dossier
-      ? `${SITE_URL}/api/og/dossier/${dossier.address}`
+      ? `${SITE_URL}/dossier/${dossier.address}`
       : card?.tokenId !== undefined && card?.tokenId !== null
         ? `${SITE_URL}/card/${card.tokenId.toString()}`
         : SITE_URL;
