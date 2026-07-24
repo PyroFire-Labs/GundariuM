@@ -10,6 +10,7 @@ import { useStakedTodayCheck } from "@/lib/contracts/hooks/useStakedTodayCheck";
 import { useCollection } from "@/lib/contracts/hooks/useCollection";
 import { ShareButtons } from "@/components/ui/ShareButtons";
 import { openInMiniAppOrBrowser } from "@/lib/openInMiniAppOrBrowser";
+import { isDossierSharedToday, markDossierSharedToday } from "@/lib/dossierShareTask";
 
 const GOOGLE_FORM_URL =
   "https://docs.google.com/forms/d/e/1FAIpQLSf0XmuUIJ9IC4CymaSdLv761No_U9o5GOMTK71bmdyyC3R9zA/viewform";
@@ -45,6 +46,22 @@ function useFormTaskDone(): [boolean, () => void] {
 
   const markDone = () => {
     localStorage.setItem(FORM_SUBMITTED_KEY, todayUtcDateString());
+    setDone(true);
+  };
+
+  return [done, markDone];
+}
+
+function useDossierShareTaskDone(): [boolean, () => void] {
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setDone(isDossierSharedToday());
+  }, []);
+
+  const markDone = () => {
+    markDossierSharedToday();
     setDone(true);
   };
 
@@ -88,6 +105,7 @@ export default function TasksPage() {
   const { phase: mintPhase, check: checkMintedToday, error: mintError } = useMintedTodayCheck();
   const { phase: stakePhase, check: checkStakedToday, error: stakeError } = useStakedTodayCheck();
   const [formDone, markFormDone] = useFormTaskDone();
+  const [dossierShared, markDossierShared] = useDossierShareTaskDone();
 
   const gnrmVerified = gnrmPhase === "verified";
   const mintedToday = mintPhase === "verified";
@@ -100,6 +118,7 @@ export default function TasksPage() {
     (stakedToday ? 50 : 0) +
     (gnrmVerified ? 12 : 0) +
     (formDone ? 15 : 0) +
+    (dossierShared ? 8 : 0) +
     (perfectWeek ? 200 : 0);
 
   // If the check comes back not-met, hand off to Farcaster's native swap
@@ -228,7 +247,13 @@ export default function TasksPage() {
             disabled={stakePhase === "checking"}
             error={stakeError}
           />
-          <DossierTaskRow address={address} streak={currentStreak} exp={exp} />
+          <DossierTaskRow
+            address={address}
+            streak={currentStreak}
+            exp={exp}
+            done={dossierShared}
+            onShare={markDossierShared}
+          />
         </div>
       </div>
     </main>
@@ -311,14 +336,32 @@ function TaskRow({
   );
 }
 
-function DossierTaskRow({ address, streak, exp }: { address: `0x${string}` | undefined; streak: number; exp: number }) {
+function DossierTaskRow({
+  address,
+  streak,
+  exp,
+  done,
+  onShare,
+}: {
+  address: `0x${string}` | undefined;
+  streak: number;
+  exp: number;
+  done: boolean;
+  onShare: () => void;
+}) {
   return (
     <div className="flex items-center justify-between rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4">
       <div>
         <div className="font-[family-name:var(--font-orbitron)] text-sm font-bold text-white">Share Your Dossier</div>
         <div className="font-mono text-[10px] text-[var(--accent)]">+8 EXP</div>
       </div>
-      {address && <ShareButtons dossier={{ address, streak, exp }} />}
+      {done ? (
+        <span className="font-[family-name:var(--font-orbitron)] text-[10px] font-bold tracking-widest text-[var(--accent)] uppercase">
+          Done
+        </span>
+      ) : (
+        address && <ShareButtons dossier={{ address, streak, exp }} onShare={onShare} />
+      )}
     </div>
   );
 }

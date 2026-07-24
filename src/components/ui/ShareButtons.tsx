@@ -28,6 +28,8 @@ interface ShareButtonsProps {
     streak: number;
     exp: number;
   };
+  /** Called when any share action is triggered — e.g. to mark a daily task done. */
+  onShare?: () => void;
 }
 
 function buildShareText(
@@ -55,7 +57,7 @@ function buildShareText(
   return `Just forged ${props.card.name}${tokenSuffix} — ${displayRarity(props.card.rarity)} tier — on GundariuM. Mint your own Gundar-Frame at gundarium.xyz/mint`;
 }
 
-export function ShareButtons({ card, battle, dossier }: ShareButtonsProps = {}) {
+export function ShareButtons({ card, battle, dossier, onShare }: ShareButtonsProps = {}) {
   const [isFarcaster, setIsFarcaster] = useState(false);
   const [farcasterUsername, setFarcasterUsername] = useState<string | null>(null);
   const text = buildShareText({ card, battle, dossier }, farcasterUsername);
@@ -89,6 +91,7 @@ export function ShareButtons({ card, battle, dossier }: ShareButtonsProps = {}) 
   }, [dossier?.address]);
 
   const shareOnFarcaster = useCallback(async () => {
+    onShare?.();
     if (isFarcaster) {
       const { sdk } = await import("@farcaster/miniapp-sdk");
       await sdk.actions.composeCast({
@@ -101,23 +104,26 @@ export function ShareButtons({ card, battle, dossier }: ShareButtonsProps = {}) 
         "_blank"
       );
     }
-  }, [isFarcaster, text, embedUrl]);
+  }, [isFarcaster, text, embedUrl, onShare]);
 
   const shareOnX = useCallback(() => {
+    onShare?.();
     window.open(
       `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(embedUrl)}`,
       "_blank"
     );
-  }, [text, embedUrl]);
+  }, [text, embedUrl, onShare]);
 
   const shareOnFacebook = useCallback(() => {
+    onShare?.();
     window.open(
       `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(embedUrl)}`,
       "_blank"
     );
-  }, [embedUrl]);
+  }, [embedUrl, onShare]);
 
   const shareGeneric = useCallback(async () => {
+    onShare?.();
     if (navigator.share) {
       try {
         await navigator.share({ title: "GundariuM", text, url: embedUrl });
@@ -125,7 +131,7 @@ export function ShareButtons({ card, battle, dossier }: ShareButtonsProps = {}) 
     } else {
       await navigator.clipboard.writeText(`${text} ${embedUrl}`);
     }
-  }, [text, embedUrl]);
+  }, [text, embedUrl, onShare]);
 
   return (
     <div className="flex flex-wrap items-center justify-center gap-2">

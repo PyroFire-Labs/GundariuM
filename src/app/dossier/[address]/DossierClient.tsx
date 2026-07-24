@@ -7,6 +7,7 @@ import { ShareButtons } from "@/components/ui/ShareButtons";
 import { useCollection, type OwnedCard } from "@/lib/contracts/hooks/useCollection";
 import { useDailyCheckInStats } from "@/lib/contracts/hooks/useDailyCheckInStats";
 import { useSaveLineup } from "@/lib/contracts/hooks/useSaveLineup";
+import { markDossierSharedToday } from "@/lib/dossierShareTask";
 import { ipfsToHttp } from "@/lib/ipfs";
 import type { RunnerProfile } from "@/types/runner";
 
@@ -257,7 +258,12 @@ export function DossierClient({ address }: { address: `0x${string}` }) {
         )}
       </div>
 
-      {isOwner && !editing && <ShareButtons dossier={{ address, streak: stats.currentStreak, exp }} />}
+      {isOwner && !editing && (
+        <ShareButtons
+          dossier={{ address, streak: stats.currentStreak, exp }}
+          onShare={markDossierSharedToday}
+        />
+      )}
     </div>
   );
 }
