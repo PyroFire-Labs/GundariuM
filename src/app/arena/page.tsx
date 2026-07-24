@@ -600,11 +600,9 @@ function BattleOutcome({
           MINT YOUR OWN
         </Link>
       </div>
-      {playerWon && (
-        <div className="mt-4">
-          <ShareButtons battle={{ playerName, enemyName, hpPct: playerHpPct }} />
-        </div>
-      )}
+      <div className="mt-4">
+        <ShareButtons battle={{ playerName, enemyName, hpPct: playerHpPct, won: playerWon }} />
+      </div>
     </div>
   );
 }

@@ -8,6 +8,8 @@ export async function GET(req: Request) {
   const player = searchParams.get("player") ?? "Unknown Frame";
   const enemy = searchParams.get("enemy") ?? "Unknown Frame";
   const hp = searchParams.get("hp") ?? "0";
+  const won = searchParams.get("won") !== "false";
+  const accent = won ? "#00d4ff" : "#fb923c";
 
   return new ImageResponse(
     (
@@ -23,12 +25,14 @@ export async function GET(req: Request) {
           color: "#ffffff",
         }}
       >
-        <div style={{ display: "flex", fontSize: 24, letterSpacing: 8, color: "#00d4ff", textTransform: "uppercase" }}>
-          Victory
+        <div style={{ display: "flex", fontSize: 24, letterSpacing: 8, color: accent, textTransform: "uppercase" }}>
+          {won ? "Victory" : "Defeat"}
         </div>
-        <div style={{ display: "flex", fontSize: 64, fontWeight: 900, marginTop: 16 }}>{player}</div>
-        <div style={{ display: "flex", fontSize: 28, color: "#888", marginTop: 8 }}>defeated {enemy}</div>
-        <div style={{ display: "flex", fontSize: 32, marginTop: 24, color: "#00d4ff" }}>{hp}% HP remaining</div>
+        <div style={{ display: "flex", fontSize: 64, fontWeight: 900, marginTop: 16 }}>{won ? player : enemy}</div>
+        <div style={{ display: "flex", fontSize: 28, color: "#888", marginTop: 8 }}>
+          {won ? `defeated ${enemy}` : `defeated ${player}`}
+        </div>
+        <div style={{ display: "flex", fontSize: 32, marginTop: 24, color: accent }}>{hp}% HP remaining</div>
       </div>
     ),
     {

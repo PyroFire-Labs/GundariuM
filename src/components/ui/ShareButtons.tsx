@@ -15,11 +15,12 @@ interface ShareButtonsProps {
     rarity: Rarity;
     tokenId: bigint | null;
   };
-  /** Optional Arena battle context — shown as a Share Victory button. */
+  /** Optional Arena battle context — shown after any battle, win or loss. */
   battle?: {
     playerName: string;
     enemyName: string;
     hpPct: number;
+    won: boolean;
   };
   /** Optional Frame-Runner dossier context. */
   dossier?: {
@@ -34,8 +35,10 @@ function buildShareText(
   farcasterUsername: string | null
 ): string {
   if (props.battle) {
-    const { playerName, enemyName, hpPct } = props.battle;
-    return `${playerName} just defeated ${enemyName} in the GundariuM Arena — ${Math.round(hpPct)}% HP remaining. Battle your own Gundar-Frame at gundarium.xyz/arena`;
+    const { playerName, enemyName, hpPct, won } = props.battle;
+    return won
+      ? `${playerName} just defeated ${enemyName} in the GundariuM Arena — ${Math.round(hpPct)}% HP remaining. Battle your own Gundar-Frame at gundarium.xyz/arena`
+      : `${playerName} fell to ${enemyName} in the GundariuM Arena. Think you'd do better? Battle your own Gundar-Frame at gundarium.xyz/arena`;
   }
   if (props.dossier) {
     const { address, streak, exp } = props.dossier;
@@ -57,7 +60,7 @@ export function ShareButtons({ card, battle, dossier }: ShareButtonsProps = {}) 
   const [farcasterUsername, setFarcasterUsername] = useState<string | null>(null);
   const text = buildShareText({ card, battle, dossier }, farcasterUsername);
   const embedUrl = battle
-    ? `${SITE_URL}/api/og/victory?player=${encodeURIComponent(battle.playerName)}&enemy=${encodeURIComponent(battle.enemyName)}&hp=${Math.round(battle.hpPct)}`
+    ? `${SITE_URL}/api/og/victory?player=${encodeURIComponent(battle.playerName)}&enemy=${encodeURIComponent(battle.enemyName)}&hp=${Math.round(battle.hpPct)}&won=${battle.won}`
     : dossier
       ? `${SITE_URL}/dossier/${dossier.address}`
       : card?.tokenId !== undefined && card?.tokenId !== null
