@@ -150,14 +150,15 @@ export async function GET(_req: Request, { params }: RouteContext) {
       <div
         style={{
           width: "1200px",
-          height: "630px",
+          height: "800px",
           background: "#080c14",
           display: "flex",
           flexDirection: "column",
+          justifyContent: "center",
           position: "relative",
           fontFamily: "sans-serif",
           overflow: "hidden",
-          padding: "48px 56px",
+          padding: "56px",
         }}
       >
         {/* Background grid */}
@@ -306,7 +307,7 @@ export async function GET(_req: Request, { params }: RouteContext) {
     ),
     {
       width: 1200,
-      height: 630,
+      height: 800,
       headers: { "Access-Control-Allow-Origin": "*" },
     }
   );
