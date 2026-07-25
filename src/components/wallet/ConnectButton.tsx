@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { useAccount, useAccountEffect, useConnect, useDisconnect } from "wagmi";
 import { baseAccount, walletConnect } from "wagmi/connectors";
 import { useSiweSignIn } from "@/lib/hooks/useSiweSignIn";
 import { useSiweSession } from "@/lib/hooks/useSiweSession";
@@ -14,20 +14,24 @@ export function ConnectButton() {
   const { disconnect } = useDisconnect();
   const [mounted, setMounted] = useState(false);
   const { signIn, phase: siwePhase, cancel: cancelSignIn } = useSiweSignIn();
-  const { isSignedIn, refresh: refreshSession } = useSiweSession();
+  const { isSignedIn, loading: sessionLoading, refresh: refreshSession } = useSiweSession();
+
+  useAccountEffect({
+    onDisconnect() {
+      fetch("/api/auth/logout", { method: "POST" }).finally(() => refreshSession());
+    },
+  });
 
   useEffect(() => setMounted(true), []);
 
   const isFarcaster = connector?.id === "farcaster";
-  const needsSignIn = isConnected && !isFarcaster && !isSignedIn;
+  const needsSignIn = isConnected && !isFarcaster && !isSignedIn && !sessionLoading;
   const signingIn =
     siwePhase === "requesting-nonce" || siwePhase === "signing" || siwePhase === "verifying";
 
-  const handleDisconnect = async () => {
+  const handleDisconnect = () => {
     cancelSignIn();
-    await fetch("/api/auth/logout", { method: "POST" });
     disconnect();
-    refreshSession();
   };
 
   const handleSignIn = async () => {
