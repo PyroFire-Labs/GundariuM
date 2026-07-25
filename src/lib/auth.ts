@@ -5,7 +5,7 @@
  */
 
 import { Redis } from "@upstash/redis";
-import { generateSiweNonce } from "viem/siwe";
+import { randomBytes } from "crypto";
 
 const redis = Redis.fromEnv();
 
@@ -27,7 +27,7 @@ function nonceKey(nonce: string): string {
 
 /** Issues a fresh SIWE nonce, stored server-side for one-time use. */
 export async function issueNonce(): Promise<string> {
-  const nonce = generateSiweNonce();
+  const nonce = randomBytes(48).toString("hex");
   await redis.set(nonceKey(nonce), "1", { ex: NONCE_TTL_SECONDS });
   return nonce;
 }
