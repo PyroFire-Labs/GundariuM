@@ -39,9 +39,8 @@ export async function issueNonce(): Promise<string> {
  */
 export async function consumeNonce(nonce: string): Promise<boolean> {
   const key = nonceKey(nonce);
-  const exists = await redis.get(key);
-  await redis.del(key);
-  return exists !== null;
+  const result = await redis.getdel(key);
+  return result !== null;
 }
 
 export async function createSession(address: string): Promise<string> {
