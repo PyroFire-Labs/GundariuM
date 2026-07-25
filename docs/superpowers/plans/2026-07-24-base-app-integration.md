@@ -116,7 +116,7 @@ export const wagmiConfig = createConfig({
 });
 ```
 
-- [ ] **Step 3: Verify it typechecks and the connector is really registered**
+- [ ] **Step 3: Verify it typechecks and builds**
 
 ```bash
 npx tsc --noEmit -p tsconfig.json
@@ -124,21 +124,18 @@ npx tsc --noEmit -p tsconfig.json
 
 Expected: no errors.
 
-Then, with the dev server running (`doppler run --project gundarium --config dev -- npm run dev`), open the browser console on any page and run:
-
-```js
-window.__wagmiConnectors = Array.from(document.querySelectorAll("script")).length; // just to confirm page loaded
-```
-
-Simpler direct check — add a temporary log in `FarcasterInit.tsx` is unnecessary; instead confirm via the Connect button itself once Task 6 wires it up. For this task, typecheck passing plus a successful `npm run build` is sufficient proof the connector constructs without throwing:
-
 ```bash
 doppler run --project gundarium --config dev -- npm run build 2>&1 | tail -30
 ```
 
-Expected: build succeeds (existing pre-existing lint warning in
-`src/app/arena/page.tsx:121` about ref-mutation-during-render is unrelated and
-already present before this change — do not fix it as part of this task).
+Expected: build succeeds — this is sufficient proof the connector constructs
+without throwing at build time. (A live "does it actually connect a wallet"
+check happens later, once Task 6 wires the connector into `ConnectButton`
+and there's a real UI surface to click.)
+
+A pre-existing lint warning in `src/app/arena/page.tsx:121` about
+ref-mutation-during-render will show up in build output — it predates this
+change and is unrelated; do not fix it as part of this task.
 
 - [ ] **Step 4: Commit**
 
