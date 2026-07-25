@@ -13,7 +13,7 @@ export function ConnectButton() {
   const { connect } = useConnect();
   const { disconnect } = useDisconnect();
   const [mounted, setMounted] = useState(false);
-  const { signIn, phase: siwePhase } = useSiweSignIn();
+  const { signIn, phase: siwePhase, cancel: cancelSignIn } = useSiweSignIn();
   const { isSignedIn, refresh: refreshSession } = useSiweSession();
 
   useEffect(() => setMounted(true), []);
@@ -24,6 +24,7 @@ export function ConnectButton() {
     siwePhase === "requesting-nonce" || siwePhase === "signing" || siwePhase === "verifying";
 
   const handleDisconnect = async () => {
+    cancelSignIn();
     await fetch("/api/auth/logout", { method: "POST" });
     disconnect();
     refreshSession();

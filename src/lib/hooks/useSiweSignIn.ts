@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useAccount, useSignMessage } from "wagmi";
 import { createSiweMessage } from "viem/siwe";
 
@@ -17,8 +17,10 @@ export function useSiweSignIn() {
   const { signMessageAsync } = useSignMessage();
   const [phase, setPhase] = useState<SiweSignInPhase>("idle");
   const [error, setError] = useState<string | null>(null);
+  const cancelledRef = useRef(false);
 
   const signIn = useCallback(async (): Promise<boolean> => {
+    cancelledRef.current = false;
     if (!address || !chainId) {
       setError("Connect your wallet first");
       setPhase("error");
@@ -42,6 +44,11 @@ export function useSiweSignIn() {
       });
       const signature = await signMessageAsync({ message });
 
+      if (cancelledRef.current) {
+        setPhase("idle");
+        return false;
+      }
+
       setPhase("verifying");
       const res = await fetch("/api/auth/siwe", {
         method: "POST",
@@ -61,6 +68,10 @@ export function useSiweSignIn() {
     }
   }, [address, chainId, signMessageAsync]);
 
+  const cancel = () => {
+    cancelledRef.current = true;
+  };
+
   return {
     signIn,
     phase,
@@ -69,5 +80,6 @@ export function useSiweSignIn() {
       setPhase("idle");
       setError(null);
     },
+    cancel,
   };
 }
