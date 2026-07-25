@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
+    "@base-org/account": "^2.5.7",
     "@farcaster/miniapp-sdk": "^0.2.3",
     "@google/genai": "^1.49.0",
     "@marsidev/react-turnstile": "^1.5.0",
