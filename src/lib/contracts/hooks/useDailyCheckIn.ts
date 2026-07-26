@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useReadContract, useWriteContract, usePublicClient, useAccount, useChainId } from "wagmi";
 import { DAILY_CHECKIN_ABI } from "@/lib/contracts/abis/DailyCheckIn";
 import { getContracts, isPlaceholder } from "@/lib/contracts/addresses";
+import { BUILDER_CODE_DATA_SUFFIX } from "@/lib/constants/builderCode";
 
 export type CheckInPhase = "idle" | "checking-in" | "done" | "error";
 
@@ -54,6 +55,7 @@ export function useDailyCheckIn() {
         abi: DAILY_CHECKIN_ABI,
         functionName: "checkIn",
         args: [],
+        dataSuffix: BUILDER_CODE_DATA_SUFFIX,
       });
       await publicClient.waitForTransactionReceipt({ hash: tx, timeout: 60_000 * 5 });
 

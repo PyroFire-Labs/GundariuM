@@ -11,6 +11,7 @@ import {
 import { erc20Abi } from "viem";
 import { GUNPLA_CARD_ABI } from "@/lib/contracts/abis/GunplaCard";
 import { getContracts } from "@/lib/contracts/addresses";
+import { BUILDER_CODE_DATA_SUFFIX } from "@/lib/constants/builderCode";
 import type { TraitSet, ArmorType } from "@/types/nft";
 import { rarityToIndex } from "@/types/nft";
 
@@ -125,7 +126,7 @@ export function useMint() {
       }
     }
     return withTimeout(
-      writeContractAsync(params),
+      writeContractAsync({ ...params, dataSuffix: BUILDER_CODE_DATA_SUFFIX }),
       WALLET_REQUEST_TIMEOUT_MS,
       WALLET_TIMEOUT_MESSAGE
     );
