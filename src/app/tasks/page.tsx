@@ -11,6 +11,7 @@ import { useCollection } from "@/lib/contracts/hooks/useCollection";
 import { ShareButtons } from "@/components/ui/ShareButtons";
 import { openInMiniAppOrBrowser } from "@/lib/openInMiniAppOrBrowser";
 import { useDossierShareVerification } from "@/lib/contracts/hooks/useDossierShareVerification";
+import { useArenaBattleShareStatus } from "@/lib/contracts/hooks/useArenaBattleShareVerification";
 
 const GOOGLE_FORM_URL =
   "https://docs.google.com/forms/d/e/1FAIpQLSf0XmuUIJ9IC4CymaSdLv761No_U9o5GOMTK71bmdyyC3R9zA/viewform";
@@ -105,8 +106,9 @@ export default function TasksPage() {
 
   const dossierShareVerification = useDossierShareVerification({ streak: currentStreak, exp: preShareExp });
   const dossierShared = dossierShareVerification.hasSharedToday;
+  const arenaBattleShared = useArenaBattleShareStatus();
 
-  const exp = preShareExp + (dossierShared ? 8 : 0);
+  const exp = preShareExp + (dossierShared ? 8 : 0) + (arenaBattleShared ? 8 : 0);
 
   // If the check comes back not-met, hand off to Farcaster's native swap
   // inside a miniapp; outside one (swapToken isn't available in a plain
@@ -241,6 +243,12 @@ export default function TasksPage() {
             done={dossierShared}
             verification={dossierShareVerification}
           />
+          <TaskRow
+            title="Share an Arena Battle"
+            subtitle="Play a battle and share the result to earn this"
+            expLabel="+8 EXP"
+            done={arenaBattleShared}
+          />
         </div>
       </div>
     </main>
@@ -310,7 +318,7 @@ function TaskRow({
         >
           {linkLabel}
         </Link>
-      ) : (
+      ) : onAction ? (
         <button
           onClick={onAction}
           disabled={disabled}
@@ -318,7 +326,7 @@ function TaskRow({
         >
           {actionLabel}
         </button>
-      )}
+      ) : null}
     </div>
   );
 }
