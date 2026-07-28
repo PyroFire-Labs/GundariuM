@@ -175,6 +175,19 @@ export function ShareButtons({ card, battle, dossier, onShare, verified }: Share
         </div>
       );
     }
+    if (!verified.ready) {
+      return (
+        <div className="flex items-center justify-center">
+          <button
+            disabled
+            title="This feature isn't live yet — check back soon"
+            className="flex items-center gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-xs font-bold text-[var(--foreground)]/40 cursor-not-allowed"
+          >
+            Coming Soon
+          </button>
+        </div>
+      );
+    }
     if (!isFarcaster) {
       return (
         <div className="flex items-center justify-center">

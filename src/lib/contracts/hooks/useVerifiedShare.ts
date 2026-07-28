@@ -135,6 +135,7 @@ export function useVerifiedShare(config: {
     error,
     hasSharedToday,
     canRetryConfirm,
+    ready: !!contractAddress,
     verifiedShare,
     retryConfirm,
   };
