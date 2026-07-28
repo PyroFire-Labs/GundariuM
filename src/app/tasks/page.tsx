@@ -10,7 +10,7 @@ import { useStakedTodayCheck } from "@/lib/contracts/hooks/useStakedTodayCheck";
 import { useCollection } from "@/lib/contracts/hooks/useCollection";
 import { ShareButtons } from "@/components/ui/ShareButtons";
 import { openInMiniAppOrBrowser } from "@/lib/openInMiniAppOrBrowser";
-import { isDossierSharedToday, markDossierSharedToday } from "@/lib/dossierShareTask";
+import { useDossierShareVerification } from "@/lib/contracts/hooks/useDossierShareVerification";
 
 const GOOGLE_FORM_URL =
   "https://docs.google.com/forms/d/e/1FAIpQLSf0XmuUIJ9IC4CymaSdLv761No_U9o5GOMTK71bmdyyC3R9zA/viewform";
@@ -46,22 +46,6 @@ function useFormTaskDone(): [boolean, () => void] {
 
   const markDone = () => {
     localStorage.setItem(FORM_SUBMITTED_KEY, todayUtcDateString());
-    setDone(true);
-  };
-
-  return [done, markDone];
-}
-
-function useDossierShareTaskDone(): [boolean, () => void] {
-  const [done, setDone] = useState(false);
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setDone(isDossierSharedToday());
-  }, []);
-
-  const markDone = () => {
-    markDossierSharedToday();
     setDone(true);
   };
 
@@ -105,21 +89,24 @@ export default function TasksPage() {
   const { phase: mintPhase, check: checkMintedToday, error: mintError } = useMintedTodayCheck();
   const { phase: stakePhase, check: checkStakedToday, error: stakeError } = useStakedTodayCheck();
   const [formDone, markFormDone] = useFormTaskDone();
-  const [dossierShared, markDossierShared] = useDossierShareTaskDone();
 
   const gnrmVerified = gnrmPhase === "verified";
   const mintedToday = mintPhase === "verified";
   const stakedToday = stakePhase === "verified";
   const countdown = useCountdownToNextUtcDay(checkedInToday);
-  const exp =
+  const preShareExp =
     currentStreak * 10 +
     totalCheckIns * 5 +
     mintedCount * 25 +
     (stakedToday ? 50 : 0) +
     (gnrmVerified ? 12 : 0) +
     (formDone ? 15 : 0) +
-    (dossierShared ? 8 : 0) +
     (perfectWeek ? 200 : 0);
+
+  const dossierShareVerification = useDossierShareVerification({ streak: currentStreak, exp: preShareExp });
+  const dossierShared = dossierShareVerification.hasSharedToday;
+
+  const exp = preShareExp + (dossierShared ? 8 : 0);
 
   // If the check comes back not-met, hand off to Farcaster's native swap
   // inside a miniapp; outside one (swapToken isn't available in a plain
@@ -252,7 +239,7 @@ export default function TasksPage() {
             streak={currentStreak}
             exp={exp}
             done={dossierShared}
-            onShare={markDossierShared}
+            verification={dossierShareVerification}
           />
         </div>
       </div>
@@ -341,13 +328,13 @@ function DossierTaskRow({
   streak,
   exp,
   done,
-  onShare,
+  verification,
 }: {
   address: `0x${string}` | undefined;
   streak: number;
   exp: number;
   done: boolean;
-  onShare: () => void;
+  verification: ReturnType<typeof useDossierShareVerification>;
 }) {
   return (
     <div className="flex items-center justify-between rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4">
@@ -360,7 +347,7 @@ function DossierTaskRow({
           Done
         </span>
       ) : (
-        address && <ShareButtons dossier={{ address, streak, exp }} onShare={onShare} />
+        address && <ShareButtons dossier={{ address, streak, exp }} verified={verification} />
       )}
     </div>
   );
