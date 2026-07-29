@@ -65,3 +65,8 @@ READ THIS LARRY.MD
 # one-off analysis outputs (Farcaster resolution, whitelist diffs, etc.)
 scripts/recheck-result.json
 scripts/whitelist-missing-addresses.md
+
+# Claude Code worktrees and local-only settings — never commit a worktree's
+# own checkout (nested .git pointer, build artifacts) as regular tracked files
+.claude/worktrees/
+.claude/settings.local.json
