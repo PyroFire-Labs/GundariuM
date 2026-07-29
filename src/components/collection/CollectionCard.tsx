@@ -1,7 +1,11 @@
+// src/components/collection/CollectionCard.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import { CardFrame } from "@/components/card/CardFrame";
+import { CardBack } from "@/components/card/CardBack";
+import { FlippableCard } from "@/components/card/FlippableCard";
+import { ShareButtons } from "@/components/ui/ShareButtons";
 import { ipfsToHttp } from "@/lib/ipfs";
 import type { OwnedCard } from "@/lib/contracts/hooks/useCollection";
 
@@ -36,10 +40,15 @@ export function CollectionCard({ card, ownerAddress }: CollectionCardProps) {
   return (
     <div className="flex flex-col items-center gap-2">
       {imageUrl ? (
-        <CardFrame
-          imageUrl={imageUrl}
-          traits={card.traits}
-          ownerAddress={ownerAddress}
+        <FlippableCard
+          front={
+            <CardFrame
+              imageUrl={imageUrl}
+              traits={card.traits}
+              ownerAddress={ownerAddress}
+            />
+          }
+          back={<CardBack traits={card.traits} tokenId={card.tokenId} />}
         />
       ) : (
         <div
@@ -48,9 +57,15 @@ export function CollectionCard({ card, ownerAddress }: CollectionCardProps) {
           <div className="w-6 h-6 border-2 border-[var(--accent)] border-t-transparent rounded-full animate-spin" />
         </div>
       )}
-      <span className="font-mono text-xs text-[var(--foreground)]/40">
-        #{card.tokenId.toString()}
-      </span>
+      <div className="flex items-center gap-2">
+        <span className="font-mono text-xs text-[var(--foreground)]/40">
+          #{card.tokenId.toString()}
+        </span>
+        <ShareButtons
+          compact
+          card={{ name: card.traits.name, rarity: card.traits.rarity, tokenId: card.tokenId }}
+        />
+      </div>
     </div>
   );
 }
