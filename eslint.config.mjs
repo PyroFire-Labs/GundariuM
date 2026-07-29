@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Foundry sub-project — not part of the Next.js app, has its own vendored JS tooling
+    "contracts/**",
   ]),
 ]);
 
