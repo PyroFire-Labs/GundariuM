@@ -182,8 +182,15 @@ export async function GET(_req: Request, { params }: RouteContext) {
         <div style={{ display: "flex", fontSize: "13px", letterSpacing: "0.3em", color: "#60a5fa", fontWeight: 700, marginBottom: "10px" }}>
           FRAME-RUNNER DOSSIER
         </div>
-        <div style={{ display: "flex", fontSize: "44px", fontWeight: 900, color: "#ffffff", marginBottom: "6px", lineHeight: 1.1 }}>
-          {displayName}
+        <div style={{ display: "flex", alignItems: "baseline", gap: "14px", marginBottom: "6px" }}>
+          <div style={{ display: "flex", fontSize: "44px", fontWeight: 900, color: "#ffffff", lineHeight: 1.1 }}>
+            {displayName}
+          </div>
+          {farcasterProfile?.fid && (
+            <div style={{ display: "flex", fontSize: "18px", fontWeight: 700, color: "#60a5fa" }}>
+              FID {farcasterProfile.fid}
+            </div>
+          )}
         </div>
         {cardName && (
           <div style={{ display: "flex", fontSize: "16px", color: "rgba(255,255,255,0.4)", letterSpacing: "0.1em", marginBottom: "24px" }}>

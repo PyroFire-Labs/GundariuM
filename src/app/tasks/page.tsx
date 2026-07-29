@@ -13,44 +13,12 @@ import { openInMiniAppOrBrowser } from "@/lib/openInMiniAppOrBrowser";
 import { useDossierShareVerification } from "@/lib/contracts/hooks/useDossierShareVerification";
 import { useArenaBattleShareStatus } from "@/lib/contracts/hooks/useArenaBattleShareVerification";
 
-const GOOGLE_FORM_URL =
-  "https://docs.google.com/forms/d/e/1FAIpQLSf0XmuUIJ9IC4CymaSdLv761No_U9o5GOMTK71bmdyyC3R9zA/viewform";
-
 const GNRM_CAIP19 = "eip155:8453/erc20:0x271b01cc11032a4e23f0200f8f57eb45176ab491";
 const STREME_GNRM_URL = "https://streme.fun/token/0x271b01cc11032a4e23f0200f8f57eb45176ab491";
-
-const FORM_SUBMITTED_KEY = "gundarium-form-submitted-date";
-
-function todayUtcDateString(): string {
-  return new Date().toISOString().slice(0, 10);
-}
 
 function nextUtcMidnight(): Date {
   const now = new Date();
   return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
-}
-
-/**
- * "Run Demo + Submit Form" has no on-chain proof of completion — it's
- * explicitly self-reported. Clicking "Open Form" marks it done for the
- * UTC day via localStorage; there's no other verification path available.
- */
-function useFormTaskDone(): [boolean, () => void] {
-  const [done, setDone] = useState(false);
-
-  useEffect(() => {
-    // localStorage doesn't exist during server render, so this has to be
-    // read after mount rather than as a lazy useState initializer.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setDone(localStorage.getItem(FORM_SUBMITTED_KEY) === todayUtcDateString());
-  }, []);
-
-  const markDone = () => {
-    localStorage.setItem(FORM_SUBMITTED_KEY, todayUtcDateString());
-    setDone(true);
-  };
-
-  return [done, markDone];
 }
 
 function useCountdownToNextUtcDay(active: boolean): string {
@@ -89,7 +57,6 @@ export default function TasksPage() {
   const { phase: gnrmPhase, check: checkGnrmBuy, error: gnrmError } = useGnrmPurchaseCheck();
   const { phase: mintPhase, check: checkMintedToday, error: mintError } = useMintedTodayCheck();
   const { phase: stakePhase, check: checkStakedToday, error: stakeError } = useStakedTodayCheck();
-  const [formDone, markFormDone] = useFormTaskDone();
 
   const gnrmVerified = gnrmPhase === "verified";
   const mintedToday = mintPhase === "verified";
@@ -101,7 +68,6 @@ export default function TasksPage() {
     mintedCount * 25 +
     (stakedToday ? 50 : 0) +
     (gnrmVerified ? 12 : 0) +
-    (formDone ? 15 : 0) +
     (perfectWeek ? 200 : 0);
 
   const dossierShareVerification = useDossierShareVerification({ streak: currentStreak, exp: preShareExp });
@@ -201,14 +167,6 @@ export default function TasksPage() {
             onAction={handleGnrmCheck}
             disabled={gnrmPhase === "checking"}
             error={gnrmError}
-          />
-          <TaskRow
-            title="Run Demo + Submit Form"
-            expLabel="+15 EXP"
-            done={formDone}
-            linkHref={GOOGLE_FORM_URL}
-            linkLabel="Open Form"
-            onLinkClick={markFormDone}
           />
           <TaskRow
             title="Mint a Gundar-Frame"

@@ -291,10 +291,10 @@ Live at `/tasks`. Six-task daily checklist, all resetting at UTC midnight:
 |---|---|
 | Check In | Real on-chain tx to `DailyCheckIn.checkIn()` |
 | Buy GNRM | `useGnrmPurchaseCheck` — checks for a Transfer to the wallet that shares a transaction hash with a Transfer OUT of the GNRM/WETH pool (catches swaps routed through any aggregator, not just a direct pool→wallet transfer), min 30,000 GNRM/day. If not met, offers Farcaster's native `swapToken` (in a miniapp) or opens Streme.fun (`openInMiniAppOrBrowser`) |
-| Run Demo + Submit Form | Self-reported only — no on-chain proof possible. Clicking "Open Form" sets a UTC-day-keyed localStorage flag |
 | Mint a Gundar-Frame | `useMintedTodayCheck` — ERC-721 mint Transfer from zero address, same UTC-window pattern |
 | Stake Token | `useStakedTodayCheck` — same pattern, checks for an stGNRM mint. Always opens Streme.fun on an unmet check (no Farcaster-native staking action exists) |
-| Share Your Dossier | Posts current streak/EXP to Farcaster via `ShareButtons`, sourced from `/api/runner-profile/[address]` |
+| Share Your Dossier | Real on-chain verified share (intent + confirm via `DossierShareLog`, Farcaster-only) — see `useVerifiedShare`/`useDossierShareVerification` |
+| Share an Arena Battle | Same verified intent + confirm model via `ArenaBattleLog`, wired into Arena's battle-result share button |
 
 All three verification hooks share `utcDailyWindow.ts` — estimates the block nearest today's UTC 00:00 from current block + elapsed seconds (Base's block time isn't perfectly constant, so it's an approximation, buffered to over-include rather than risk a false negative), and auto-run on wallet connect/change rather than waiting for a manual click.
 

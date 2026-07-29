@@ -126,7 +126,12 @@ export function DossierClient({ address }: { address: `0x${string}` }) {
         <h1 className="font-[family-name:var(--font-orbitron)] text-2xl md:text-3xl font-bold text-[var(--accent)] tracking-wide">
           {profileLoading ? "Loading..." : displayName}
         </h1>
-        <p className="text-[var(--foreground)]/40 text-xs font-mono">{short(address)}</p>
+        <p className="text-[var(--foreground)]/40 text-xs font-mono flex items-center gap-2">
+          {short(address)}
+          {profile?.fid && (
+            <span className="text-[var(--accent-2)]/70">FID {profile.fid}</span>
+          )}
+        </p>
       </div>
 
       {/* Stats row */}
