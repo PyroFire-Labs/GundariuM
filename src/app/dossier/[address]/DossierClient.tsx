@@ -17,6 +17,13 @@ function short(address: string) {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
 
+interface FarcasterSessionUser {
+  fid: number;
+  username?: string;
+  displayName?: string;
+  pfpUrl?: string;
+}
+
 export function DossierClient({ address }: { address: `0x${string}` }) {
   const { address: connectedAddress } = useAccount();
   const isOwner = connectedAddress?.toLowerCase() === address.toLowerCase();
@@ -26,7 +33,6 @@ export function DossierClient({ address }: { address: `0x${string}` }) {
 
   useEffect(() => {
     let cancelled = false;
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setProfileLoading(true);
     fetch(`/api/runner-profile/${address}`)
       .then((r) => r.json())
@@ -41,6 +47,28 @@ export function DossierClient({ address }: { address: `0x${string}` }) {
     };
   }, [address]);
 
+  // Neynar's address→identity lookup (used above) only resolves addresses
+  // a user has explicitly verified on Farcaster — but the wallet Farcaster's
+  // own miniapp bridge connects for transactions is often a different,
+  // unverified address. When it's our own dossier and we're inside a real
+  // Farcaster client, sdk.context.user gives the actual signed-in identity
+  // directly, independent of which wallet is connected, so prefer it.
+  const [fcUser, setFcUser] = useState<FarcasterSessionUser | null>(null);
+
+  useEffect(() => {
+    if (!isOwner) return;
+    let cancelled = false;
+    import("@farcaster/miniapp-sdk")
+      .then(async ({ sdk }) => {
+        const context = await sdk.context;
+        if (!cancelled && context?.user?.fid) setFcUser(context.user);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [isOwner]);
+
   const stats = useDailyCheckInStats(address);
   const { cards, isLoading: cardsLoading, count } = useCollection(address);
 
@@ -54,16 +82,19 @@ export function DossierClient({ address }: { address: `0x${string}` }) {
   // profile refetches mid-edit.
   useEffect(() => {
     if (!editing && profile?.lineup) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDraftHero(profile.lineup.hero);
       setDraftSupport(profile.lineup.support);
     }
   }, [profile, editing]);
 
   const displayName =
+    fcUser?.displayName ||
+    (fcUser?.username ? `@${fcUser.username}` : null) ||
     profile?.runnerName ||
     (profile?.farcasterUsername ? `@${profile.farcasterUsername}` : null) ||
     short(address);
+  const displayFid = fcUser?.fid ?? profile?.fid;
+  const displayPfpUrl = fcUser?.pfpUrl || profile?.pfpUrl;
 
   const heroTokenId = editing ? draftHero : profile?.lineup?.hero ?? null;
 
@@ -119,17 +150,17 @@ export function DossierClient({ address }: { address: `0x${string}` }) {
     <div className="min-h-[calc(100vh-64px)] flex flex-col items-center px-4 py-12 gap-8 max-w-4xl mx-auto">
       {/* Header */}
       <div className="flex flex-col items-center gap-3 text-center">
-        {profile?.pfpUrl && (
+        {displayPfpUrl && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={profile.pfpUrl} alt="" className="w-16 h-16 rounded-full border-2 border-[var(--accent)]/50" />
+          <img src={displayPfpUrl} alt="" className="w-16 h-16 rounded-full border-2 border-[var(--accent)]/50" />
         )}
         <h1 className="font-[family-name:var(--font-orbitron)] text-2xl md:text-3xl font-bold text-[var(--accent)] tracking-wide">
-          {profileLoading ? "Loading..." : displayName}
+          {profileLoading && !fcUser ? "Loading..." : displayName}
         </h1>
         <p className="text-[var(--foreground)]/40 text-xs font-mono flex items-center gap-2">
           {short(address)}
-          {profile?.fid && (
-            <span className="text-[var(--accent-2)]/70">FID {profile.fid}</span>
+          {displayFid && (
+            <span className="text-[var(--accent-2)]/70">FID {displayFid}</span>
           )}
         </p>
       </div>
