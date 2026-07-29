@@ -3,7 +3,9 @@ import { createPublicClient, http } from "viem";
 import { base } from "viem/chains";
 import { GUNPLA_CARD_ABI } from "@/lib/contracts/abis/GunplaCard";
 import { getContracts } from "@/lib/contracts/addresses";
+import { RARITY_PALETTES } from "@/lib/card/frame-config";
 import { ipfsToHttp } from "@/lib/ipfs";
+import { rarityFromDisplayName } from "@/types/nft";
 import type { GunplaCardMetadata } from "@/types/nft";
 
 export const runtime = "nodejs";
@@ -62,6 +64,11 @@ export async function GET(_req: Request, { params }: RouteContext) {
     metadata.attributes.find((a) => a.trait_type === "HP")?.value ?? "";
   const series =
     metadata.attributes.find((a) => a.trait_type === "Series")?.value ?? "";
+
+  // Metadata stores the display name ("Apex"), not the raw Rarity key — the
+  // frame color was previously hardcoded gold regardless of actual rarity.
+  const rarityKey = rarityFromDisplayName(String(rarity)) ?? "Common";
+  const palette = RARITY_PALETTES[rarityKey];
 
   return new ImageResponse(
     (
@@ -146,10 +153,10 @@ export async function GET(_req: Request, { params }: RouteContext) {
           <div
             style={{
               display: "flex",
-              border: "3px solid rgba(255,193,7,0.7)",
+              border: `3px solid ${palette.primary}`,
               borderRadius: "16px",
               overflow: "hidden",
-              boxShadow: "0 0 80px rgba(255,193,7,0.25)",
+              boxShadow: `0 0 80px ${palette.glow}`,
             }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -192,7 +199,7 @@ export async function GET(_req: Request, { params }: RouteContext) {
               display: "flex",
               fontSize: "64px",
               fontWeight: 900,
-              color: "#ffc107",
+              color: palette.primary,
               letterSpacing: "0.01em",
               lineHeight: 1.05,
               marginBottom: "20px",
@@ -261,12 +268,12 @@ export async function GET(_req: Request, { params }: RouteContext) {
           <div
             style={{
               display: "flex",
-              border: "1px solid rgba(255,193,7,0.5)",
+              border: `1px solid ${palette.glow}`,
               padding: "12px 22px",
               fontSize: "14px",
               fontWeight: 700,
               letterSpacing: "0.3em",
-              color: "#ffc107",
+              color: palette.primary,
               borderRadius: "8px",
               alignSelf: "flex-start",
             }}

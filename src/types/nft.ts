@@ -35,6 +35,14 @@ export function displayRarity(rarity: Rarity): string {
   return RARITY_DISPLAY[rarity];
 }
 
+/** Reverse of displayRarity — on-chain metadata stores the display name (e.g. "Apex"), not the raw Rarity key. */
+export function rarityFromDisplayName(display: string): Rarity | null {
+  const entry = (Object.entries(RARITY_DISPLAY) as [Rarity, string][]).find(
+    ([, v]) => v === display
+  );
+  return entry?.[0] ?? null;
+}
+
 export type ArmorType =
   | "Standard"
   | "Gundanium"
