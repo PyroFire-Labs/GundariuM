@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Rarity } from "@/types/nft";
 import { displayRarity } from "@/types/nft";
+import type { VerifiedSharePhase, useVerifiedShare } from "@/lib/contracts/hooks/useVerifiedShare";
 
 const SITE_URL = "https://gundarium.xyz";
 const DEFAULT_TEXT =
@@ -30,6 +31,25 @@ interface ShareButtonsProps {
   };
   /** Called when any share action is triggered — e.g. to mark a daily task done. */
   onShare?: () => void;
+  /** Opt-in verified flow — only ever passed from EXP-earning task rows. */
+  verified?: ReturnType<typeof useVerifiedShare>;
+}
+
+function verifiedButtonLabel(phase: VerifiedSharePhase, canRetryConfirm: boolean): string {
+  switch (phase) {
+    case "intent-pending":
+      return "Confirming Share Intent...";
+    case "awaiting-share":
+      return "Opening Farcaster...";
+    case "confirm-pending":
+      return "Confirming On-Chain...";
+    case "done":
+      return "Shared!";
+    case "error":
+      return canRetryConfirm ? "Retry Confirm" : "Farcaster";
+    default:
+      return "Farcaster";
+  }
 }
 
 function buildShareText(
@@ -57,7 +77,7 @@ function buildShareText(
   return `Just forged ${props.card.name}${tokenSuffix} — ${displayRarity(props.card.rarity)} tier — on GundariuM. Mint your own Gundar-Frame at gundarium.xyz/mint`;
 }
 
-export function ShareButtons({ card, battle, dossier, onShare }: ShareButtonsProps = {}) {
+export function ShareButtons({ card, battle, dossier, onShare, verified }: ShareButtonsProps = {}) {
   const [isFarcaster, setIsFarcaster] = useState(false);
   const [farcasterUsername, setFarcasterUsername] = useState<string | null>(null);
   const text = buildShareText({ card, battle, dossier }, farcasterUsername);
@@ -106,6 +126,18 @@ export function ShareButtons({ card, battle, dossier, onShare }: ShareButtonsPro
     }
   }, [isFarcaster, text, embedUrl, onShare]);
 
+  const verifiedShareOnFarcaster = useCallback(async () => {
+    if (!verified) return;
+    if (verified.phase === "error" && verified.canRetryConfirm) {
+      await verified.retryConfirm();
+      return;
+    }
+    await verified.verifiedShare(async () => {
+      const { sdk } = await import("@farcaster/miniapp-sdk");
+      return sdk.actions.composeCast({ text: `${text}\n\n`, embeds: [embedUrl] });
+    });
+  }, [verified, text, embedUrl]);
+
   const shareOnX = useCallback(() => {
     onShare?.();
     window.open(
@@ -132,6 +164,58 @@ export function ShareButtons({ card, battle, dossier, onShare }: ShareButtonsPro
       await navigator.clipboard.writeText(`${text} ${embedUrl}`);
     }
   }, [text, embedUrl, onShare]);
+
+  if (verified) {
+    if (verified.hasSharedToday) {
+      return (
+        <div className="flex items-center justify-center">
+          <span className="font-[family-name:var(--font-orbitron)] text-[10px] font-bold tracking-widest text-[var(--accent)] uppercase">
+            Already Shared Today
+          </span>
+        </div>
+      );
+    }
+    if (!verified.ready) {
+      return (
+        <div className="flex items-center justify-center">
+          <button
+            disabled
+            title="This feature isn't live yet — check back soon"
+            className="flex items-center gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-xs font-bold text-[var(--foreground)]/40 cursor-not-allowed"
+          >
+            Coming Soon
+          </button>
+        </div>
+      );
+    }
+    if (!isFarcaster) {
+      return (
+        <div className="flex items-center justify-center">
+          <button
+            disabled
+            title="Open in Farcaster to earn EXP for this"
+            className="flex items-center gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-xs font-bold text-[var(--foreground)]/40 cursor-not-allowed"
+          >
+            Open in Farcaster to earn EXP for this
+          </button>
+        </div>
+      );
+    }
+    const busy = verified.phase !== "idle" && verified.phase !== "error" && verified.phase !== "cancelled";
+    return (
+      <div className="flex items-center justify-center">
+        <button
+          onClick={verifiedShareOnFarcaster}
+          disabled={busy}
+          className="flex items-center gap-1.5 rounded-lg border border-purple-500/30 bg-purple-500/10 px-3 py-2 text-xs font-bold text-purple-400 transition-all hover:bg-purple-500/20 hover:border-purple-500/50 disabled:opacity-60"
+        >
+          <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-current"><path d="M18.24 1.2H5.76A4.56 4.56 0 001.2 5.76v12.48a4.56 4.56 0 004.56 4.56h12.48a4.56 4.56 0 004.56-4.56V5.76a4.56 4.56 0 00-4.56-4.56zm.72 16.08h-.96l-.24-3.36h-.01c-.48 1.92-1.68 3.6-3.84 3.6-2.04 0-3.36-1.56-3.36-3.84 0-3.24 2.16-6.48 5.52-6.48.84 0 1.56.12 2.04.36l-.6 2.64c-.36-.12-.72-.24-1.2-.24-1.8 0-3.12 2.04-3.12 3.96 0 1.08.48 1.8 1.32 1.8 1.08 0 2.04-1.32 2.28-2.76l.48-2.52h-1.8l.36-1.68h4.68l-1.44 8.52z" /></svg>
+          {verifiedButtonLabel(verified.phase, verified.canRetryConfirm)}
+        </button>
+        {verified.error && <p className="ml-2 text-[10px] text-red-400">{verified.error}</p>}
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-wrap items-center justify-center gap-2">

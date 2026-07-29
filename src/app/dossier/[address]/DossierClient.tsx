@@ -7,7 +7,7 @@ import { ShareButtons } from "@/components/ui/ShareButtons";
 import { useCollection, type OwnedCard } from "@/lib/contracts/hooks/useCollection";
 import { useDailyCheckInStats } from "@/lib/contracts/hooks/useDailyCheckInStats";
 import { useSaveLineup } from "@/lib/contracts/hooks/useSaveLineup";
-import { markDossierSharedToday } from "@/lib/dossierShareTask";
+import { useDossierShareVerification } from "@/lib/contracts/hooks/useDossierShareVerification";
 import { ipfsToHttp } from "@/lib/ipfs";
 import type { RunnerProfile } from "@/types/runner";
 
@@ -112,6 +112,8 @@ export function DossierClient({ address }: { address: `0x${string}` }) {
     stats.totalCheckIns * 5 +
     count * 25 +
     (stats.perfectWeek ? 200 : 0);
+
+  const dossierShareVerification = useDossierShareVerification({ streak: stats.currentStreak, exp });
 
   return (
     <div className="min-h-[calc(100vh-64px)] flex flex-col items-center px-4 py-12 gap-8 max-w-4xl mx-auto">
@@ -261,7 +263,7 @@ export function DossierClient({ address }: { address: `0x${string}` }) {
       {isOwner && !editing && (
         <ShareButtons
           dossier={{ address, streak: stats.currentStreak, exp }}
-          onShare={markDossierSharedToday}
+          verified={dossierShareVerification}
         />
       )}
     </div>

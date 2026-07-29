@@ -9,6 +9,8 @@ export const CONTRACT_ADDRESSES: Record<
     prizePool: `0x${string}`;
     migration: `0x${string}`;
     dailyCheckIn: `0x${string}`;
+    dossierShareLog: `0x${string}`;
+    arenaBattleLog: `0x${string}`;
   }
 > = {
   // Base Sepolia (testnet)
@@ -18,6 +20,8 @@ export const CONTRACT_ADDRESSES: Record<
     prizePool: "0xa5670c2dD9916BE1DB9974977844228Cfc3bA731",
     migration: "0x0000000000000000000000000000000000000000",
     dailyCheckIn: "0x4a444d13Cb7f23E7F91C88BE5F858DCDe8706a67",
+    dossierShareLog: "0xe390deDAe1ebE0ffEA23919Bf85CE7a709dA2653",
+    arenaBattleLog: "0x6028332FbEeb246C989BF3fFaAcA06CF5B519D98",
   },
   // Base mainnet
   8453: {
@@ -26,6 +30,8 @@ export const CONTRACT_ADDRESSES: Record<
     prizePool: "0x0000000000000000000000000000000000000000",
     migration: "0x8CCbd8EEA766d564fC0AD09D2cB99e4cD4107230",
     dailyCheckIn: "0xCA600477594Ddc414210204af03c6DF37e05d9D8",
+    dossierShareLog: "0x0000000000000000000000000000000000000000",
+    arenaBattleLog: "0x0000000000000000000000000000000000000000",
   },
 };
 

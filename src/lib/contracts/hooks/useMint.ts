@@ -11,6 +11,7 @@ import {
 import { erc20Abi } from "viem";
 import { GUNPLA_CARD_ABI } from "@/lib/contracts/abis/GunplaCard";
 import { getContracts } from "@/lib/contracts/addresses";
+import { createGuardedWrite } from "@/lib/contracts/guardedWrite";
 import type { TraitSet, ArmorType } from "@/types/nft";
 import { rarityToIndex } from "@/types/nft";
 
@@ -37,30 +38,6 @@ const TRANSFER_SIG =
 // Streme's stGNRM receipt token (Base mainnet) — mirrors the STGNRM constant
 // checked on-chain by GunplaCard.mintCardAutoVip.
 const STGNRM_ADDRESS = "0x7EFDd2724910eD0e0614FA0c084eABD30c644C1D" as const;
-
-// Some wallet bridges (notably Farcaster's, which hands off to whichever
-// wallet is behind it) can silently fail to complete a chain switch and then
-// never surface a signature prompt at all — see feedback_farcaster_chain_switch.
-// Without a timeout, writeContractAsync just hangs forever with no error.
-const WALLET_REQUEST_TIMEOUT_MS = 20_000;
-const WALLET_TIMEOUT_MESSAGE =
-  "Wallet didn't respond in time. This can happen when a wallet bridge (e.g. Farcaster's) loses sync with the connected network — try reconnecting your wallet or reopening the app.";
-
-function withTimeout<T>(promise: Promise<T>, ms: number, message: string): Promise<T> {
-  return new Promise<T>((resolve, reject) => {
-    const timer = setTimeout(() => reject(new Error(message)), ms);
-    promise.then(
-      (value) => {
-        clearTimeout(timer);
-        resolve(value);
-      },
-      (err) => {
-        clearTimeout(timer);
-        reject(err);
-      }
-    );
-  });
-}
 
 function traitsToOnchain(traits: TraitSet) {
   return {
@@ -106,30 +83,7 @@ export function useMint() {
     .NEXT_PUBLIC_USDC_ADDRESS as `0x${string}`;
 
   const account = useAccount();
-
-  // Re-checks the connector's own live chain ID right before sending a
-  // transaction, then races the wallet request against a hard timeout.
-  // Wagmi's reactive `chainId` reflects what the connector reported at
-  // connect time — if a wallet bridge silently failed to actually switch
-  // (see feedback_farcaster_chain_switch), that cached value can be stale
-  // even though the UI looks connected and on the right network.
-  const guardedWrite = async (
-    params: Parameters<typeof writeContractAsync>[0]
-  ) => {
-    if (account.connector?.getChainId) {
-      const liveChainId = await account.connector.getChainId().catch(() => chainId);
-      if (liveChainId !== chainId) {
-        throw new Error(
-          `Wallet reports it's on chain ${liveChainId}, but this needs chain ${chainId}. Try reconnecting your wallet.`
-        );
-      }
-    }
-    return withTimeout(
-      writeContractAsync(params),
-      WALLET_REQUEST_TIMEOUT_MS,
-      WALLET_TIMEOUT_MESSAGE
-    );
-  };
+  const guardedWrite = createGuardedWrite(account, chainId, writeContractAsync);
 
   const { data: mintPriceData } = useReadContract({
     address: contracts?.gunplaCard,

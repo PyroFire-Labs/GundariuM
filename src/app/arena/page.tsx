@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Swords, Sparkles, Zap, Shield, Dices, Trophy } from "lucide-react";
 import { ShareButtons } from "@/components/ui/ShareButtons";
+import { useArenaBattleShareVerification } from "@/lib/contracts/hooks/useArenaBattleShareVerification";
 
 type Card = {
   id: number;
@@ -573,6 +574,12 @@ function BattleOutcome({
   onAgain: () => void;
 }) {
   const playerWon = winner === "player";
+  const battleShareVerification = useArenaBattleShareVerification({
+    playerName,
+    enemyName,
+    won: playerWon,
+    hpPct: playerHpPct,
+  });
   return (
     <div className="text-center rounded-xl border border-[var(--border)] bg-[var(--surface)] p-8 md:p-10">
       <div className={`mb-3 font-[family-name:var(--font-orbitron)] text-xs font-bold tracking-[0.3em] uppercase ${playerWon ? "text-[var(--accent)]" : "text-orange-300"}`}>
@@ -601,7 +608,10 @@ function BattleOutcome({
         </Link>
       </div>
       <div className="mt-4">
-        <ShareButtons battle={{ playerName, enemyName, hpPct: playerHpPct, won: playerWon }} />
+        <ShareButtons
+          battle={{ playerName, enemyName, hpPct: playerHpPct, won: playerWon }}
+          verified={battleShareVerification}
+        />
       </div>
     </div>
   );
