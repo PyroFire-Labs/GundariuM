@@ -29,6 +29,12 @@ export type RerollPhase =
 export function useReroll() {
   const [phase, setPhase] = useState<RerollPhase>("idle");
   const [error, setError] = useState<string | null>(null);
+  // Remembers an already-confirmed reroll() burn tx across calls to
+  // executeReroll, so a later failure (signature rejected, Gemini POST
+  // failing) can retry the sign+generate step against the SAME tx hash
+  // instead of re-running approve+reroll and burning GNRM a second time.
+  // Only cleared once /api/generate-kitbash actually succeeds.
+  const [pendingRerollHash, setPendingRerollHash] = useState<`0x${string}` | null>(null);
 
   const chainId = useChainId();
   const publicClient = usePublicClient();
@@ -82,25 +88,37 @@ export function useReroll() {
     setError(null);
 
     try {
-      if ((allowance ?? 0n) < rerollCost) {
-        setPhase("approving");
-        const approveHash = await guardedWrite({
-          address: gnrmAddress,
-          abi: erc20Abi,
-          functionName: "approve",
-          args: [contracts.rerollBurner, rerollCost],
-        });
-        await publicClient.waitForTransactionReceipt({ hash: approveHash });
-      }
-      setPhase("approved");
+      // If a previous attempt already confirmed the burn on-chain, resume
+      // from there instead of re-running approve+reroll (which would burn
+      // GNRM a second time for the same reroll).
+      let rerollHash = pendingRerollHash;
 
-      setPhase("rerolling");
-      const rerollHash = await guardedWrite({
-        address: contracts.rerollBurner,
-        abi: REROLL_BURNER_ABI,
-        functionName: "reroll",
-      });
-      await publicClient.waitForTransactionReceipt({ hash: rerollHash });
+      if (!rerollHash) {
+        if ((allowance ?? 0n) < rerollCost) {
+          setPhase("approving");
+          const approveHash = await guardedWrite({
+            address: gnrmAddress,
+            abi: erc20Abi,
+            functionName: "approve",
+            args: [contracts.rerollBurner, rerollCost],
+          });
+          await publicClient.waitForTransactionReceipt({ hash: approveHash });
+        }
+        setPhase("approved");
+
+        setPhase("rerolling");
+        const newRerollHash = await guardedWrite({
+          address: contracts.rerollBurner,
+          abi: REROLL_BURNER_ABI,
+          functionName: "reroll",
+        });
+        await publicClient.waitForTransactionReceipt({ hash: newRerollHash });
+        // Persist immediately once the burn is confirmed, before anything
+        // else that could fail (signature, Gemini) — so a retry never
+        // re-burns.
+        setPendingRerollHash(newRerollHash);
+        rerollHash = newRerollHash;
+      }
 
       const signature = await signMessageAsync({
         message: buildRerollMessage(rerollHash),
@@ -124,6 +142,9 @@ export function useReroll() {
       }
 
       const data = await res.json();
+      // Only clear the remembered burn tx once generation actually
+      // succeeds — this is the one path where the reroll is fully spent.
+      setPendingRerollHash(null);
       setPhase("done");
       return data;
     } catch (e) {
