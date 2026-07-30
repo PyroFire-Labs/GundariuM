@@ -11,6 +11,7 @@ export const CONTRACT_ADDRESSES: Record<
     dailyCheckIn: `0x${string}`;
     dossierShareLog: `0x${string}`;
     arenaBattleLog: `0x${string}`;
+    rerollBurner: `0x${string}`;
   }
 > = {
   // Base Sepolia (testnet)
@@ -22,6 +23,7 @@ export const CONTRACT_ADDRESSES: Record<
     dailyCheckIn: "0x4a444d13Cb7f23E7F91C88BE5F858DCDe8706a67",
     dossierShareLog: "0xe390deDAe1ebE0ffEA23919Bf85CE7a709dA2653",
     arenaBattleLog: "0x6028332FbEeb246C989BF3fFaAcA06CF5B519D98",
+    rerollBurner: "0x0000000000000000000000000000000000000000",
   },
   // Base mainnet
   8453: {
@@ -32,6 +34,7 @@ export const CONTRACT_ADDRESSES: Record<
     dailyCheckIn: "0xCA600477594Ddc414210204af03c6DF37e05d9D8",
     dossierShareLog: "0x92dEFc58Ef3c79fbd7A3C3e04aDC189742291B57",
     arenaBattleLog: "0x64a2fc1A13CA269C6188f94a8CB8dfaE313ceE8B",
+    rerollBurner: "0x0000000000000000000000000000000000000000",
   },
 };
 
