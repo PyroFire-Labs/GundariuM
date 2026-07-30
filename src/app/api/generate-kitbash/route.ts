@@ -138,7 +138,17 @@ export async function POST(req: Request) {
     // if Gemini fails, the tx hash and signature stay valid so a retry
     // doesn't cost a second burn.
     if (rerollTxHash) {
-      await markRerollTxConsumed(rerollTxHash);
+      // Scoped try/catch: the user already paid (verified on-chain above) and
+      // Gemini already generated their card by this point. A transient Redis
+      // failure here is a bookkeeping problem, not a reason to throw away a
+      // successful, already-paid-for generation — log and continue so the
+      // response below still returns. Worst case on a Redis outage is the
+      // same narrow tx-hash replay window isRerollTxConsumed already accepts.
+      try {
+        await markRerollTxConsumed(rerollTxHash);
+      } catch (err) {
+        console.error(`markRerollTxConsumed failed for ${rerollTxHash}:`, err);
+      }
     }
 
     return NextResponse.json({
