@@ -11,15 +11,26 @@ import { generateKitbashImage } from "@/lib/kitbash/generate";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { checkRateLimit } from "@/lib/rateLimit";
 import { FACTION_KEYS, type FactionKey } from "@/lib/constants/factions";
+import { verifyRerollPayment } from "@/lib/rerollVerification";
+import { markRerollTxConsumed } from "@/lib/rerollStore";
 
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
   try {
     const body = await req.json().catch(() => ({}));
-    const { faction: factionHint, turnstileToken } = body as {
+    const {
+      faction: factionHint,
+      turnstileToken,
+      walletAddress,
+      rerollTxHash,
+      signature,
+    } = body as {
       faction?: string;
       turnstileToken?: string;
+      walletAddress?: string;
+      rerollTxHash?: string;
+      signature?: string;
     };
 
     // Anti-abuse: verify Turnstile
@@ -52,6 +63,29 @@ export async function POST(req: Request) {
           headers: { "Retry-After": String(Math.ceil(retryAfterMs / 1000)) },
         }
       );
+    }
+
+    // Paid reroll: verify the on-chain burn actually happened, was signed by
+    // the claimed wallet, and hasn't already been used for a free generation,
+    // before spending money calling Gemini.
+    if (rerollTxHash) {
+      if (!walletAddress || !signature) {
+        return NextResponse.json(
+          { error: "Missing wallet address or signature for reroll" },
+          { status: 400 }
+        );
+      }
+      const verification = await verifyRerollPayment({
+        walletAddress,
+        rerollTxHash,
+        signature,
+      });
+      if (!verification.valid) {
+        return NextResponse.json(
+          { error: verification.reason ?? "Reroll payment could not be verified" },
+          { status: 402 }
+        );
+      }
     }
 
     // Honor the user's faction selection. Validate against the canonical
@@ -99,6 +133,13 @@ export async function POST(req: Request) {
         getTraitRarity(key, kitbashTraits[key]),
       ])
     );
+
+    // Only mark the payment consumed once generation actually succeeded —
+    // if Gemini fails, the tx hash and signature stay valid so a retry
+    // doesn't cost a second burn.
+    if (rerollTxHash) {
+      await markRerollTxConsumed(rerollTxHash);
+    }
 
     return NextResponse.json({
       traits,
