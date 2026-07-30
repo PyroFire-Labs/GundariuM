@@ -11,7 +11,7 @@
  *      emitted a Rerolled event for this wallet?
  */
 
-import { createPublicClient, http, parseEventLogs, verifyMessage } from "viem";
+import { createPublicClient, http, parseEventLogs } from "viem";
 import { base, baseSepolia } from "viem/chains";
 import { getContracts, isPlaceholder } from "@/lib/contracts/addresses";
 import { REROLL_BURNER_ABI } from "@/lib/contracts/abis/RerollBurner";
@@ -42,7 +42,7 @@ export async function verifyRerollPayment(params: {
 
   let signatureValid = false;
   try {
-    signatureValid = await verifyMessage({
+    signatureValid = await publicClient.verifyMessage({
       address: walletAddress as `0x${string}`,
       message: buildRerollMessage(rerollTxHash),
       signature: signature as `0x${string}`,
@@ -77,17 +77,21 @@ export async function verifyRerollPayment(params: {
   if (receipt.status !== "success") {
     return { valid: false, reason: "Reroll transaction did not succeed" };
   }
-  if (receipt.to?.toLowerCase() !== contracts.rerollBurner.toLowerCase()) {
-    return { valid: false, reason: "Transaction was not a call to RerollBurner" };
-  }
 
   const events = parseEventLogs({
     abi: REROLL_BURNER_ABI,
     logs: receipt.logs,
     eventName: "Rerolled",
   });
+  // Match on the log's own emitting address rather than the top-level tx
+  // `to` — for smart-contract-wallet callers, `to` is the user's account
+  // contract or an ERC-4337 EntryPoint, with RerollBurner only called
+  // internally, so the event's `address` field is the only reliable way to
+  // confirm this was really a RerollBurner emission.
   const matchingEvent = events.find(
-    (e) => e.args.user.toLowerCase() === walletAddress.toLowerCase()
+    (e) =>
+      e.address.toLowerCase() === contracts.rerollBurner.toLowerCase() &&
+      e.args.user.toLowerCase() === walletAddress.toLowerCase()
   );
   if (!matchingEvent) {
     return { valid: false, reason: "No matching Rerolled event for this wallet" };
