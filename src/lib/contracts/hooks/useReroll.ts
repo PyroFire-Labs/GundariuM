@@ -102,7 +102,12 @@ export function useReroll() {
             functionName: "approve",
             args: [contracts.rerollBurner, rerollCost],
           });
-          await publicClient.waitForTransactionReceipt({ hash: approveHash });
+          const approveReceipt = await publicClient.waitForTransactionReceipt({
+            hash: approveHash,
+          });
+          if (approveReceipt.status !== "success") {
+            throw new Error("Approval transaction failed");
+          }
         }
         setPhase("approved");
 
@@ -112,7 +117,12 @@ export function useReroll() {
           abi: REROLL_BURNER_ABI,
           functionName: "reroll",
         });
-        await publicClient.waitForTransactionReceipt({ hash: newRerollHash });
+        const rerollReceipt = await publicClient.waitForTransactionReceipt({
+          hash: newRerollHash,
+        });
+        if (rerollReceipt.status !== "success") {
+          throw new Error("Reroll transaction failed");
+        }
         // Persist immediately once the burn is confirmed, before anything
         // else that could fail (signature, Gemini) — so a retry never
         // re-burns.
