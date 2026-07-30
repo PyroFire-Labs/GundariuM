@@ -1,0 +1,142 @@
+"use client";
+
+import { useState } from "react";
+import {
+  useAccount,
+  useChainId,
+  usePublicClient,
+  useReadContract,
+  useSignMessage,
+  useWriteContract,
+} from "wagmi";
+import { erc20Abi } from "viem";
+import { REROLL_BURNER_ABI } from "@/lib/contracts/abis/RerollBurner";
+import { getContracts, isPlaceholder } from "@/lib/contracts/addresses";
+import { createGuardedWrite } from "@/lib/contracts/guardedWrite";
+import { buildRerollMessage } from "@/lib/rerollMessage";
+
+const FALLBACK_REROLL_COST = 60_000n * 10n ** 18n;
+
+export type RerollPhase =
+  | "idle"
+  | "approving"
+  | "approved"
+  | "rerolling"
+  | "generating"
+  | "done"
+  | "error";
+
+export function useReroll() {
+  const [phase, setPhase] = useState<RerollPhase>("idle");
+  const [error, setError] = useState<string | null>(null);
+
+  const chainId = useChainId();
+  const publicClient = usePublicClient();
+  const { writeContractAsync } = useWriteContract();
+  const { signMessageAsync } = useSignMessage();
+  const account = useAccount();
+  const guardedWrite = createGuardedWrite(account, chainId, writeContractAsync);
+
+  let contracts: ReturnType<typeof getContracts> | null = null;
+  try {
+    contracts = getContracts(chainId);
+  } catch {
+    // unsupported chain
+  }
+
+  const ready = !!contracts && !isPlaceholder(contracts.rerollBurner);
+
+  // Read the payment token address from the deployed contract itself rather
+  // than hardcoding it — RerollBurner is initialized with real GNRM on
+  // mainnet and a MockERC20 on Sepolia (see Task 6's dry-run deploy), so
+  // this one hook works correctly against either without a chain branch.
+  const { data: gnrmAddress } = useReadContract({
+    address: contracts?.rerollBurner,
+    abi: REROLL_BURNER_ABI,
+    functionName: "gnrm",
+    query: { enabled: ready },
+  });
+
+  const { data: rerollCostData } = useReadContract({
+    address: contracts?.rerollBurner,
+    abi: REROLL_BURNER_ABI,
+    functionName: "rerollCost",
+    query: { enabled: ready },
+  });
+  const rerollCost = rerollCostData ?? FALLBACK_REROLL_COST;
+
+  const { data: allowance } = useReadContract({
+    address: gnrmAddress,
+    abi: erc20Abi,
+    functionName: "allowance",
+    args:
+      account.address && contracts
+        ? [account.address, contracts.rerollBurner]
+        : undefined,
+    query: { enabled: ready && !!account.address && !!gnrmAddress },
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async function executeReroll(faction: string | null): Promise<any | null> {
+    if (!account.address || !contracts || !publicClient || !ready || !gnrmAddress) return null;
+    setError(null);
+
+    try {
+      if ((allowance ?? 0n) < rerollCost) {
+        setPhase("approving");
+        const approveHash = await guardedWrite({
+          address: gnrmAddress,
+          abi: erc20Abi,
+          functionName: "approve",
+          args: [contracts.rerollBurner, rerollCost],
+        });
+        await publicClient.waitForTransactionReceipt({ hash: approveHash });
+      }
+      setPhase("approved");
+
+      setPhase("rerolling");
+      const rerollHash = await guardedWrite({
+        address: contracts.rerollBurner,
+        abi: REROLL_BURNER_ABI,
+        functionName: "reroll",
+      });
+      await publicClient.waitForTransactionReceipt({ hash: rerollHash });
+
+      const signature = await signMessageAsync({
+        message: buildRerollMessage(rerollHash),
+      });
+
+      setPhase("generating");
+      const res = await fetch("/api/generate-kitbash", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          faction,
+          walletAddress: account.address,
+          rerollTxHash: rerollHash,
+          signature,
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? "Reroll generation failed");
+      }
+
+      const data = await res.json();
+      setPhase("done");
+      return data;
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Reroll failed");
+      setPhase("error");
+      return null;
+    }
+  }
+
+  function reset() {
+    setPhase("idle");
+    setError(null);
+  }
+
+  return { phase, error, rerollCost, ready, executeReroll, reset };
+}
