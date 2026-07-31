@@ -15,6 +15,7 @@ import { getContracts, isPlaceholder } from "@/lib/contracts/addresses";
 import { createGuardedWrite } from "@/lib/contracts/guardedWrite";
 import { buildRerollMessage } from "@/lib/rerollMessage";
 import { TARGET_CHAIN_ID } from "@/lib/targetChain";
+import { useMintStore } from "@/store/useMintStore";
 
 const FALLBACK_REROLL_COST = 60_000n * 10n ** 18n;
 
@@ -35,7 +36,14 @@ export function useReroll() {
   // failing) can retry the sign+generate step against the SAME tx hash
   // instead of re-running approve+reroll and burning GNRM a second time.
   // Only cleared once /api/generate-kitbash actually succeeds.
-  const [pendingRerollHash, setPendingRerollHash] = useState<`0x${string}` | null>(null);
+  //
+  // Held in the persisted mint store rather than local useState: this
+  // component unmounts on any reload, and the most likely post-burn failure
+  // is the shared per-IP rate limit rejecting the paid POST with a 429 —
+  // whose natural user response (reload, navigate away) would otherwise
+  // strand a real 60,000 GNRM burn permanently.
+  const pendingRerollHash = useMintStore((s) => s.pendingRerollTxHash);
+  const setPendingRerollHash = useMintStore((s) => s.setPendingRerollTxHash);
 
   const chainId = useChainId();
   const publicClient = usePublicClient();

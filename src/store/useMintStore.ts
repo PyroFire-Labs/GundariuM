@@ -23,6 +23,12 @@ interface MintState {
   metadataUri: string | null;
   mintedTokenId: bigint | null;
   error: string | null;
+  // A reroll() burn that is confirmed on-chain but whose generation hasn't
+  // succeeded yet. Lives here rather than in useReroll's local state because
+  // this store is persisted: a rate-limit rejection (or any other post-burn
+  // failure) followed by a reload would otherwise strand a real 60,000 GNRM
+  // burn with no way to redeem it.
+  pendingRerollTxHash: `0x${string}` | null;
 
   // Actions
   setFaction: (faction: string | null) => void;
@@ -39,6 +45,7 @@ interface MintState {
   setMetadataUri: (uri: string) => void;
   setMintedTokenId: (id: bigint) => void;
   setError: (error: string | null) => void;
+  setPendingRerollTxHash: (hash: `0x${string}` | null) => void;
   goTo: (step: MintStep) => void;
   reset: () => void;
 }
@@ -57,6 +64,7 @@ const initialState = {
   metadataUri: null,
   mintedTokenId: null,
   error: null,
+  pendingRerollTxHash: null as `0x${string}` | null,
 };
 
 // Some mobile-wallet flows (Farcaster mini-app, deep-linking wallet apps)
@@ -100,8 +108,17 @@ export const useMintStore = create<MintState>()(
       setMetadataUri: (uri) => set({ metadataUri: uri }),
       setMintedTokenId: (id) => set({ mintedTokenId: id }),
       setError: (error) => set({ error }),
+      setPendingRerollTxHash: (hash) => set({ pendingRerollTxHash: hash }),
       goTo: (step) => set({ step, error: null }),
-      reset: () => set(initialState),
+      // Deliberately preserves `pendingRerollTxHash`. An unredeemed burn is
+      // real money the user has already spent; restarting the mint flow must
+      // not forfeit it. It is cleared in exactly one place — a successful
+      // generation POST in useReroll.
+      reset: () =>
+        set((state) => ({
+          ...initialState,
+          pendingRerollTxHash: state.pendingRerollTxHash,
+        })),
     }),
     {
       name: "gundarium-mint-state",
@@ -130,6 +147,8 @@ export const useMintStore = create<MintState>()(
           customName: state.customName,
           imageIpfsHash: state.imageIpfsHash,
           metadataUri: state.metadataUri,
+          // Persisted deliberately — surviving a reload is the entire point.
+          pendingRerollTxHash: state.pendingRerollTxHash,
           mintedTokenId:
             state.mintedTokenId !== null
               ? state.mintedTokenId.toString()
