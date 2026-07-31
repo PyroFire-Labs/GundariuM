@@ -49,10 +49,18 @@ export const REROLL_REASON = {
  *   - STORE_UNAVAILABLE / TX_LOOKUP_FAILED are "we couldn't check", not
  *     "it's invalid". They resolve on their own (or with an ops fix).
  *   - NOT_LIVE is a deployment state, not a verdict on the payment.
+ *   - TX_NOT_FOUND is excluded on purpose too, even though it sounds
+ *     definitive: the client confirms the burn via its own RPC provider
+ *     before ever signing, while the server looks the same hash up on a
+ *     separately configured provider — a real, already-confirmed
+ *     transaction can still come back "not found" there from ordinary node
+ *     lag or a provider that hasn't indexed it yet. Treating that as
+ *     terminal would throw away a genuine payment on nothing more than a
+ *     propagation delay; safer to let the user retry with the same hash
+ *     until the lookup actually succeeds one way or the other.
  */
 const TERMINAL_REASONS: ReadonlySet<string> = new Set<string>([
   REROLL_REASON.ALREADY_USED,
-  REROLL_REASON.TX_NOT_FOUND,
   REROLL_REASON.TX_FAILED,
   REROLL_REASON.NO_MATCHING_EVENT,
 ]);
