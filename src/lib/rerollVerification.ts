@@ -92,10 +92,13 @@ export async function verifyRerollPayment(params: {
     console.error(`Reroll tx receipt lookup failed for ${rerollTxHash}:`, err);
     // Split the two cases the old single reason conflated. viem throws
     // TransactionReceiptNotFoundError only when the RPC actually answered and
-    // had no receipt — a verdict on the hash, and terminal client-side.
+    // had no receipt — still not treated as terminal client-side, though:
+    // this server read and the client's own confirmation run against
+    // separately configured RPC providers, so a real, already-confirmed
+    // burn can come back "not found" here from ordinary propagation lag.
     // Anything else (transport error, provider outage) means we simply don't
-    // know, so it must stay retryable: the client keeps the burn and tries
-    // again rather than forfeiting a payment over a network blip.
+    // know either. Both reasons stay retryable: the client keeps the burn
+    // and tries again rather than forfeiting a payment over a lookup issue.
     if (err instanceof TransactionReceiptNotFoundError) {
       return { valid: false, reason: REROLL_REASON.TX_NOT_FOUND };
     }

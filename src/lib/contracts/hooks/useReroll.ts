@@ -204,15 +204,19 @@ export function useReroll() {
         const data = await res.json().catch(() => ({}));
         const reason = typeof data?.error === "string" ? data.error : undefined;
         // Some verification failures prove this hash can never buy a
-        // generation (already consumed, not a reroll for this wallet, tx
-        // absent from the chain). Keeping it would make every future click
-        // retry a dead payment forever — a permanent dead-end. Forget it so
-        // the next click starts a genuinely fresh approve+burn.
+        // generation (already consumed, or a real receipt that reverted or
+        // carries no matching event for this wallet). Keeping it would make
+        // every future click retry a dead payment forever — a permanent
+        // dead-end. Forget it so the next click starts a genuinely fresh
+        // approve+burn.
         //
         // Everything else — 429 rate limits, transport errors, "couldn't
-        // check right now" — stays remembered. Those are exactly the cases
-        // this field exists to protect: the burn is still redeemable and
-        // discarding it would cost the user another 60,000 GNRM.
+        // check right now", and even a same-hash "transaction not found"
+        // (the server's RPC provider differs from the one the client
+        // confirmed against, so a real burn can transiently look absent
+        // there) — stays remembered. Those are exactly the cases this field
+        // exists to protect: the burn is still redeemable and discarding it
+        // would cost the user another 60,000 GNRM.
         if (isTerminalRerollReason(reason)) {
           setPendingReroll(null);
         }
