@@ -98,6 +98,11 @@ export function GenerationReveal() {
     const result = await executeReroll(faction);
     if (result) {
       setGenerationResult(result);
+      // setGenerationResult resets customName to "", so a validation error
+      // left over from the previous card would otherwise sit under an empty
+      // input with MINT disabled — clearable only by typing and deleting a
+      // character.
+      setNameError(null);
     }
   };
 
