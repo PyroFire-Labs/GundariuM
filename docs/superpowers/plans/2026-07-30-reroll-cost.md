@@ -18,8 +18,9 @@
 - The signed message a caller must produce is exactly `Reroll with tx {txHash}` (with the literal tx hash substituted in) — built by one shared, isomorphic function (`buildRerollMessage`) used identically by both the signing code and the verifying code, so they can never drift out of sync.
 - A reroll tx hash is only marked "consumed" in Redis *after* Gemini generation succeeds, never before — a Gemini failure after a real payment must not cost the user a second burn on retry.
 - The existing IP rate limit in `generate-kitbash` (5/hour, 20/day, via `checkRateLimit`) is unchanged and applies uniformly to free and paid generations.
-- GNRM's address (`0x271b01cc11032a4e23f0200f8f57eb45176ab491`, Base mainnet only) is hardcoded directly in the one new file that needs it, matching `useGnrmPurchaseCheck.ts` / `useStakedTodayCheck.ts` — it is not added to `addresses.ts` (GNRM is a Streme-launched token, not a GundariuM-deployed contract).
+- GNRM's real address (`0x271b01cc11032a4e23f0200f8f57eb45176ab491`, Base mainnet only) is used as the `GNRM_ADDRESS` constructor/deploy-script argument when deploying `RerollBurner` to mainnet — but the frontend (`useReroll.ts`) never hardcodes it. Instead it reads the payment token address live via `RerollBurner.gnrm()`, since the same hook must also work against the Sepolia dry run's `MockERC20` (Task 6) — a hardcoded mainnet-only address (the pattern `useGnrmPurchaseCheck.ts` / `useStakedTodayCheck.ts` use, since those checks never run against a testnet dry run) would make that dry run impossible.
 - `RerollBurner`'s own address *is* added to `addresses.ts` (it's a GundariuM-deployed contract), starting as the placeholder zero-address on both chains until deployed in a follow-up step outside this plan — the frontend must show a disabled "not live yet" state when the address is still a placeholder (`isPlaceholder()`, already in `addresses.ts`), the same safeguard already used for the verified-share feature after a prior review caught it silently no-op-ing on placeholder addresses.
+- `rerollVerification.ts`'s on-chain check is chain-aware (`NEXT_PUBLIC_CHAIN_ID`, already an existing env var per `CLAUDE.md`) rather than hardcoded to mainnet, so the identical verification code path is exercised by both the Sepolia dry run (Task 6) and production — not two separate implementations.
 - This project has no frontend test framework (per `CLAUDE.md`) — verification is manual via the dev server, plus `npx tsc --noEmit` / `npx eslint`, and (for the contract) real Foundry tests.
 
 ---
@@ -366,6 +367,13 @@ export const REROLL_BURNER_ABI = [
   // ─── Views ────────────────────────────────────────────────────────────────
   {
     type: "function",
+    name: "gnrm",
+    inputs: [],
+    outputs: [{ name: "", type: "address" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
     name: "rerollCost",
     inputs: [],
     outputs: [{ name: "", type: "uint256" }],
@@ -554,15 +562,25 @@ export async function markRerollTxConsumed(txHash: string): Promise<void> {
  */
 
 import { createPublicClient, http, parseEventLogs, verifyMessage } from "viem";
-import { base } from "viem/chains";
+import { base, baseSepolia } from "viem/chains";
 import { getContracts, isPlaceholder } from "@/lib/contracts/addresses";
 import { REROLL_BURNER_ABI } from "@/lib/contracts/abis/RerollBurner";
 import { buildRerollMessage } from "@/lib/rerollMessage";
 import { isRerollTxConsumed } from "@/lib/rerollStore";
 
+// Chain-aware (not hardcoded to mainnet): NEXT_PUBLIC_CHAIN_ID lets the exact
+// same verification path run against Base Sepolia during manual dry-run
+// testing (see Task 6) and against Base mainnet in production, without two
+// copies of this logic.
+const chain = Number(process.env.NEXT_PUBLIC_CHAIN_ID) === baseSepolia.id ? baseSepolia : base;
+const rpcUrl =
+  chain.id === baseSepolia.id
+    ? process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC || "https://sepolia.base.org"
+    : process.env.BASE_RPC_URL || "https://mainnet.base.org";
+
 const publicClient = createPublicClient({
-  chain: base,
-  transport: http(process.env.BASE_RPC_URL || "https://mainnet.base.org"),
+  chain,
+  transport: http(rpcUrl),
 });
 
 export async function verifyRerollPayment(params: {
@@ -591,7 +609,7 @@ export async function verifyRerollPayment(params: {
     return { valid: false, reason: "This payment has already been used" };
   }
 
-  const contracts = getContracts(base.id);
+  const contracts = getContracts(chain.id);
   if (isPlaceholder(contracts.rerollBurner)) {
     return { valid: false, reason: "Reroll isn't live yet" };
   }
@@ -731,11 +749,6 @@ import { getContracts, isPlaceholder } from "@/lib/contracts/addresses";
 import { createGuardedWrite } from "@/lib/contracts/guardedWrite";
 import { buildRerollMessage } from "@/lib/rerollMessage";
 
-// GNRM (Base mainnet) — hardcoded here per this project's convention: it's a
-// Streme-launched token, not a GundariuM-deployed contract, so it isn't in
-// addresses.ts. Matches useGnrmPurchaseCheck.ts / useStakedTodayCheck.ts.
-const GNRM_ADDRESS = "0x271b01cc11032a4e23f0200f8f57eb45176ab491" as const;
-
 const FALLBACK_REROLL_COST = 60_000n * 10n ** 18n;
 
 export type RerollPhase =
@@ -767,6 +780,17 @@ export function useReroll() {
 
   const ready = !!contracts && !isPlaceholder(contracts.rerollBurner);
 
+  // Read the payment token address from the deployed contract itself rather
+  // than hardcoding it — RerollBurner is initialized with real GNRM on
+  // mainnet and a MockERC20 on Sepolia (see Task 6's dry-run deploy), so
+  // this one hook works correctly against either without a chain branch.
+  const { data: gnrmAddress } = useReadContract({
+    address: contracts?.rerollBurner,
+    abi: REROLL_BURNER_ABI,
+    functionName: "gnrm",
+    query: { enabled: ready },
+  });
+
   const { data: rerollCostData } = useReadContract({
     address: contracts?.rerollBurner,
     abi: REROLL_BURNER_ABI,
@@ -776,26 +800,26 @@ export function useReroll() {
   const rerollCost = rerollCostData ?? FALLBACK_REROLL_COST;
 
   const { data: allowance } = useReadContract({
-    address: GNRM_ADDRESS,
+    address: gnrmAddress,
     abi: erc20Abi,
     functionName: "allowance",
     args:
       account.address && contracts
         ? [account.address, contracts.rerollBurner]
         : undefined,
-    query: { enabled: ready && !!account.address },
+    query: { enabled: ready && !!account.address && !!gnrmAddress },
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async function executeReroll(faction: string | null): Promise<any | null> {
-    if (!account.address || !contracts || !publicClient || !ready) return null;
+    if (!account.address || !contracts || !publicClient || !ready || !gnrmAddress) return null;
     setError(null);
 
     try {
       if ((allowance ?? 0n) < rerollCost) {
         setPhase("approving");
         const approveHash = await guardedWrite({
-          address: GNRM_ADDRESS,
+          address: gnrmAddress,
           abi: erc20Abi,
           functionName: "approve",
           args: [contracts.rerollBurner, rerollCost],
@@ -1154,12 +1178,14 @@ Run `npm run dev`, connect a wallet holding some of the mock GNRM (mint more
 to your own test wallet via `cast send <mock token address> "transfer(address,uint256)" <your wallet> 1000000000000000000000000 --rpc-url https://sepolia.base.org --account deployer` if needed), switch to Base Sepolia, go
 through the mint flow to the reveal screen.
 
-Click "REROLL — 60,000 GNRM". Expected: an approve prompt (first time only),
-then a `reroll()` transaction prompt, then a signature prompt, then the card
-regenerates in place with new traits and a new image — same faction,
-without returning to the faction picker. Click it a second time: no approve
-prompt this time (allowance already sufficient), straight to the `reroll()`
-transaction.
+Click "REROLL — 60,000 GNRM". Expected: an approve prompt, then a `reroll()`
+transaction prompt, then a signature prompt, then the card regenerates in
+place with new traits and a new image — same faction, without returning to
+the faction picker. Click it a second time: expect a SECOND approve prompt
+too — `useReroll` approves for the exact reroll cost each time rather than a
+standing/max allowance (deliberate: this project has direct history with a
+phishing `approve()` incident, so we don't leave a large standing approval
+sitting on the GNRM contract just to save one wallet prompt per reroll).
 
 Confirm in the dev server log that `markRerollTxConsumed` only fires after
 each successful generation (no log line for a rejected/failed attempt).
