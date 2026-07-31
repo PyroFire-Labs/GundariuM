@@ -20,6 +20,10 @@ contract RerollBurner is OwnableUpgradeable, UUPSUpgradeable {
 
     address public constant BURN_ADDRESS = 0x000000000000000000000000000000000000dEaD;
 
+    // ─── Errors ─────────────────────────────────────────────────────────────
+
+    error ZeroAddress();
+
     // ─── Events ─────────────────────────────────────────────────────────────
 
     event Rerolled(address indexed user, uint256 amount, uint256 userRerollCount, uint256 totalRerolls);
@@ -41,6 +45,7 @@ contract RerollBurner is OwnableUpgradeable, UUPSUpgradeable {
     }
 
     function initialize(address gnrm_, uint256 rerollCost_, address owner_) external initializer {
+        if (gnrm_ == address(0)) revert ZeroAddress();
         __Ownable_init(owner_);
         gnrm = IERC20(gnrm_);
         rerollCost = rerollCost_;
@@ -50,14 +55,25 @@ contract RerollBurner is OwnableUpgradeable, UUPSUpgradeable {
 
     /// @notice Burn `rerollCost` GNRM from the caller to reroll. Reverts if
     ///         the caller hasn't approved enough GNRM, or doesn't hold enough.
+    /// @dev Checks-Effects-Interactions: counters and the event are committed
+    ///      before the transfer, because GNRM is a Superfluid Pure Super Token
+    ///      and therefore fires an ERC-777-style `tokensToSend` hook on the
+    ///      SENDER mid-transfer. No explicit reentrancy guard is needed on top
+    ///      of that ordering: with effects committed first, a reentrant call is
+    ///      fully accounted — it performs a real transfer, a real counter
+    ///      increment, and a real event of its own — so a reentrant caller can
+    ///      only ever waste their own GNRM, never extract funds or claim
+    ///      rerolls they didn't pay for.
     function reroll() external {
-        gnrm.safeTransferFrom(msg.sender, BURN_ADDRESS, rerollCost);
+        uint256 cost = rerollCost;
 
         rerollCount[msg.sender] += 1;
         totalRerolls += 1;
-        totalBurned += rerollCost;
+        totalBurned += cost;
 
-        emit Rerolled(msg.sender, rerollCost, rerollCount[msg.sender], totalRerolls);
+        emit Rerolled(msg.sender, cost, rerollCount[msg.sender], totalRerolls);
+
+        gnrm.safeTransferFrom(msg.sender, BURN_ADDRESS, cost);
     }
 
     // ─── Owner Actions ──────────────────────────────────────────────────────

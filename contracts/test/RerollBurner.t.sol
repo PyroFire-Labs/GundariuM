@@ -92,7 +92,14 @@ contract RerollBurnerTest is Test {
     }
 
     function test_reroll_revertsOnInsufficientBalance() public {
-        vm.prank(bob); // bob holds zero mock GNRM and has approved nothing
+        // Give bob unlimited allowance but leave his balance at zero, so this
+        // genuinely exercises the balance-insufficiency path rather than
+        // failing on the allowance check (which is already covered above).
+        vm.prank(bob);
+        gnrm.approve(address(burner), type(uint256).max);
+        assertEq(gnrm.balanceOf(bob), 0);
+
+        vm.prank(bob);
         vm.expectRevert();
         burner.reroll();
     }
@@ -118,5 +125,24 @@ contract RerollBurnerTest is Test {
 
         vm.prank(owner);
         burner.setRerollCost(100_000e18);
+    }
+
+    // ─── initialize() ────────────────────────────────────────────────────────
+
+    function test_initialize_revertsOnZeroGnrmAddress() public {
+        RerollBurner impl = new RerollBurner();
+        bytes memory init = abi.encodeCall(RerollBurner.initialize, (address(0), INITIAL_COST, owner));
+
+        vm.expectRevert(RerollBurner.ZeroAddress.selector);
+        new ERC1967Proxy(address(impl), init);
+    }
+
+    // ─── Upgrade authorization ───────────────────────────────────────────────
+
+    function test_upgrade_nonOwner_reverts() public {
+        RerollBurner newImpl = new RerollBurner();
+        vm.prank(alice);
+        vm.expectRevert();
+        burner.upgradeToAndCall(address(newImpl), "");
     }
 }
