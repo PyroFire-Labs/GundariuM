@@ -41,17 +41,31 @@ export async function POST(req: Request) {
       }
     }
 
-    // Two-layer rate limit per IP: 5 generations/hour AND 20 generations/day.
-    // The hourly bucket throttles burst abuse; the daily bucket is the
-    // backstop that prevents slow-roll attacks under the hourly ceiling.
+    // Two-layer rate limit per IP: the hourly bucket throttles burst abuse;
+    // the daily bucket is the backstop that prevents slow-roll attacks under
+    // the hourly ceiling.
+    //
+    // Paid rerolls get their own counter keys and a far more generous
+    // ceiling. The limit exists to bound worst-case Gemini spend, which a
+    // user burning 60,000 GNRM per generation simply isn't threatening the
+    // way a free-rider is. Sharing one budget meant a user who minted once
+    // (1/5) and rerolled four times (5/5) got rejected by the same counter as
+    // an abuser — after already paying. The paid ceiling still bounds spend
+    // against a compromised or looping wallet.
+    //
     // NOTE: the underlying store is in-memory per Vercel serverless instance,
     // so the effective ceiling is N × max where N is the active instance
     // count. Move to Vercel KV / Upstash post-launch for cross-instance
     // accuracy. Defense-in-depth for now: hard daily budget cap on the
     // Google AI Studio account bounds total spend even if the limit leaks.
     const ip = req.headers.get("x-forwarded-for") ?? "unknown";
-    const hourly = checkRateLimit(`gen:hour:${ip}`, 5, 60 * 60 * 1000);
-    const daily = checkRateLimit(`gen:day:${ip}`, 20, 24 * 60 * 60 * 1000);
+    const isPaidReroll = !!rerollTxHash;
+    const hourly = isPaidReroll
+      ? checkRateLimit(`reroll:hour:${ip}`, 20, 60 * 60 * 1000)
+      : checkRateLimit(`gen:hour:${ip}`, 5, 60 * 60 * 1000);
+    const daily = isPaidReroll
+      ? checkRateLimit(`reroll:day:${ip}`, 100, 24 * 60 * 60 * 1000)
+      : checkRateLimit(`gen:day:${ip}`, 20, 24 * 60 * 60 * 1000);
     if (!hourly.allowed || !daily.allowed) {
       const retryAfterMs = !hourly.allowed
         ? hourly.retryAfterMs
