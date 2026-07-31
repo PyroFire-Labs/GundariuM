@@ -9,23 +9,44 @@
 
 import { Redis } from "@upstash/redis";
 
-// Constructed lazily, never at module scope. Redis.fromEnv() throws
-// immediately if UPSTASH_REDIS_REST_URL/TOKEN are missing or misconfigured,
-// and /api/generate-kitbash statically imports this module — so a module-level
-// client would take down the entire route, including the free,
-// revenue-critical first-mint generation path that touches Redis not at all.
-// (This codebase has already lost 16 hours of production Gemini availability
-// to a Doppler/Vercel env drift; same failure class.) Deferring construction
-// means an env problem can only surface on an actual paid-reroll attempt.
+// Constructed lazily, never at module scope. A broken/missing config would
+// otherwise take down the entire route at import time — and
+// /api/generate-kitbash statically imports this module, so a module-level
+// client would break the free, revenue-critical first-mint generation path
+// that touches Redis not at all. (This codebase has already lost 16 hours of
+// production Gemini availability to a Doppler/Vercel env drift; same failure
+// class.) Deferring construction means an env problem can only surface on an
+// actual paid-reroll attempt.
+//
+// Redis.fromEnv() is deliberately NOT used here: it only warns and returns a
+// non-functional client when UPSTASH_REDIS_REST_URL/TOKEN are simply absent
+// (@upstash/redis v1.38's SDK behavior) rather than throwing — which would
+// have made the "env vars missing entirely" case, the exact incident this
+// module's design is reacting to, silently fall through to the fail-open
+// path below instead of the fail-closed one. Reading and validating the vars
+// directly makes "unconfigured" detectable before construction.
 let redisClient: Redis | null = null;
-// Set once construction has failed, so the error is logged a single time per
-// serverless instance instead of on every paid-reroll request. Env vars can't
-// change under a running instance, so caching the failure costs nothing; a
-// fixed deploy starts fresh instances with the flag clear.
+// Set once construction is known to be broken, so the error is logged a
+// single time per serverless instance instead of on every paid-reroll
+// request. Env vars can't change under a running instance, so caching the
+// failure costs nothing; a fixed deploy starts fresh instances with the flag
+// clear.
 let redisUnconfigured = false;
 
+// Consecutive-failure circuit breaker for the OTHER misconfiguration shape:
+// credentials that are present and well-formed but wrong (a stale token
+// after rotation, pointed at the wrong project) — construction succeeds, so
+// the missing-env check below can't catch it, and every read would
+// otherwise fail open forever. After a run of consecutive read failures with
+// no success in between, treat the store as unconfigured too. A single
+// success resets the counter, so a real transient blip never trips it.
+const CONSECUTIVE_FAILURE_THRESHOLD = 5;
+let consecutiveFailures = 0;
+
 /**
- * Returns the client, or `null` when Upstash simply isn't configured.
+ * Returns the client, or `null` when Upstash simply isn't configured (env
+ * vars missing/empty, or the credential looked valid but has now failed
+ * enough consecutive times to be treated as broken rather than blipping).
  *
  * Returning null rather than throwing is what lets callers tell "Redis is
  * fundamentally unavailable" (a config problem, permanent until an operator
@@ -33,20 +54,51 @@ let redisUnconfigured = false;
  * responses — see isRerollTxConsumed.
  */
 function getRedis(): Redis | null {
-  if (redisClient) return redisClient;
   if (redisUnconfigured) return null;
-  try {
-    redisClient = Redis.fromEnv();
-    return redisClient;
-  } catch (err) {
+  if (redisClient) return redisClient;
+
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (!url || !token) {
     redisUnconfigured = true;
     console.error(
       "Upstash Redis is not configured — reroll replay protection is disabled, " +
         "so all paid rerolls will be rejected until UPSTASH_REDIS_REST_URL and " +
-        "UPSTASH_REDIS_REST_TOKEN are set on this deployment:",
+        "UPSTASH_REDIS_REST_TOKEN are set on this deployment."
+    );
+    return null;
+  }
+
+  try {
+    redisClient = new Redis({ url, token });
+    return redisClient;
+  } catch (err) {
+    redisUnconfigured = true;
+    console.error(
+      "Upstash Redis client construction failed — reroll replay protection " +
+        "is disabled, so all paid rerolls will be rejected until this is fixed:",
       err
     );
     return null;
+  }
+}
+
+/** Called after every real Redis operation to drive the circuit breaker. */
+function recordRedisOutcome(succeeded: boolean): void {
+  if (succeeded) {
+    consecutiveFailures = 0;
+    return;
+  }
+  consecutiveFailures += 1;
+  if (consecutiveFailures >= CONSECUTIVE_FAILURE_THRESHOLD && !redisUnconfigured) {
+    redisUnconfigured = true;
+    redisClient = null;
+    console.error(
+      `Upstash Redis has failed ${consecutiveFailures} consecutive operations — ` +
+        "treating credentials as broken (not a transient blip) and disabling " +
+        "reroll replay protection; all paid rerolls will be rejected until " +
+        "this is fixed."
+    );
   }
 }
 
@@ -78,15 +130,18 @@ export async function isRerollTxConsumed(txHash: string): Promise<boolean> {
   }
   try {
     const value = await redis.get(consumedKey(txHash));
+    recordRedisOutcome(true);
     return value !== null;
   } catch (err) {
     console.error(`isRerollTxConsumed failed for ${txHash}:`, err);
-    // Unchanged, and intentionally different from the null case above: the
-    // client exists, so this is a hiccup on one call. Failing closed here
-    // would block legitimate rerolls during a brief blip; the on-chain +
-    // signature checks in verifyRerollPayment still gate a real payment, so
-    // the worst case is a very narrow replay window, not an unpaid
-    // generation.
+    recordRedisOutcome(false);
+    // Fail open on an ISOLATED call failure: the client exists and hasn't
+    // yet crossed the consecutive-failure threshold above, so this reads as
+    // a hiccup on one call. Failing closed here would block legitimate
+    // rerolls during a brief blip; the on-chain + signature checks in
+    // verifyRerollPayment still gate a real payment, so the worst case is a
+    // narrow replay window, not an unpaid generation — and that window is
+    // now bounded by CONSECUTIVE_FAILURE_THRESHOLD rather than open-ended.
     return false;
   }
 }
@@ -105,5 +160,11 @@ export async function markRerollTxConsumed(txHash: string): Promise<void> {
       "Upstash Redis is not configured — cannot record consumed reroll tx"
     );
   }
-  await redis.set(consumedKey(txHash), true);
+  try {
+    await redis.set(consumedKey(txHash), true);
+    recordRedisOutcome(true);
+  } catch (err) {
+    recordRedisOutcome(false);
+    throw err;
+  }
 }
