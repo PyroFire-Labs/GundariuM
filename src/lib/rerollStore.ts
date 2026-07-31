@@ -57,14 +57,22 @@ function getRedis(): Redis | null {
   if (redisUnconfigured) return null;
   if (redisClient) return redisClient;
 
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  // Same two env-var pairs Redis.fromEnv() itself checks (Upstash's own
+  // names, falling back to the Vercel-KV/marketplace-integration names) —
+  // matched exactly so this doesn't silently require a different naming
+  // convention than the sibling modules that still use fromEnv() directly
+  // (auth.ts, lineupStore.ts, leaderboardStore.ts).
+  const url =
+    process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+  const token =
+    process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
   if (!url || !token) {
     redisUnconfigured = true;
     console.error(
       "Upstash Redis is not configured — reroll replay protection is disabled, " +
         "so all paid rerolls will be rejected until UPSTASH_REDIS_REST_URL and " +
-        "UPSTASH_REDIS_REST_TOKEN are set on this deployment."
+        "UPSTASH_REDIS_REST_TOKEN (or the KV_REST_API_* equivalents) are set " +
+        "on this deployment."
     );
     return null;
   }
@@ -76,7 +84,10 @@ function getRedis(): Redis | null {
     redisUnconfigured = true;
     console.error(
       "Upstash Redis client construction failed — reroll replay protection " +
-        "is disabled, so all paid rerolls will be rejected until this is fixed:",
+        "is disabled, so all paid rerolls will be rejected until this is fixed. " +
+        "(This branch is not known to be reachable — Redis.fromEnv() never " +
+        "threw here in testing even with these values undefined — kept as " +
+        "defense in depth, not the primary fail-closed mechanism above.):",
       err
     );
     return null;
