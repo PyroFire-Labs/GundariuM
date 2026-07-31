@@ -6,6 +6,7 @@ import { useMintStore } from "@/store/useMintStore";
 import { CardFrame } from "@/components/card/CardFrame";
 import { displayRarity, type KitbashTraits, type TraitRarity } from "@/types/nft";
 import { validateCustomName } from "@/lib/kitbash/namePools";
+import { useReroll } from "@/lib/contracts/hooks/useReroll";
 
 const RARITY_COLORS: Record<TraitRarity, string> = {
   Common: "text-gray-400",
@@ -43,13 +44,22 @@ export function GenerationReveal() {
     generatedImageMimeType,
     fallbackName,
     customName,
+    faction,
     setCustomName,
+    setGenerationResult,
     goTo,
     reset,
   } = useMintStore();
 
   const { address } = useAccount();
   const [nameError, setNameError] = useState<string | null>(null);
+  const {
+    phase: rerollPhase,
+    error: rerollError,
+    rerollCost,
+    ready: rerollReady,
+    executeReroll,
+  } = useReroll();
 
   if (!traits || !kitbashTraits || !traitRarities) {
     return null;
@@ -83,6 +93,28 @@ export function GenerationReveal() {
   };
 
   const canProceed = nameError === null;
+
+  const handleReroll = async () => {
+    const result = await executeReroll(faction);
+    if (result) {
+      setGenerationResult(result);
+    }
+  };
+
+  const rerolling =
+    rerollPhase !== "idle" && rerollPhase !== "done" && rerollPhase !== "error";
+
+  const rerollCostDisplay = (rerollCost / 10n ** 18n).toString();
+
+  const rerollLabel = !rerollReady
+    ? "Reroll Coming Soon"
+    : rerollPhase === "approving"
+      ? "APPROVING..."
+      : rerollPhase === "rerolling"
+        ? "BURNING GNRM..."
+        : rerollPhase === "generating"
+          ? "REGENERATING..."
+          : `REROLL — ${rerollCostDisplay} GNRM`;
 
   return (
     <div className="flex flex-col lg:flex-row gap-6 items-center lg:items-start justify-center w-full px-2">
@@ -197,12 +229,17 @@ export function GenerationReveal() {
             MINT THIS CARD
           </button>
           <button
-            onClick={reset}
-            className="px-6 py-3 border border-[var(--border)] text-[var(--foreground)]/60 font-[family-name:var(--font-orbitron)] text-sm rounded-xl hover:border-[var(--foreground)]/20 transition-all"
+            onClick={handleReroll}
+            disabled={rerolling || !rerollReady}
+            title={!rerollReady ? "This feature isn't live yet — check back soon" : undefined}
+            className="px-6 py-3 border border-[var(--border)] text-[var(--foreground)]/60 font-[family-name:var(--font-orbitron)] text-sm rounded-xl hover:border-[var(--foreground)]/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            REROLL
+            {rerollLabel}
           </button>
         </div>
+        {rerollError && (
+          <p className="text-red-400 text-xs text-center">{rerollError}</p>
+        )}
       </div>
     </div>
   );
