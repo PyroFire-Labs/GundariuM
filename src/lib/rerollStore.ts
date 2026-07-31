@@ -9,11 +9,22 @@
 
 import { Redis } from "@upstash/redis";
 
-const redis = Redis.fromEnv();
+// Constructed lazily, never at module scope. Redis.fromEnv() throws
+// immediately if UPSTASH_REDIS_REST_URL/TOKEN are missing or misconfigured,
+// and /api/generate-kitbash statically imports this module — so a module-level
+// client would take down the entire route, including the free,
+// revenue-critical first-mint generation path that touches Redis not at all.
+// (This codebase has already lost 16 hours of production Gemini availability
+// to a Doppler/Vercel env drift; same failure class.) Deferring construction
+// means an env problem can only surface on an actual paid-reroll attempt.
+let redisClient: Redis | null = null;
 
-// 30 days is far longer than any plausible retry window; bounds storage
-// instead of keeping every reroll tx hash forever.
-const CONSUMED_TTL_SECONDS = 30 * 24 * 60 * 60;
+function getRedis(): Redis {
+  if (!redisClient) {
+    redisClient = Redis.fromEnv();
+  }
+  return redisClient;
+}
 
 function consumedKey(txHash: string): string {
   return `reroll:consumed:${txHash.toLowerCase()}`;
@@ -21,7 +32,7 @@ function consumedKey(txHash: string): string {
 
 export async function isRerollTxConsumed(txHash: string): Promise<boolean> {
   try {
-    const value = await redis.get(consumedKey(txHash));
+    const value = await getRedis().get(consumedKey(txHash));
     return value !== null;
   } catch (err) {
     console.error(`isRerollTxConsumed failed for ${txHash}:`, err);
@@ -33,6 +44,9 @@ export async function isRerollTxConsumed(txHash: string): Promise<boolean> {
   }
 }
 
+// No TTL: a consumed reroll tx hash must be permanently unusable. Expiring the
+// record would make the exact same burn transaction replayable again once it
+// lapsed, defeating the point of tracking it at all.
 export async function markRerollTxConsumed(txHash: string): Promise<void> {
-  await redis.set(consumedKey(txHash), true, { ex: CONSUMED_TTL_SECONDS });
+  await getRedis().set(consumedKey(txHash), true);
 }
