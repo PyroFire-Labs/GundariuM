@@ -12,19 +12,22 @@
  */
 
 import { createPublicClient, http, parseEventLogs } from "viem";
-import { base, baseSepolia } from "viem/chains";
+import { baseSepolia } from "viem/chains";
 import { getContracts, isPlaceholder } from "@/lib/contracts/addresses";
 import { REROLL_BURNER_ABI } from "@/lib/contracts/abis/RerollBurner";
 import { buildRerollMessage } from "@/lib/rerollMessage";
 import { isRerollTxConsumed } from "@/lib/rerollStore";
+import { TARGET_CHAIN, TARGET_CHAIN_ID } from "@/lib/targetChain";
 
 // Chain-aware (not hardcoded to mainnet): NEXT_PUBLIC_CHAIN_ID lets the exact
 // same verification path run against Base Sepolia during manual dry-run
 // testing (see Task 6) and against Base mainnet in production, without two
-// copies of this logic.
-const chain = Number(process.env.NEXT_PUBLIC_CHAIN_ID) === baseSepolia.id ? baseSepolia : base;
+// copies of this logic. Resolved via the shared helper so this agrees with
+// every client-side consumer on what "target chain" means — including the
+// unset-env default.
+const chain = TARGET_CHAIN;
 const rpcUrl =
-  chain.id === baseSepolia.id
+  TARGET_CHAIN_ID === baseSepolia.id
     ? process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC || "https://sepolia.base.org"
     : process.env.BASE_RPC_URL || "https://mainnet.base.org";
 

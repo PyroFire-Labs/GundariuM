@@ -14,6 +14,7 @@ import { REROLL_BURNER_ABI } from "@/lib/contracts/abis/RerollBurner";
 import { getContracts, isPlaceholder } from "@/lib/contracts/addresses";
 import { createGuardedWrite } from "@/lib/contracts/guardedWrite";
 import { buildRerollMessage } from "@/lib/rerollMessage";
+import { TARGET_CHAIN_ID } from "@/lib/targetChain";
 
 const FALLBACK_REROLL_COST = 60_000n * 10n ** 18n;
 
@@ -50,7 +51,17 @@ export function useReroll() {
     // unsupported chain
   }
 
-  const ready = !!contracts && !isPlaceholder(contracts.rerollBurner);
+  // A wallet on the wrong chain could burn real GNRM in a transaction the
+  // backend can never find — verifyRerollPayment only looks at the app's own
+  // configured target chain. MintConfirm (the very next screen in this flow)
+  // already guards on exactly this; the reroll path needs it too.
+  const wrongChain = chainId !== TARGET_CHAIN_ID;
+
+  // Deployment-readiness only. The reads below must stay gated on THIS, not
+  // on the public `ready` — the `gnrm` read is what produces `gnrmAddress`,
+  // and `ready` now depends on `gnrmAddress`, so gating the read on `ready`
+  // would be circular and the address would never load.
+  const contractReady = !!contracts && !isPlaceholder(contracts.rerollBurner);
 
   // Read the payment token address from the deployed contract itself rather
   // than hardcoding it — RerollBurner is initialized with real GNRM on
@@ -60,14 +71,14 @@ export function useReroll() {
     address: contracts?.rerollBurner,
     abi: REROLL_BURNER_ABI,
     functionName: "gnrm",
-    query: { enabled: ready },
+    query: { enabled: contractReady },
   });
 
   const { data: rerollCostData } = useReadContract({
     address: contracts?.rerollBurner,
     abi: REROLL_BURNER_ABI,
     functionName: "rerollCost",
-    query: { enabled: ready },
+    query: { enabled: contractReady },
   });
   const rerollCost = rerollCostData ?? FALLBACK_REROLL_COST;
 
@@ -79,8 +90,14 @@ export function useReroll() {
       account.address && contracts
         ? [account.address, contracts.rerollBurner]
         : undefined,
-    query: { enabled: ready && !!account.address && !!gnrmAddress },
+    query: { enabled: contractReady && !!account.address && !!gnrmAddress },
   });
+
+  // What consumers gate their button on. Stricter than `contractReady`: it
+  // also waits for `gnrmAddress` to load (executeReroll early-returns null
+  // with no error without it, which read as a silent no-op click) and blocks
+  // a wrong-chain wallet from triggering a real burn.
+  const ready = contractReady && !!gnrmAddress && !wrongChain;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async function executeReroll(faction: string | null): Promise<any | null> {
