@@ -9,6 +9,22 @@ export type MintStep =
   | "confirming"
   | "success";
 
+/**
+ * A confirmed reroll() burn awaiting a successful generation.
+ *
+ * The wallet and chain are stored alongside the hash because the burn is only
+ * redeemable by the wallet that paid it, on the chain it was paid on — the
+ * backend matches the `Rerolled` event's `user` against the caller and looks
+ * the tx up on one configured chain. Without them, connecting a second wallet
+ * in the same browser made that wallet resume (and re-resume, forever) a burn
+ * it can never redeem.
+ */
+export interface PendingReroll {
+  hash: `0x${string}`;
+  walletAddress: string;
+  chainId: number;
+}
+
 interface MintState {
   step: MintStep;
   faction: string | null;
@@ -28,7 +44,7 @@ interface MintState {
   // this store is persisted: a rate-limit rejection (or any other post-burn
   // failure) followed by a reload would otherwise strand a real 60,000 GNRM
   // burn with no way to redeem it.
-  pendingRerollTxHash: `0x${string}` | null;
+  pendingReroll: PendingReroll | null;
 
   // Actions
   setFaction: (faction: string | null) => void;
@@ -45,7 +61,7 @@ interface MintState {
   setMetadataUri: (uri: string) => void;
   setMintedTokenId: (id: bigint) => void;
   setError: (error: string | null) => void;
-  setPendingRerollTxHash: (hash: `0x${string}` | null) => void;
+  setPendingReroll: (pending: PendingReroll | null) => void;
   goTo: (step: MintStep) => void;
   reset: () => void;
 }
@@ -64,7 +80,7 @@ const initialState = {
   metadataUri: null,
   mintedTokenId: null,
   error: null,
-  pendingRerollTxHash: null as `0x${string}` | null,
+  pendingReroll: null as PendingReroll | null,
 };
 
 // Some mobile-wallet flows (Farcaster mini-app, deep-linking wallet apps)
@@ -108,21 +124,23 @@ export const useMintStore = create<MintState>()(
       setMetadataUri: (uri) => set({ metadataUri: uri }),
       setMintedTokenId: (id) => set({ mintedTokenId: id }),
       setError: (error) => set({ error }),
-      setPendingRerollTxHash: (hash) => set({ pendingRerollTxHash: hash }),
+      setPendingReroll: (pending) => set({ pendingReroll: pending }),
       goTo: (step) => set({ step, error: null }),
-      // Deliberately preserves `pendingRerollTxHash`. An unredeemed burn is
-      // real money the user has already spent; restarting the mint flow must
-      // not forfeit it. It is cleared in exactly one place — a successful
-      // generation POST in useReroll.
+      // Deliberately preserves `pendingReroll`. An unredeemed burn is real
+      // money the user has already spent; restarting the mint flow must not
+      // forfeit it. useReroll clears it in exactly two places, both of which
+      // mean the burn is provably gone: a generation POST the server answered
+      // 200 to (the payment is spent), and a verification failure whose reason
+      // proves the hash can never be redeemed (see isTerminalRerollReason).
       reset: () =>
         set((state) => ({
           ...initialState,
-          pendingRerollTxHash: state.pendingRerollTxHash,
+          pendingReroll: state.pendingReroll,
         })),
     }),
     {
       name: "gundarium-mint-state",
-      version: 1,
+      version: 2,
       storage: createJSONStorage(() => {
         if (typeof window === "undefined") {
           // SSR fallback — no-op storage that always returns null.
@@ -148,12 +166,27 @@ export const useMintStore = create<MintState>()(
           imageIpfsHash: state.imageIpfsHash,
           metadataUri: state.metadataUri,
           // Persisted deliberately — surviving a reload is the entire point.
-          pendingRerollTxHash: state.pendingRerollTxHash,
+          pendingReroll: state.pendingReroll,
           mintedTokenId:
             state.mintedTokenId !== null
               ? state.mintedTokenId.toString()
               : null,
         }) as unknown as MintState,
+      // v1 persisted a bare `pendingRerollTxHash` string with no wallet or
+      // chain attached — precisely the ambiguity v2 exists to remove, since
+      // there is no way to tell whose burn it was. Drop the key instead of
+      // resurrecting it as an entry that could never be matched. Safe to
+      // discard: RerollBurner is still a placeholder address on both chains,
+      // so no v1 state can contain a real burn. Everything else is carried
+      // through untouched — bumping the version without a migrate would make
+      // zustand throw away a live mint flow mid-transaction.
+      migrate: (persistedState, version) => {
+        const state = (persistedState ?? {}) as Record<string, unknown>;
+        if (version < 2) {
+          delete state.pendingRerollTxHash;
+        }
+        return state;
+      },
       merge: (persistedState, currentState) => {
         const persisted = (persistedState ?? {}) as Partial<MintState> & {
           mintedTokenId?: string | null;

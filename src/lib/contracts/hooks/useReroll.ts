@@ -14,6 +14,7 @@ import { REROLL_BURNER_ABI } from "@/lib/contracts/abis/RerollBurner";
 import { getContracts, isPlaceholder } from "@/lib/contracts/addresses";
 import { createGuardedWrite } from "@/lib/contracts/guardedWrite";
 import { buildRerollMessage } from "@/lib/rerollMessage";
+import { isTerminalRerollReason } from "@/lib/rerollReasons";
 import { TARGET_CHAIN_ID } from "@/lib/targetChain";
 import { useMintStore } from "@/store/useMintStore";
 
@@ -35,15 +36,15 @@ export function useReroll() {
   // executeReroll, so a later failure (signature rejected, Gemini POST
   // failing) can retry the sign+generate step against the SAME tx hash
   // instead of re-running approve+reroll and burning GNRM a second time.
-  // Only cleared once /api/generate-kitbash actually succeeds.
+  // Cleared only when the burn is provably gone — see below.
   //
   // Held in the persisted mint store rather than local useState: this
   // component unmounts on any reload, and the most likely post-burn failure
   // is the shared per-IP rate limit rejecting the paid POST with a 429 —
   // whose natural user response (reload, navigate away) would otherwise
   // strand a real 60,000 GNRM burn permanently.
-  const pendingRerollHash = useMintStore((s) => s.pendingRerollTxHash);
-  const setPendingRerollHash = useMintStore((s) => s.setPendingRerollTxHash);
+  const pendingReroll = useMintStore((s) => s.pendingReroll);
+  const setPendingReroll = useMintStore((s) => s.setPendingReroll);
 
   const chainId = useChainId();
   const publicClient = usePublicClient();
@@ -116,7 +117,23 @@ export function useReroll() {
       // If a previous attempt already confirmed the burn on-chain, resume
       // from there instead of re-running approve+reroll (which would burn
       // GNRM a second time for the same reroll).
-      let rerollHash = pendingRerollHash;
+      //
+      // A remembered burn is only resumable by the wallet that paid for it,
+      // on the chain it was paid on: the backend requires the `Rerolled`
+      // event's `user` to equal the caller and looks the tx up on exactly one
+      // configured chain. A mismatch is therefore not-applicable rather than
+      // invalid — fall through to a fresh burn for the current wallet/chain
+      // and leave the stored entry alone, since the wallet that owns it may
+      // reconnect (or NEXT_PUBLIC_CHAIN_ID may point back) and redeem it.
+      const resumable =
+        pendingReroll &&
+        pendingReroll.walletAddress.toLowerCase() ===
+          account.address.toLowerCase() &&
+        pendingReroll.chainId === chainId
+          ? pendingReroll
+          : null;
+
+      let rerollHash: `0x${string}` | null = resumable?.hash ?? null;
 
       if (!rerollHash) {
         if ((allowance ?? 0n) < rerollCost) {
@@ -150,8 +167,20 @@ export function useReroll() {
         }
         // Persist immediately once the burn is confirmed, before anything
         // else that could fail (signature, Gemini) — so a retry never
-        // re-burns.
-        setPendingRerollHash(newRerollHash);
+        // re-burns. Stamped with the paying wallet and chain so a later
+        // session can tell whether it is allowed to resume from it.
+        //
+        // Known residual: this is a single slot, so a second wallet's fresh
+        // burn overwrites a first wallet's unredeemed one. It takes a wallet
+        // switch *while* holding an unredeemed burn, and the first wallet's
+        // record is only lost once the second actually pays. If that ever
+        // matters, the fix is to key this by `${chainId}:${wallet}` and keep
+        // one entry per payer rather than one entry overall.
+        setPendingReroll({
+          hash: newRerollHash,
+          walletAddress: account.address,
+          chainId,
+        });
         rerollHash = newRerollHash;
       }
 
@@ -173,13 +202,31 @@ export function useReroll() {
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error ?? "Reroll generation failed");
+        const reason = typeof data?.error === "string" ? data.error : undefined;
+        // Some verification failures prove this hash can never buy a
+        // generation (already consumed, not a reroll for this wallet, tx
+        // absent from the chain). Keeping it would make every future click
+        // retry a dead payment forever — a permanent dead-end. Forget it so
+        // the next click starts a genuinely fresh approve+burn.
+        //
+        // Everything else — 429 rate limits, transport errors, "couldn't
+        // check right now" — stays remembered. Those are exactly the cases
+        // this field exists to protect: the burn is still redeemable and
+        // discarding it would cost the user another 60,000 GNRM.
+        if (isTerminalRerollReason(reason)) {
+          setPendingReroll(null);
+        }
+        throw new Error(reason ?? "Reroll generation failed");
       }
 
+      // The server marks the payment consumed *before* it responds, so a 2xx
+      // means this burn is spent no matter what happens next. Clear before
+      // touching the body: a throw from res.json() (dropped connection,
+      // malformed payload) would otherwise leave the client retrying a hash
+      // the server has already redeemed, which only ever answers 402.
+      setPendingReroll(null);
+
       const data = await res.json();
-      // Only clear the remembered burn tx once generation actually
-      // succeeds — this is the one path where the reroll is fully spent.
-      setPendingRerollHash(null);
       setPhase("done");
       return data;
     } catch (e) {

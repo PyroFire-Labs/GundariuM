@@ -11,12 +11,18 @@
  *      emitted a Rerolled event for this wallet?
  */
 
-import { createPublicClient, http, parseEventLogs } from "viem";
+import {
+  createPublicClient,
+  http,
+  parseEventLogs,
+  TransactionReceiptNotFoundError,
+} from "viem";
 import { baseSepolia } from "viem/chains";
 import { getContracts, isPlaceholder } from "@/lib/contracts/addresses";
 import { REROLL_BURNER_ABI } from "@/lib/contracts/abis/RerollBurner";
 import { buildRerollMessage } from "@/lib/rerollMessage";
-import { isRerollTxConsumed } from "@/lib/rerollStore";
+import { REROLL_REASON } from "@/lib/rerollReasons";
+import { isRerollStoreConfigured, isRerollTxConsumed } from "@/lib/rerollStore";
 import { TARGET_CHAIN, TARGET_CHAIN_ID } from "@/lib/targetChain";
 
 // Chain-aware (not hardcoded to mainnet): NEXT_PUBLIC_CHAIN_ID lets the exact
@@ -52,19 +58,29 @@ export async function verifyRerollPayment(params: {
     });
   } catch (err) {
     console.error(`Reroll signature verification threw for ${walletAddress}:`, err);
-    return { valid: false, reason: "Signature verification failed" };
+    return { valid: false, reason: REROLL_REASON.SIGNATURE_CHECK_FAILED };
   }
   if (!signatureValid) {
-    return { valid: false, reason: "Signature doesn't match wallet" };
+    return { valid: false, reason: REROLL_REASON.SIGNATURE_MISMATCH };
+  }
+
+  // Checked before isRerollTxConsumed, not merged into it. With Redis
+  // unconfigured that helper fails CLOSED (returns "consumed"), which is the
+  // right verdict but the wrong *reason*: "already used" is one of the
+  // terminal reasons the client reacts to by forgetting the burn tx, so a
+  // misconfigured deploy would make every payer discard a live 60,000 GNRM
+  // burn and immediately pay again. This reason is deliberately non-terminal.
+  if (!isRerollStoreConfigured()) {
+    return { valid: false, reason: REROLL_REASON.STORE_UNAVAILABLE };
   }
 
   if (await isRerollTxConsumed(rerollTxHash)) {
-    return { valid: false, reason: "This payment has already been used" };
+    return { valid: false, reason: REROLL_REASON.ALREADY_USED };
   }
 
   const contracts = getContracts(chain.id);
   if (isPlaceholder(contracts.rerollBurner)) {
-    return { valid: false, reason: "Reroll isn't live yet" };
+    return { valid: false, reason: REROLL_REASON.NOT_LIVE };
   }
 
   let receipt;
@@ -74,11 +90,20 @@ export async function verifyRerollPayment(params: {
     });
   } catch (err) {
     console.error(`Reroll tx receipt lookup failed for ${rerollTxHash}:`, err);
-    return { valid: false, reason: "Reroll transaction not found" };
+    // Split the two cases the old single reason conflated. viem throws
+    // TransactionReceiptNotFoundError only when the RPC actually answered and
+    // had no receipt — a verdict on the hash, and terminal client-side.
+    // Anything else (transport error, provider outage) means we simply don't
+    // know, so it must stay retryable: the client keeps the burn and tries
+    // again rather than forfeiting a payment over a network blip.
+    if (err instanceof TransactionReceiptNotFoundError) {
+      return { valid: false, reason: REROLL_REASON.TX_NOT_FOUND };
+    }
+    return { valid: false, reason: REROLL_REASON.TX_LOOKUP_FAILED };
   }
 
   if (receipt.status !== "success") {
-    return { valid: false, reason: "Reroll transaction did not succeed" };
+    return { valid: false, reason: REROLL_REASON.TX_FAILED };
   }
 
   const events = parseEventLogs({
@@ -97,7 +122,7 @@ export async function verifyRerollPayment(params: {
       e.args.user.toLowerCase() === walletAddress.toLowerCase()
   );
   if (!matchingEvent) {
-    return { valid: false, reason: "No matching Rerolled event for this wallet" };
+    return { valid: false, reason: REROLL_REASON.NO_MATCHING_EVENT };
   }
 
   return { valid: true };
