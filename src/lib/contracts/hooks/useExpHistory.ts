@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { usePublicClient } from "wagmi";
 import { parseAbiItem, type Address } from "viem";
 import { base } from "viem/chains";
@@ -33,7 +33,11 @@ export interface ExpHistory {
   perfectWeeks: number;
   /** gnrmBuyDays*12 + stakeClaims*50 + dossierShares*8 + arenaShares*8 + perfectWeeks*200 */
   bonusExp: number;
+  /** Re-runs the scan on demand — see the `refreshOn` param for why this exists. */
+  refetch: () => void;
 }
+
+const NOOP = () => {};
 
 const EMPTY: ExpHistory = {
   loading: true,
@@ -43,6 +47,7 @@ const EMPTY: ExpHistory = {
   arenaShares: 0,
   perfectWeeks: 0,
   bonusExp: 0,
+  refetch: NOOP,
 };
 
 type PublicClient = NonNullable<ReturnType<typeof usePublicClient>>;
@@ -228,6 +233,18 @@ async function scanPerfectWeeks(
   return perfectWeeks;
 }
 
+type ExpHistoryData = Omit<ExpHistory, "refetch">;
+
+const EMPTY_DATA: ExpHistoryData = {
+  loading: true,
+  gnrmBuyDays: 0,
+  stakeClaims: 0,
+  dossierShares: 0,
+  arenaShares: 0,
+  perfectWeeks: 0,
+  bonusExp: 0,
+};
+
 /**
  * Permanent EXP bonuses reconstructed from pure on-chain event history,
  * rather than "is this true right now" flags (which reset at UTC
@@ -235,10 +252,19 @@ async function scanPerfectWeeks(
  * decaying every day). Since it's a deterministic replay of immutable
  * events, there's nothing to persist or trust beyond the chain itself —
  * recomputing it always gives the same answer.
+ *
+ * The scan only re-runs on wallet change by itself — completing a task
+ * mid-session doesn't touch `address` or `publicClient`, so the returned
+ * `refetch()` exists for the page to call right after any task-completing
+ * action succeeds (stake, GNRM buy, dossier/arena share, check-in),
+ * otherwise the total would look frozen until the next reload.
  */
 export function useExpHistory(address: Address | undefined): ExpHistory {
-  const [history, setHistory] = useState<ExpHistory>(EMPTY);
+  const [data, setData] = useState<ExpHistoryData>(EMPTY_DATA);
+  const [refreshKey, setRefreshKey] = useState(0);
   const publicClient = usePublicClient({ chainId: base.id });
+
+  const refetch = useCallback(() => setRefreshKey((k) => k + 1), []);
 
   useEffect(() => {
     if (!address || !publicClient) return;
@@ -246,7 +272,7 @@ export function useExpHistory(address: Address | undefined): ExpHistory {
     let cancelled = false;
 
     (async () => {
-      setHistory((prev) => ({ ...prev, loading: true }));
+      setData((prev) => ({ ...prev, loading: true }));
 
       const contracts = getContracts(base.id);
       const toBlock = await publicClient.getBlockNumber();
@@ -270,7 +296,7 @@ export function useExpHistory(address: Address | undefined): ExpHistory {
       const bonusExp =
         gnrmBuyDays * 12 + stakeClaims * 50 + dossierShares * 8 + arenaShares * 8 + perfectWeeks * 200;
 
-      setHistory({
+      setData({
         loading: false,
         gnrmBuyDays,
         stakeClaims,
@@ -284,7 +310,8 @@ export function useExpHistory(address: Address | undefined): ExpHistory {
     return () => {
       cancelled = true;
     };
-  }, [address, publicClient]);
+  }, [address, publicClient, refreshKey]);
 
-  return address ? history : EMPTY;
+  if (!address) return EMPTY;
+  return { ...data, refetch };
 }

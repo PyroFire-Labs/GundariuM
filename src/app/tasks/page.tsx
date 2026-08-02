@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useAccount } from "wagmi";
 import { useDailyCheckIn } from "@/lib/contracts/hooks/useDailyCheckIn";
@@ -80,6 +80,22 @@ export default function TasksPage() {
   const dossierShareVerification = useDossierShareVerification({ streak: currentStreak, exp });
   const dossierShared = dossierShareVerification.hasSharedToday;
   const arenaBattleShared = useArenaBattleShareStatus();
+
+  // useExpHistory only re-scans on its own when the wallet address changes —
+  // completing a task mid-session doesn't touch that, so without this the
+  // total would look frozen until the next full reload. Skips its own first
+  // fire since useExpHistory already scans once on mount by itself.
+  const expHistoryFirstRun = useRef(true);
+  useEffect(() => {
+    if (expHistoryFirstRun.current) {
+      expHistoryFirstRun.current = false;
+      return;
+    }
+    expHistory.refetch();
+    // expHistory.refetch is stable (useCallback with no deps); only the
+    // completion flags below should actually trigger a re-scan.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checkedInToday, gnrmVerified, stakedToday, dossierShared, arenaBattleShared]);
 
   // If the check comes back not-met, hand off to Farcaster's native swap
   // inside a miniapp; outside one (swapToken isn't available in a plain
