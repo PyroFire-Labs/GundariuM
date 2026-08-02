@@ -1,10 +1,13 @@
 /**
  * GET /api/cron/refresh-leaderboard
  *
- * Vercel Cron-triggered. Ranks every known participant by the same stable
- * EXP formula the dossier uses (currentStreak*10 + totalCheckIns*5 +
- * mintedCount*25 + perfectWeek bonus), caches the top 100 in KV for the
- * /leaderboard page to read.
+ * Vercel Cron-triggered. Ranks every known participant by the exact same
+ * EXP formula /tasks uses (currentStreak*10 + totalCheckIns*5 +
+ * mintedCount*25, plus the permanent GNRM-buy/stake/share/perfect-week
+ * bonus from updateExpHistory) — the two used to disagree, since this
+ * cron only ever computed the base and never called into the shared
+ * bonus logic, so the same wallet showed two different totals in two
+ * different places. Caches the top 100 in KV for the /leaderboard page.
  *
  * Population = every current GunplaCard holder (re-enumerated fresh each
  * run via ERC721Enumerable — cheap at current scale, and self-corrects
@@ -20,6 +23,7 @@ import { DAILY_CHECKIN_ABI } from "@/lib/contracts/abis/DailyCheckIn";
 import { GUNPLA_CARD_ABI } from "@/lib/contracts/abis/GunplaCard";
 import { getContracts, isPlaceholder } from "@/lib/contracts/addresses";
 import { lookupFarcasterByAddresses } from "@/lib/neynar";
+import { getExpHistoryTotals } from "@/lib/expHistoryScan";
 import {
   getKnownParticipants,
   addKnownParticipants,
@@ -221,27 +225,38 @@ export async function GET(req: Request) {
     })
   );
 
-  const ranked = population
+  // Permanent base only — no live perfectWeek check here. That would
+  // double-count against updateExpHistory's own perfectWeeks*200 below,
+  // which replays CheckedIn history into a permanent count rather than a
+  // live "is this week currently perfect" boolean (the same live-flag
+  // problem /tasks already had — see feedback_onchain_scan_architecture).
+  const baseResults = population
     .map((address, i) => {
       const streak = streakResults[i];
       const balance = balanceResults[i];
       if (streak.status !== "success" || balance.status !== "success") return null;
-      const [current, , total, , weekCount] = streak.result as readonly [
-        bigint,
-        bigint,
-        bigint,
-        bigint,
-        bigint,
-      ];
+      const [current, , total] = streak.result as readonly [bigint, bigint, bigint, bigint, bigint];
       const mintedCount = Number(balance.result as bigint);
       const currentStreak = Number(current);
       const totalCheckIns = Number(total);
-      const perfectWeek = weekCount === 7n;
-      const exp =
-        currentStreak * 10 + totalCheckIns * 5 + mintedCount * 25 + (perfectWeek ? 200 : 0);
-      return { address, exp, currentStreak, totalCheckIns, mintedCount };
+      const baseExp = currentStreak * 10 + totalCheckIns * 5 + mintedCount * 25;
+      return { address, baseExp, currentStreak, totalCheckIns, mintedCount };
     })
-    .filter((e): e is NonNullable<typeof e> => e !== null && e.exp > 0)
+    .filter((e): e is NonNullable<typeof e> => e !== null);
+
+  // Sequential, not Promise.all — each call already paces/retries its own
+  // RPC traffic against the same rate-limited public endpoint; running
+  // them concurrently would just recreate the burst this was built to avoid.
+  // Reads whatever bonus each wallet already has cached — see
+  // getExpHistoryTotals's doc comment for why this doesn't scan inline.
+  const withBonus: Array<(typeof baseResults)[number] & { exp: number }> = [];
+  for (const r of baseResults) {
+    const { bonusExp } = await getExpHistoryTotals(r.address as `0x${string}`);
+    withBonus.push({ ...r, exp: r.baseExp + bonusExp });
+  }
+
+  const ranked = withBonus
+    .filter((e) => e.exp > 0)
     .sort((a, b) => b.exp - a.exp)
     .slice(0, TOP_N);
 
