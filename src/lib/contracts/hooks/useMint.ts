@@ -161,7 +161,16 @@ export function useMint() {
         functionName: "approve",
         args: [contracts.gunplaCard, priceOverride ?? mintPrice],
       });
-      await publicClient!.waitForTransactionReceipt({ hash });
+      const receipt = await publicClient!.waitForTransactionReceipt({ hash });
+      // waitForTransactionReceipt resolves normally on a revert too — it
+      // doesn't throw. Without this check a reverted approve() still
+      // showed "approved", letting the mint step proceed against an
+      // allowance that was never actually granted.
+      if (receipt.status === "reverted") {
+        setError("Approval transaction reverted on-chain — please try again");
+        setPhase("error");
+        return;
+      }
       setPhase("approved");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Approval failed");
@@ -184,6 +193,17 @@ export function useMint() {
         args: [account.address, tokenUri, traitsToOnchain(traits) as any],
       });
       const receipt = await publicClient!.waitForTransactionReceipt({ hash });
+      // waitForTransactionReceipt resolves normally on a revert too — it
+      // doesn't throw. Without this check a reverted mint still showed
+      // "done" and returned null (a reverted tx emits no logs, so the
+      // Transfer lookup below always misses), which the reveal screen
+      // could easily read as "minted, but no tokenId" instead of "the
+      // mint never actually happened."
+      if (receipt.status === "reverted") {
+        setError("Mint transaction reverted on-chain — please try again");
+        setPhase("error");
+        return null;
+      }
       setPhase("done");
 
       // Parse tokenId from Transfer(from, to, tokenId) event
@@ -222,6 +242,11 @@ export function useMint() {
         args: [account.address!, tokenUri, onchainTraits as any, tier, proof],
       });
       const receipt = await publicClient.waitForTransactionReceipt({ hash });
+      if (receipt.status === "reverted") {
+        setError("Mint transaction reverted on-chain — please try again");
+        setPhase("error");
+        return null;
+      }
       const transferLog = receipt.logs.find(
         (l) =>
           l.address.toLowerCase() === contracts!.gunplaCard.toLowerCase() &&
@@ -257,6 +282,11 @@ export function useMint() {
         args: [account.address, tokenUri, traitsToOnchain(traits) as any],
       });
       const receipt = await publicClient!.waitForTransactionReceipt({ hash });
+      if (receipt.status === "reverted") {
+        setError("Mint transaction reverted on-chain — please try again");
+        setPhase("error");
+        return null;
+      }
       setPhase("done");
 
       const transferLog = receipt.logs.find(

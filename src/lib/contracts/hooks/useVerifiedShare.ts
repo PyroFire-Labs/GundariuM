@@ -77,7 +77,18 @@ export function useVerifiedShare(config: {
         functionName: "intentToShare",
         args: [],
       });
-      await publicClient.waitForTransactionReceipt({ hash: intentHash });
+      const intentReceipt = await publicClient.waitForTransactionReceipt({ hash: intentHash });
+      // waitForTransactionReceipt resolves normally on a revert too — it
+      // doesn't throw. Without this check a reverted intent still opened
+      // the compose dialog, only for the confirm step to fail later with
+      // a confusing NoIntentForToday error (or, before this fix touched
+      // the confirm step too, to silently show "done" despite nothing
+      // having actually gone through).
+      if (intentReceipt.status === "reverted") {
+        setError("Share intent transaction reverted on-chain — please try again");
+        setPhase("error");
+        return false;
+      }
 
       setPhase("awaiting-share");
       const result = await composeCastFn();
@@ -96,7 +107,12 @@ export function useVerifiedShare(config: {
         functionName: confirmFunctionName,
         args: confirmArgs,
       });
-      await publicClient.waitForTransactionReceipt({ hash: confirmHash });
+      const confirmReceipt = await publicClient.waitForTransactionReceipt({ hash: confirmHash });
+      if (confirmReceipt.status === "reverted") {
+        setError("Share confirmation transaction reverted on-chain — please try again");
+        setPhase("error");
+        return false;
+      }
 
       setPhase("done");
       refetchHasSharedToday();
@@ -119,7 +135,12 @@ export function useVerifiedShare(config: {
         functionName: confirmFunctionName,
         args: lastConfirmArgsRef.current,
       });
-      await publicClient.waitForTransactionReceipt({ hash: confirmHash });
+      const confirmReceipt = await publicClient.waitForTransactionReceipt({ hash: confirmHash });
+      if (confirmReceipt.status === "reverted") {
+        setError("Share confirmation transaction reverted on-chain — please try again");
+        setPhase("error");
+        return false;
+      }
       setPhase("done");
       refetchHasSharedToday();
       return true;

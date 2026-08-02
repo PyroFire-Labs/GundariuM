@@ -55,7 +55,17 @@ export function useDailyCheckIn() {
         functionName: "checkIn",
         args: [],
       });
-      await publicClient.waitForTransactionReceipt({ hash: tx, timeout: 60_000 * 5 });
+      const receipt = await publicClient.waitForTransactionReceipt({ hash: tx, timeout: 60_000 * 5 });
+
+      // waitForTransactionReceipt resolves normally on a reverted tx too —
+      // it doesn't throw. Without this check a revert (out of gas, RPC
+      // hiccup, anything) still showed "done" and refetched, silently
+      // reading back the unchanged on-chain state as if it had succeeded.
+      if (receipt.status === "reverted") {
+        setError("Check-in transaction reverted on-chain — please try again");
+        setPhase("error");
+        return;
+      }
 
       setPhase("done");
       refetchStreak();
