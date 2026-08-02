@@ -56,12 +56,14 @@ function sleep(ms: number) {
 }
 
 /**
- * Retries a rate-limited RPC call with a fixed backoff before giving up.
- * The public RPC's rate limit is real and shared across every route in
- * this app that talks to it (see /api/exp-history) — without this, a
- * single rate-limit hit partway through this cron's many calls throws
- * uncaught, and the leaderboard cache is either left stale or, depending
- * on exactly where the throw lands, never gets past an empty result.
+ * Retries any failed RPC call with a fixed backoff before giving up.
+ * Deliberately not scoped to a specific error-message substring — the
+ * first version of this only retried errors whose text included "rate
+ * limit", which worked when testing from a home/office IP but missed
+ * whatever the public RPC actually says when it throttles requests from
+ * Vercel's cloud IP ranges specifically (a plausibly different, stricter
+ * response than what local testing ever saw). Retrying unconditionally
+ * is safe here — there's no side effect to double up on, only reads.
  */
 async function withRetry<T>(fn: () => Promise<T>): Promise<T> {
   let lastErr: unknown;
@@ -70,8 +72,7 @@ async function withRetry<T>(fn: () => Promise<T>): Promise<T> {
       return await fn();
     } catch (err) {
       lastErr = err;
-      const message = err instanceof Error ? err.message : String(err);
-      if (!message.includes("rate limit") || attempt === MAX_RETRIES) throw err;
+      if (attempt === MAX_RETRIES) throw err;
       await sleep(RETRY_DELAY_MS);
     }
   }
@@ -80,34 +81,24 @@ async function withRetry<T>(fn: () => Promise<T>): Promise<T> {
 
 type MulticallResult = { status: "success"; result: unknown } | { status: "failure"; error: unknown };
 
-// viem nests the actual RPC error several levels down (error.cause.cause.details
-// for a rate-limit response, not error.message) — has to walk the chain.
-function containsRateLimit(err: unknown, depth = 0): boolean {
-  if (!err || typeof err !== "object" || depth > 5) return false;
-  const obj = err as Record<string, unknown>;
-  const message = typeof obj.message === "string" ? obj.message : "";
-  const details = typeof obj.details === "string" ? obj.details : "";
-  if (message.includes("rate limit") || details.includes("rate limit")) return true;
-  return containsRateLimit(obj.cause, depth + 1);
-}
-
-function hasRateLimitFailure(results: readonly MulticallResult[]): boolean {
-  return results.some((r) => r.status === "failure" && containsRateLimit(r.error));
+function hasAnyFailure(results: readonly MulticallResult[]): boolean {
+  return results.some((r) => r.status === "failure");
 }
 
 /**
  * viem's multicall (allowFailure: true, the default) resolves normally
- * even when the RPC rate-limits an underlying batched eth_call — every
- * result in that batch comes back as status: "failure" with the
- * rate-limit error attached per-item, not as a rejected promise. Plain
- * withRetry only catches thrown errors, so it never sees this: the whole
- * population silently reads back as "failure" and the leaderboard ends
- * up empty despite real on-chain data existing. This checks the
- * *resolved* results for that signature and retries the whole call.
+ * even when the RPC throttles an underlying batched eth_call — every
+ * result in that batch comes back as status: "failure", not as a
+ * rejected promise. Plain withRetry only catches thrown errors, so it
+ * never sees this: the whole population silently reads back as
+ * "failure" and the leaderboard ends up empty despite real on-chain
+ * data existing. This checks the *resolved* results for any failure at
+ * all and retries the whole call — not scoped to a specific error
+ * signature, for the same reason withRetry above isn't.
  */
 async function multicallWithRetry<T extends readonly MulticallResult[]>(fn: () => Promise<T>): Promise<T> {
   let result = await withRetry(fn);
-  for (let attempt = 0; attempt < MAX_RETRIES && hasRateLimitFailure(result); attempt++) {
+  for (let attempt = 0; attempt < MAX_RETRIES && hasAnyFailure(result); attempt++) {
     await sleep(RETRY_DELAY_MS);
     result = await withRetry(fn);
   }
@@ -259,6 +250,21 @@ export async function GET(req: Request) {
     .filter((e) => e.exp > 0)
     .sort((a, b) => b.exp - a.exp)
     .slice(0, TOP_N);
+
+  // This has silently gone empty in production before despite non-zero
+  // population, purely from the multicall failure mode above — leaving a
+  // trail in the logs beats re-diagnosing from scratch next time.
+  if (ranked.length === 0 && population.length > 0) {
+    console.error(
+      "refresh-leaderboard: 0 ranked despite non-empty population",
+      JSON.stringify({
+        population: population.length,
+        baseResults: baseResults.length,
+        streakFailures: streakResults.filter((r) => r.status === "failure").length,
+        balanceFailures: balanceResults.filter((r) => r.status === "failure").length,
+      })
+    );
+  }
 
   // 5. Resolve Farcaster identity for just the top N, in one batched call.
   const profiles = await lookupFarcasterByAddresses(ranked.map((e) => e.address));

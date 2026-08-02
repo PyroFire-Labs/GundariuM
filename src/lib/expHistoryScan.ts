@@ -57,6 +57,10 @@ function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// Not scoped to a "rate limit" substring — production (Vercel's cloud IP
+// ranges) plausibly gets a differently-worded throttling response than
+// whatever local testing saw. Retrying any failure unconditionally is
+// safe here, since these are all reads.
 async function withRetry<T>(fn: () => Promise<T>): Promise<T> {
   let lastErr: unknown;
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
@@ -64,8 +68,7 @@ async function withRetry<T>(fn: () => Promise<T>): Promise<T> {
       return await fn();
     } catch (err) {
       lastErr = err;
-      const message = err instanceof Error ? err.message : String(err);
-      if (!message.includes("rate limit") || attempt === MAX_RETRIES) throw err;
+      if (attempt === MAX_RETRIES) throw err;
       await sleep(RETRY_DELAY_MS);
     }
   }
