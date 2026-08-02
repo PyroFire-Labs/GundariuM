@@ -12,6 +12,7 @@ import { ShareButtons } from "@/components/ui/ShareButtons";
 import { openInMiniAppOrBrowser } from "@/lib/openInMiniAppOrBrowser";
 import { useDossierShareVerification } from "@/lib/contracts/hooks/useDossierShareVerification";
 import { useArenaBattleShareStatus } from "@/lib/contracts/hooks/useArenaBattleShareVerification";
+import { useExpHistory } from "@/lib/contracts/hooks/useExpHistory";
 
 const GNRM_CAIP19 = "eip155:8453/erc20:0x271b01cc11032a4e23f0200f8f57eb45176ab491";
 const STREME_GNRM_URL = "https://streme.fun/token/0x271b01cc11032a4e23f0200f8f57eb45176ab491";
@@ -46,7 +47,6 @@ export default function TasksPage() {
   const {
     currentStreak,
     totalCheckIns,
-    perfectWeek,
     checkedInToday,
     phase,
     checkIn,
@@ -62,19 +62,24 @@ export default function TasksPage() {
   const mintedToday = mintPhase === "verified";
   const stakedToday = stakePhase === "verified";
   const countdown = useCountdownToNextUtcDay(checkedInToday);
-  const preShareExp =
-    currentStreak * 10 +
-    totalCheckIns * 5 +
-    mintedCount * 25 +
-    (stakedToday ? 50 : 0) +
-    (gnrmVerified ? 12 : 0) +
-    (perfectWeek ? 200 : 0);
 
-  const dossierShareVerification = useDossierShareVerification({ streak: currentStreak, exp: preShareExp });
+  // Permanent, always-growing base — streak/check-ins/minted-count never
+  // reset. The daily task flags below (stakedToday, gnrmVerified,
+  // perfectWeek, and the two share statuses) stay exactly as they were:
+  // they still gate the task checkmarks/buttons, resetting at UTC
+  // midnight until redone. What changed is that "Total EXP" no longer
+  // sums those live flags directly — doing so meant the displayed total
+  // dropped by up to 78+ points at every day boundary, before there was
+  // any chance to redo that day's tasks. Instead it sums a permanent
+  // history reconstructed from on-chain events (see useExpHistory), so
+  // the total only ever grows.
+  const permanentBaseExp = currentStreak * 10 + totalCheckIns * 5 + mintedCount * 25;
+  const expHistory = useExpHistory(address);
+  const exp = permanentBaseExp + expHistory.bonusExp;
+
+  const dossierShareVerification = useDossierShareVerification({ streak: currentStreak, exp });
   const dossierShared = dossierShareVerification.hasSharedToday;
   const arenaBattleShared = useArenaBattleShareStatus();
-
-  const exp = preShareExp + (dossierShared ? 8 : 0) + (arenaBattleShared ? 8 : 0);
 
   // If the check comes back not-met, hand off to Farcaster's native swap
   // inside a miniapp; outside one (swapToken isn't available in a plain

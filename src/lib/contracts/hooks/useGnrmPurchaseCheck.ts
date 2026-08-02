@@ -6,9 +6,9 @@ import { parseAbiItem } from "viem";
 import { base } from "viem/chains";
 import { utcMidnightFromBlock } from "./utcDailyWindow";
 
-const GNRM_ADDRESS = "0x271b01cc11032a4e23f0200f8f57eb45176ab491" as const;
-const GNRM_POOL_ADDRESS = "0x72d3338600cf47766e4f9e435be4879593870181" as const;
-const MIN_DAILY_BUY = 30_000n * 10n ** 18n; // 30,000 GNRM, 18 decimals
+export const GNRM_ADDRESS = "0x271b01cc11032a4e23f0200f8f57eb45176ab491" as const;
+export const GNRM_POOL_ADDRESS = "0x72d3338600cf47766e4f9e435be4879593870181" as const;
+export const MIN_DAILY_BUY = 30_000n * 10n ** 18n; // 30,000 GNRM, 18 decimals
 const MAX_LOG_RANGE = 9_000n; // mainnet.base.org's public RPC caps eth_getLogs at 10,000 blocks/call
 
 const TRANSFER_EVENT = parseAbiItem("event Transfer(address indexed from, address indexed to, uint256 value)");
