@@ -48,9 +48,13 @@ const BATTLE_SHARE_CONFIRMED_EVENT = parseAbiItem(
   "event BattleShareConfirmed(address indexed user, uint256 day, string playerName, string enemyName, bool won, uint16 hpPct)"
 );
 
+// Prefer the dedicated RPC endpoint over the free public one — this scan
+// batches multiple contract reads per request, and mainnet.base.org's free
+// tier intermittently rejects those with "RPC Request failed" under load
+// (same fix as og/dossier/[address] — see that route's comment).
 export const expHistoryPublicClient = createPublicClient({
   chain: base,
-  transport: http("https://mainnet.base.org"),
+  transport: http(process.env.BASE_RPC_URL || "https://mainnet.base.org"),
 });
 
 function sleep(ms: number) {

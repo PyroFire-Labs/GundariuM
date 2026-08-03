@@ -46,9 +46,13 @@ const CHECKED_IN_EVENT = parseAbiItem(
   "event CheckedIn(address indexed user, uint256 day, uint256 streak)"
 );
 
+// Prefer the dedicated RPC endpoint over the free public one — this route
+// batches multiple contract reads per request, and mainnet.base.org's free
+// tier intermittently rejects those with "RPC Request failed" under load
+// (same fix as og/dossier/[address] — see that route's comment).
 const publicClient = createPublicClient({
   chain: base,
-  transport: http("https://mainnet.base.org"),
+  transport: http(process.env.BASE_RPC_URL || "https://mainnet.base.org"),
 });
 
 function sleep(ms: number) {
