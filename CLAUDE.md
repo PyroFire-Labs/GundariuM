@@ -29,6 +29,8 @@ GundariuM/
 │   │       ├── analyze-gunpla/       # POST — sends image to Claude, returns TraitSet (RWA tier)
 │   │       ├── generate-kitbash/     # POST — Gemini kitbash image generation for the live mint flow
 │   │       ├── mint-metadata/        # POST — uploads image + metadata to IPFS via Pinata
+│   │       ├── generate-model/       # POST — enqueues 3D-model generation job (see "3D model pipeline" below)
+│   │       ├── model-status/[tokenId]/ # GET — polled job status (pending/processing/ready/failed) + GLB URL
 │   │       ├── runner-profile/[address]/ # GET — Farcaster identity lookup (via src/lib/neynar.ts), edge-cached 30min
 │   │       └── og/dossier/[address]/, og/victory/  # Satori-rendered share-card images (streak/EXP, battle result)
 │   ├── components/
@@ -36,7 +38,8 @@ GundariuM/
 │   │   ├── nav/                 # Navbar — Stake and Buy GNRM both open Streme.fun via openInMiniAppOrBrowser
 │   │   ├── providers/           # Providers (wagmi + react-query), FarcasterInit
 │   │   ├── ui/                  # ShareButtons, ComingSoon (used for not-yet-live pages)
-│   │   └── wallet/               # ConnectButton
+│   │   ├── wallet/               # ConnectButton
+│   │   └── card/Model3DViewer.tsx # 2D↔3D toggle, polls model-status, lazy-loads @google/model-viewer
 │   ├── store/
 │   │   ├── useMintStore.ts     # Zustand — multi-step mint flow state machine
 │   │   ├── useBattleStore.ts   # Zustand — battle session state
@@ -56,6 +59,9 @@ GundariuM/
 │   │   │   ├── factions.ts     # 10 canonical Gundam factions with universe and color
 │   │   │   └── prompts.ts      # Claude vision prompt (versioned, buildGunplaPrompt())
 │   │   ├── kitbash/             # generate.ts, traits.ts, namePools.ts — the live AI generation pipeline
+│   │   ├── modelStore.ts       # Redis queue + status for the 3D model pipeline (shared key scheme with worker/)
+│   │   ├── queueModelGeneration.ts # Client-side fire-and-forget POST to /api/generate-model, called from MintConfirm
+│   │   ├── hooks/useModelStatus.ts # Client-side poller for /api/model-status/[tokenId]
 │   │   ├── og/generateOgImage.tsx # Shared Satori OG image template (icon + title + status label, no countdown)
 │   │   ├── pinata/upload.ts    # uploadImage() and uploadMetadata() to IPFS
 │   │   ├── neynar.ts           # Server-only Neynar client — Farcaster identity by address, backs /api/runner-profile
@@ -84,6 +90,10 @@ GundariuM/
 │   ├── test/                   # GunplaCard.t.sol, DailyCheckIn.t.sol, GNDMtoGUNR.t.sol
 │   ├── foundry.toml            # Foundry config (via_ir=true, optimizer_runs=200)
 │   └── plans/                  # Design docs for contract features
+├── worker/                     # 3D model generation worker (separate sub-project, see below)
+│   ├── blender/                # assemble.py (headless bpy entry) + lib/components.py (placeholder geometry)
+│   ├── src/                    # queue.ts, worker.ts, modelStore.ts, pinataUpload.ts, alert.ts
+│   └── README.md               # Architecture, how to run, how to swap in real 3D art
 ├── docs/                       # Whitepaper (whitepaper.md is the source; generate-whitepaper-pdf.py builds the PDF via pandoc + headless Chrome), superpowers specs/plans
 ├── public/                     # Static assets, GundariuMwhitepaper.pdf
 ├── eslint.config.mjs
@@ -217,6 +227,58 @@ The original photo-your-kit mint components (SuitSearch, GradePicker, PhotoDropz
 **RWA analysis pipeline (preserved for future use):**
 - `src/lib/claude/analyzeGunpla.ts` — Claude photo analysis
 - `src/app/api/analyze-gunpla/route.ts` — photo analysis API route
+
+---
+
+## 3D model pipeline
+
+Every real mint also gets a 3D model (GLB), generated in the background
+alongside the Gemini 2D card art. Full architecture and run instructions:
+**`worker/README.md`** — this section is the short version.
+
+**Trigger point:** `handleMint()` in `MintConfirm.tsx`, right after a mint
+transaction confirms and the tokenId is parsed from the `Transfer` event —
+not at generation/reveal time, since a reveal can be rerolled or abandoned
+before payment and would otherwise render models nobody ends up owning.
+`queueModelGeneration()` (`src/lib/queueModelGeneration.ts`) fires a
+non-blocking `POST /api/generate-model` with the tokenId + geometry-relevant
+`KitbashTraits`; it never blocks or fails the mint flow itself.
+
+**Where it runs:** `worker/` is a standalone package (own `package.json`,
+not part of the Next.js build) that runs wherever headless Blender is
+installed — **not Vercel**, which can't run long-lived native processes.
+**No host is provisioned for it yet** — see `worker/README.md`'s "open
+questions" section.
+
+**Data flow:** `POST /api/generate-model` enqueues onto a Redis list
+(`src/lib/modelStore.ts`); `worker/src/worker.ts` polls it (Upstash's REST
+API has no blocking pop), shells out to `blender --background --python
+worker/blender/assemble.py`, uploads the resulting GLB to IPFS via Pinata,
+and writes `{ status, uri }` to `model:status:<tokenId>` in the same Redis
+instance. `GET /api/model-status/[tokenId]` (polled by `useModelStatus.ts`,
+used on the card page and the mint success screen) reads that key. The GLB
+URI is **not** part of the immutable on-chain `tokenURI` metadata — it's
+looked up out-of-band by tokenId, the same pattern `leaderboardStore.ts`
+uses for off-chain cached data.
+
+**The geometry is a placeholder**, not final art. `worker/blender/lib/
+components.py` procedurally assembles a blocky mecha from primitives,
+deterministic per trait name (same trait always → same shape/color) —
+because hand-modeling real Gunpla components for all ~94 distinct trait
+options is a 3D-art task that hasn't happened yet, not something to fake by
+skipping the pipeline. The pipeline itself is real and complete end-to-end;
+only the shapes it assembles are stand-ins. See `worker/README.md` for
+exactly what changes when real art is ready to drop in (only
+`components.py`'s `build_*` functions — nothing about the queue, worker, API
+routes, or viewer needs to change).
+
+**Viewer:** `src/components/card/Model3DViewer.tsx` shows the 2D card image
+by default (always available immediately) and offers a "VIEW IN 3D" toggle
+once the model's ready, backed by Google's `@google/model-viewer` web
+component (lazy-loaded client-side only). Wired into the public card page
+(`/card/[tokenId]`); `MintSuccess.tsx` shows a lighter "forging" status pill
+that links to the card page once ready, rather than embedding the full
+viewer in the flip-card component.
 
 ---
 

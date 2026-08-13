@@ -1,0 +1,20 @@
+{
+  "name": "gundarium-model-worker",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Standalone worker: pops mint jobs off the model-generation queue, runs headless Blender to assemble a GLB from KitbashTraits, uploads it to IPFS, and records the result. Runs wherever Blender is installed (not on Vercel) — currently no host is provisioned for this; run it anywhere with Node 20+ and `blender` on PATH.",
+  "type": "module",
+  "scripts": {
+    "worker": "tsx src/worker.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@upstash/redis": "^1.38.0",
+    "pinata": "^2.5.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "tsx": "^4.19.0",
+    "typescript": "^5"
+  }
+}

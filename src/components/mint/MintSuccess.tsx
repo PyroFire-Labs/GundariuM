@@ -7,6 +7,7 @@ import { ShareButtons } from "@/components/ui/ShareButtons";
 import { FlippableCard } from "@/components/card/FlippableCard";
 import { CardBack } from "@/components/card/CardBack";
 import { ipfsToHttp } from "@/lib/ipfs";
+import { useModelStatus } from "@/lib/hooks/useModelStatus";
 
 const RARITY_CLASS: Record<Rarity, string> = {
   Common: "rarity-common",
@@ -35,6 +36,7 @@ export function MintSuccess() {
       ? ipfsToHttp(`ipfs://${imageIpfsHash}`)
       : undefined;
   const rarityClass = traits ? RARITY_CLASS[traits.rarity] : "rarity-common";
+  const { status: modelStatus } = useModelStatus(mintedTokenId);
 
   return (
     <motion.div
@@ -98,6 +100,20 @@ export function MintSuccess() {
           {traits?.name} has been permanently recorded on Base and added to
           your collection.
         </p>
+        {(modelStatus === "pending" || modelStatus === "processing") && (
+          <p className="flex items-center justify-center gap-2 text-[10px] font-[family-name:var(--font-orbitron)] tracking-widest text-[var(--foreground)]/40 uppercase">
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
+            Forging 3D model…
+          </p>
+        )}
+        {modelStatus === "ready" && mintedTokenId !== null && (
+          <a
+            href={`/card/${mintedTokenId.toString()}`}
+            className="inline-block text-[10px] font-[family-name:var(--font-orbitron)] tracking-widest text-[var(--accent)] uppercase hover:underline"
+          >
+            3D model ready — view it →
+          </a>
+        )}
       </motion.div>
 
       {/* Actions */}

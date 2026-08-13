@@ -6,10 +6,12 @@ import { useMintStore } from "@/store/useMintStore";
 import { useMint } from "@/lib/contracts/hooks/useMint";
 import { CardFrame } from "@/components/card/CardFrame";
 import { ipfsToHttp } from "@/lib/ipfs";
+import { queueModelGeneration } from "@/lib/queueModelGeneration";
 
 export function MintConfirm() {
   const {
     traits,
+    kitbashTraits,
     generatedImageBase64,
     generatedImageMimeType,
     imageIpfsHash,
@@ -148,6 +150,7 @@ export function MintConfirm() {
     if (tokenId !== null) {
       setMintedTokenId(tokenId);
       goTo("success");
+      queueModelGeneration(tokenId, kitbashTraits);
     }
   };
 

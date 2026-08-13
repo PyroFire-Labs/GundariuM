@@ -2,6 +2,8 @@
 
 # dependencies
 /node_modules
+/worker/node_modules
+/worker/dist
 /.pnp
 .pnp.*
 .yarn/*
@@ -66,7 +68,21 @@ READ THIS LARRY.MD
 scripts/recheck-result.json
 scripts/whitelist-missing-addresses.md
 
+# vip-watch local run state — who's already been added to the Guild Chat
+scripts/vip-watch/.seen.json
+
 # Claude Code worktrees and local-only settings — never commit a worktree's
 # own checkout (nested .git pointer, build artifacts) as regular tracked files
 .claude/worktrees/
 .claude/settings.local.json
+
+# Warper Keeper exports — self-declared "privacyClassification": "private"
+gundariumWarpKeeper.json
+gundariumwarptrapper.json
+*.trapper.json
+*.keeper.json
+*.receipt.json
+*.proofdrop.json
+*.capsule.json
+__pycache__/
+*.pyc

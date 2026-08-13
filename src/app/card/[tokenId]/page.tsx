@@ -7,6 +7,7 @@ import { GUNPLA_CARD_ABI } from "@/lib/contracts/abis/GunplaCard";
 import { getContracts } from "@/lib/contracts/addresses";
 import { ipfsToHttp } from "@/lib/ipfs";
 import type { GunplaCardMetadata } from "@/types/nft";
+import { Model3DViewer } from "@/components/card/Model3DViewer";
 
 export const revalidate = 3600;
 
@@ -119,10 +120,12 @@ export default async function CardPage({ params }: PageProps) {
 
   return (
     <div className="min-h-[calc(100vh-64px)] flex flex-col items-center justify-center px-4 py-12 gap-6 text-center">
-      <div className="rounded-xl overflow-hidden border-2 border-[var(--accent)]/40 max-w-sm shadow-[0_0_40px_rgba(255,193,7,0.15)]">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={imageUrl} alt={metadata.name} className="w-full block" />
-      </div>
+      <Model3DViewer
+        tokenId={tokenId}
+        imageUrl={imageUrl}
+        name={metadata.name}
+        className="max-w-sm w-full"
+      />
 
       <div className="space-y-1">
         <h1 className="font-[family-name:var(--font-orbitron)] text-3xl font-bold text-[var(--accent)] leading-tight">

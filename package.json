@@ -13,6 +13,7 @@
     "@base-org/account": "^2.5.7",
     "@farcaster/miniapp-sdk": "^0.2.3",
     "@google/genai": "^1.49.0",
+    "@google/model-viewer": "^4.1.0",
     "@marsidev/react-turnstile": "^1.5.0",
     "@openzeppelin/merkle-tree": "^1.0.8",
     "@tanstack/query-core": "^5.97.0",
