@@ -22,23 +22,27 @@ const POLL_MS = 5000;
 const MAX_POLLS = 60;
 
 /**
- * Polls /api/model-status/[tokenId] until the background 3D-model worker
- * (see worker/ at the repo root) reports ready/failed, or the poll budget
- * runs out. Returns null tokenId as a no-op so callers can pass an
- * optional/not-yet-known tokenId without guarding every call site.
+ * Polls /api/model-status/[tokenId]?chainId=... until the background 3D-model
+ * worker (see worker/ at the repo root) reports ready/failed, or the poll
+ * budget runs out. Returns null tokenId/chainId as a no-op so callers can
+ * pass an optional/not-yet-known tokenId without guarding every call site.
+ *
+ * chainId is required whenever tokenId is non-null — GunplaCard's tokenId
+ * sequence restarts at 1 per chain, so a tokenId alone is ambiguous. See
+ * src/lib/modelStore.ts's statusKey comment for why this matters.
  */
-export function useModelStatus(tokenId: bigint | string | null) {
+export function useModelStatus(tokenId: bigint | string | null, chainId: number | null) {
   const [state, setState] = useState<ModelStatusResponse>({ status: "unknown" });
 
   useEffect(() => {
-    if (tokenId === null) return;
+    if (tokenId === null || chainId === null) return;
     const id = tokenId.toString();
     let cancelled = false;
     let polls = 0;
 
     const poll = async () => {
       try {
-        const res = await fetch(`/api/model-status/${id}`);
+        const res = await fetch(`/api/model-status/${id}?chainId=${chainId}`);
         const data = (await res.json()) as ModelStatusResponse;
         if (!cancelled) setState(data);
         return data.status;
@@ -62,7 +66,7 @@ export function useModelStatus(tokenId: bigint | string | null) {
       cancelled = true;
       if (timer) clearTimeout(timer);
     };
-  }, [tokenId]);
+  }, [tokenId, chainId]);
 
   return state;
 }

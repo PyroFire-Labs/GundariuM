@@ -20,7 +20,15 @@ const redis = Redis.fromEnv();
 // Shared with worker/src/queue.ts and worker/src/modelStore.ts — same
 // Upstash instance, same key names. Changing these requires changing both.
 const MODEL_JOB_QUEUE_KEY = "model:jobs";
-const statusKey = (tokenId: string) => `model:status:${tokenId}`;
+// chainId is part of the key, not just the payload — GunplaCard is deployed
+// independently per chain (mainnet + Base Sepolia), each with its own
+// tokenId sequence starting at 1. Without the chain in the key, mainnet
+// token 5 and Sepolia token 5 collide on the same status key and can each
+// clobber the other's (unrelated) 3D model. Found this Aug 18, 2026 while
+// wiring the Arena's Sepolia NPC roster — no collision had happened yet
+// (the worker didn't exist before that night), but it was guaranteed to the
+// moment both chains had overlapping tokenIds, which they already do.
+const statusKey = (chainId: number, tokenId: string) => `model:status:${chainId}:${tokenId}`;
 
 export type ModelStatusState = "pending" | "processing" | "ready" | "failed";
 
@@ -32,6 +40,7 @@ export interface ModelStatus {
 }
 
 export interface ModelJob {
+  chainId: number;
   tokenId: string;
   traits: Pick<
     KitbashTraits,
@@ -51,17 +60,17 @@ export async function enqueueModelJob(job: ModelJob): Promise<void> {
   await redis.lpush(MODEL_JOB_QUEUE_KEY, job);
   // Set eagerly so a poll that lands before the worker picks the job up sees
   // "pending" rather than a stale/missing key.
-  await redis.set(statusKey(job.tokenId), {
+  await redis.set(statusKey(job.chainId, job.tokenId), {
     status: "pending",
     updatedAt: Date.now(),
   } satisfies ModelStatus);
 }
 
-export async function getModelStatus(tokenId: string): Promise<ModelStatus | null> {
+export async function getModelStatus(chainId: number, tokenId: string): Promise<ModelStatus | null> {
   try {
-    return (await redis.get<ModelStatus>(statusKey(tokenId))) ?? null;
+    return (await redis.get<ModelStatus>(statusKey(chainId, tokenId))) ?? null;
   } catch (err) {
-    console.error(`getModelStatus failed for token ${tokenId}:`, err);
+    console.error(`getModelStatus failed for chain ${chainId} token ${tokenId}:`, err);
     return null;
   }
 }

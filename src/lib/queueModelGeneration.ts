@@ -9,6 +9,11 @@ import type { KitbashTraits } from "@/types/nft";
  */
 export function queueModelGeneration(
   tokenId: bigint,
+  // The chain the mint actually happened on — required, not inferred.
+  // GunplaCard's tokenId sequence restarts at 1 per chain (mainnet + Base
+  // Sepolia), so a tokenId alone can't disambiguate which chain's 3D model
+  // this job is for. See src/lib/modelStore.ts's statusKey comment.
+  chainId: number,
   kitbashTraits: KitbashTraits | null,
   // Not part of KitbashTraits — derived at generate-kitbash time and carried
   // on TraitSet instead. Pass traits.secondaryWeapon / traits.tertiaryWeapon
@@ -24,6 +29,7 @@ export function queueModelGeneration(
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       tokenId: tokenId.toString(),
+      chainId,
       kitbashTraits,
       secondaryWeapon,
       tertiaryWeapon,

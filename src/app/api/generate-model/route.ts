@@ -15,8 +15,13 @@ const GEOMETRY_TRAIT_KEYS = [
 export async function POST(req: Request) {
   try {
     const body = await req.json().catch(() => ({}));
-    const { tokenId, kitbashTraits, secondaryWeapon, tertiaryWeapon } = body as {
+    const { tokenId, chainId, kitbashTraits, secondaryWeapon, tertiaryWeapon } = body as {
       tokenId?: string;
+      // Required, not optional — GunplaCard's tokenId sequence restarts at
+      // 1 per chain (mainnet + Base Sepolia), so "tokenId 5" alone is
+      // ambiguous about which chain's token this job is for. See
+      // src/lib/modelStore.ts's statusKey comment.
+      chainId?: number;
       kitbashTraits?: KitbashTraits;
       // Not part of KitbashTraits — derived at generate-kitbash time
       // (deriveSecondaryWeapon) and carried on TraitSet instead. Passed
@@ -29,6 +34,9 @@ export async function POST(req: Request) {
 
     if (!tokenId || !/^\d+$/.test(tokenId)) {
       return NextResponse.json({ error: "Invalid tokenId" }, { status: 400 });
+    }
+    if (chainId !== 8453 && chainId !== 84532) {
+      return NextResponse.json({ error: "chainId must be 8453 (Base) or 84532 (Base Sepolia)" }, { status: 400 });
     }
     if (!kitbashTraits || typeof kitbashTraits !== "object") {
       return NextResponse.json({ error: "Missing kitbashTraits" }, { status: 400 });
@@ -66,6 +74,7 @@ export async function POST(req: Request) {
     }
 
     await enqueueModelJob({
+      chainId,
       tokenId,
       traits: {
         frameType: kitbashTraits.frameType,

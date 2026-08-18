@@ -5,6 +5,7 @@ import { useModelStatus } from "@/lib/hooks/useModelStatus";
 
 interface Model3DViewerProps {
   tokenId: bigint | string | null;
+  chainId: number | null;
   imageUrl: string;
   name: string;
   className?: string;
@@ -16,8 +17,8 @@ interface Model3DViewerProps {
  * default — always available immediately — and offers a "3D" toggle once
  * the model finishes rendering.
  */
-export function Model3DViewer({ tokenId, imageUrl, name, className }: Model3DViewerProps) {
-  const { status, modelUrl } = useModelStatus(tokenId);
+export function Model3DViewer({ tokenId, chainId, imageUrl, name, className }: Model3DViewerProps) {
+  const { status, modelUrl } = useModelStatus(tokenId, chainId);
   const [showModel, setShowModel] = useState(false);
 
   useEffect(() => {

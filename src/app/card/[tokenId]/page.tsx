@@ -122,6 +122,7 @@ export default async function CardPage({ params }: PageProps) {
     <div className="min-h-[calc(100vh-64px)] flex flex-col items-center justify-center px-4 py-12 gap-6 text-center">
       <Model3DViewer
         tokenId={tokenId}
+        chainId={8453}
         imageUrl={imageUrl}
         name={metadata.name}
         className="max-w-sm w-full"

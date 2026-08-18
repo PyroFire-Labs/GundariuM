@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useAccount } from "wagmi";
+import { base, baseSepolia } from "wagmi/chains";
 import { Swords, Sparkles, Zap, Shield, Dices, Trophy, Wallet } from "lucide-react";
 import { ShareButtons } from "@/components/ui/ShareButtons";
 import { useArenaBattleShareVerification } from "@/lib/contracts/hooks/useArenaBattleShareVerification";
@@ -97,7 +98,12 @@ export default function ArenaPage() {
   const enemyViewerRef = useRef<BattleModel3DHandle>(null);
 
   const selectedOwned = ownedCards[playerCardIndex] ?? null;
-  const playerModelStatus = useModelStatus(selectedOwned?.tokenId ?? null);
+  // Player fighters always come from useCollection()'s default (mainnet);
+  // NPC fighters always come from useNpcRoster() (pinned to Base Sepolia) —
+  // so which chain each side's 3D model lives on is fixed by role here, not
+  // looked up per-card. See src/lib/modelStore.ts's statusKey comment for
+  // why the chain has to be explicit at all.
+  const playerModelStatus = useModelStatus(selectedOwned?.tokenId ?? null, base.id);
 
   const startBattleWith = useCallback(
     (playerOwned: OwnedCard, enemyOwned: OwnedCard) => {
@@ -346,6 +352,7 @@ export default function ArenaPage() {
           <div className="grid grid-cols-2 gap-4 md:gap-6 mb-6">
             <CardPanel
               card={b.player}
+              chainId={base.id}
               hp={b.playerHp}
               hpPct={playerHpPct}
               charge={b.playerCharge}
@@ -358,6 +365,7 @@ export default function ArenaPage() {
             />
             <CardPanel
               card={b.enemy}
+              chainId={baseSepolia.id}
               hp={b.enemyHp}
               hpPct={enemyHpPct}
               charge={0}
@@ -518,6 +526,7 @@ function ModelWaitScreen({
 
 function CardPanel({
   card,
+  chainId,
   hp,
   hpPct,
   charge,
@@ -529,6 +538,7 @@ function CardPanel({
   viewerRef,
 }: {
   card: Fighter;
+  chainId: number;
   hp: number;
   hpPct: number;
   charge: number;
@@ -561,7 +571,7 @@ function CardPanel({
       }`}
     >
       <div className="aspect-square relative overflow-hidden bg-[var(--background)]">
-        <BattleModel3DViewer ref={viewerRef} tokenId={card.tokenId} name={card.name} className="w-full h-full" />
+        <BattleModel3DViewer ref={viewerRef} tokenId={card.tokenId} chainId={chainId} name={card.name} className="w-full h-full" />
         <div className="absolute top-2 left-2 rounded px-2 py-1 backdrop-blur-sm border bg-[var(--background)]/70 border-[var(--border)]">
           <span className={`font-[family-name:var(--font-orbitron)] text-[9px] font-bold tracking-widest ${sideAccent}`}>
             {side === "player" ? "YOU" : "ENEMY"}

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useChainId } from "wagmi";
 import { useMintStore } from "@/store/useMintStore";
 import { displayRarity, type Rarity } from "@/types/nft";
 import { ShareButtons } from "@/components/ui/ShareButtons";
@@ -36,7 +37,11 @@ export function MintSuccess() {
       ? ipfsToHttp(`ipfs://${imageIpfsHash}`)
       : undefined;
   const rarityClass = traits ? RARITY_CLASS[traits.rarity] : "rarity-common";
-  const { status: modelStatus } = useModelStatus(mintedTokenId);
+  // The wallet's active chain at success time is still the chain the mint
+  // was just submitted to — same assumption MintConfirm's queueModelGeneration
+  // call makes, a few seconds earlier in the same flow.
+  const chainId = useChainId();
+  const { status: modelStatus } = useModelStatus(mintedTokenId, chainId);
 
   return (
     <motion.div

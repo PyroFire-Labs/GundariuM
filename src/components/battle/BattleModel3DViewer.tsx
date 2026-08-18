@@ -12,6 +12,7 @@ export interface BattleModel3DHandle {
 
 interface BattleModel3DViewerProps {
   tokenId: bigint | string | null;
+  chainId: number | null;
   name: string;
   className?: string;
   onStatusChange?: (status: ModelStatusValue) => void;
@@ -45,8 +46,8 @@ declare global {
  * (see worker/blender/lib/animation.py).
  */
 export const BattleModel3DViewer = forwardRef<BattleModel3DHandle, BattleModel3DViewerProps>(
-  function BattleModel3DViewer({ tokenId, name, className, onStatusChange }, ref) {
-    const { status, modelUrl } = useModelStatus(tokenId);
+  function BattleModel3DViewer({ tokenId, chainId, name, className, onStatusChange }, ref) {
+    const { status, modelUrl } = useModelStatus(tokenId, chainId);
     const elRef = useRef<HTMLElement & { animationName?: string; play?: (opts?: { repetitions?: number }) => void }>(null);
     const [libReady, setLibReady] = useState(false);
 

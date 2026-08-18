@@ -45,12 +45,12 @@ function runBlender(traitsPath: string, outPath: string): Promise<void> {
 }
 
 async function processJob(job: ModelJob): Promise<void> {
-  console.log(`[worker] processing tokenId=${job.tokenId}`);
-  await setModelStatus(job.tokenId, "processing");
+  console.log(`[worker] processing chainId=${job.chainId} tokenId=${job.tokenId}`);
+  await setModelStatus(job.chainId, job.tokenId, "processing");
 
   const workDir = await mkdtemp(path.join(tmpdir(), "gundarium-model-"));
   const traitsPath = path.join(workDir, "traits.json");
-  const outPath = path.join(workDir, `token-${job.tokenId}.glb`);
+  const outPath = path.join(workDir, `chain-${job.chainId}-token-${job.tokenId}.glb`);
 
   try {
     await writeFile(
@@ -61,14 +61,14 @@ async function processJob(job: ModelJob): Promise<void> {
     await runBlender(traitsPath, outPath);
 
     const { uploadGlb } = await import("./pinataUpload.js");
-    const uri = await uploadGlb(outPath, `gundarframe-${job.tokenId}.glb`);
+    const uri = await uploadGlb(outPath, `gundarframe-${job.chainId}-${job.tokenId}.glb`);
 
-    await setModelStatus(job.tokenId, "ready", { uri });
+    await setModelStatus(job.chainId, job.tokenId, "ready", { uri });
     console.log(`[worker] tokenId=${job.tokenId} ready -> ${uri}`);
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     console.error(`[worker] tokenId=${job.tokenId} failed:`, message);
-    await setModelStatus(job.tokenId, "failed", { error: message.slice(0, 500) });
+    await setModelStatus(job.chainId, job.tokenId, "failed", { error: message.slice(0, 500) });
     await sendAlert(`3D model generation failed for token ${job.tokenId}:\n${message.slice(0, 500)}`);
   } finally {
     await rm(workDir, { recursive: true, force: true });
@@ -100,7 +100,7 @@ async function main() {
 
     // A retry (or a duplicate enqueue) landing on a tokenId that's already
     // ready is a no-op cost-saver, not a correctness issue — skip it.
-    const existing = await getModelStatus(job.tokenId).catch(() => null);
+    const existing = await getModelStatus(job.chainId, job.tokenId).catch(() => null);
     if (existing?.status === "ready") {
       console.log(`[worker] tokenId=${job.tokenId} already ready, skipping`);
       continue;

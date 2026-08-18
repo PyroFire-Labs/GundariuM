@@ -14,6 +14,7 @@ export interface ModelTraits {
 }
 
 export interface ModelJob {
+  chainId: number;
   tokenId: string;
   traits: ModelTraits;
   enqueuedAt: number;
