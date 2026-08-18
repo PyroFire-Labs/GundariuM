@@ -21,10 +21,11 @@ export interface OwnedCard {
   traits: TraitSet;
 }
 
-export function useCollection(addressOverride?: `0x${string}`) {
+export function useCollection(addressOverride?: `0x${string}`, chainIdOverride?: number) {
   const { address: connectedAddress } = useAccount();
   const address = addressOverride ?? connectedAddress;
-  const chainId = useChainId();
+  const connectedChainId = useChainId();
+  const chainId = chainIdOverride ?? connectedChainId;
 
   let contracts: ReturnType<typeof getContracts> | null = null;
   try {
@@ -39,6 +40,7 @@ export function useCollection(addressOverride?: `0x${string}`) {
     abi: GUNPLA_CARD_ABI,
     functionName: "balanceOf",
     args: address ? [address] : undefined,
+    chainId,
     query: { enabled: !!contracts && !!address },
   });
 
@@ -51,6 +53,7 @@ export function useCollection(addressOverride?: `0x${string}`) {
       abi: GUNPLA_CARD_ABI,
       functionName: "tokenOfOwnerByIndex" as const,
       args: [address!, BigInt(i)],
+      chainId,
     })),
     query: { enabled: !!contracts && !!address && count > 0 },
   });
@@ -67,12 +70,14 @@ export function useCollection(addressOverride?: `0x${string}`) {
         abi: GUNPLA_CARD_ABI,
         functionName: "getTraits" as const,
         args: [tokenId],
+        chainId,
       },
       {
         address: contracts!.gunplaCard as `0x${string}`,
         abi: GUNPLA_CARD_ABI,
         functionName: "tokenURI" as const,
         args: [tokenId],
+        chainId,
       },
     ]),
     query: { enabled: tokenIds.length > 0 },

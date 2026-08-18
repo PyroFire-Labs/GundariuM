@@ -1,32 +1,38 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import Image from "next/image";
 import Link from "next/link";
-import { Swords, Sparkles, Zap, Shield, Dices, Trophy } from "lucide-react";
+import { useAccount } from "wagmi";
+import { Swords, Sparkles, Zap, Shield, Dices, Trophy, Wallet } from "lucide-react";
 import { ShareButtons } from "@/components/ui/ShareButtons";
 import { useArenaBattleShareVerification } from "@/lib/contracts/hooks/useArenaBattleShareVerification";
+import { useCollection, type OwnedCard } from "@/lib/contracts/hooks/useCollection";
+import { useNpcRoster } from "@/lib/contracts/hooks/useNpcRoster";
+import { useModelStatus, type ModelStatusValue } from "@/lib/hooks/useModelStatus";
+import { BattleModel3DViewer, type BattleModel3DHandle, type BattleMoveClip } from "@/components/battle/BattleModel3DViewer";
+import {
+  mulberry32,
+  getWeapon,
+  rollAttack,
+  MAX_TURNS,
+  PLAYER_CRIT_CHANCE,
+  ENEMY_CRIT_CHANCE,
+  type WeaponSlot,
+  type BattleCard,
+} from "@/lib/battle/deterministicSim";
 
-type Card = {
-  id: number;
-  image: string;
-  name: string;
-  series: string;
-  faction: string;
-  rarity: string;
-  hp: number;
-  armorType: string;
-  primaryWeapon: string;
-  primaryDamage: number;
-  secondaryWeapon: string;
-  secondaryDamage: number;
-  tertiaryWeapon: string;
-  tertiaryDamage: number;
-  specialAttack: string;
-  specialDamage: number;
+type Fighter = BattleCard & { tokenId: bigint };
+
+const MOVE_CLIPS: Record<WeaponSlot, BattleMoveClip> = {
+  primary: "primary_attack",
+  secondary: "secondary_attack",
+  tertiary: "tertiary_attack",
+  special: "special_attack",
 };
 
-type WeaponSlot = "primary" | "secondary" | "tertiary" | "special";
+function toFighter(owned: OwnedCard): Fighter {
+  return { ...owned.traits, tokenId: owned.tokenId };
+}
 
 type LogEntry = {
   attacker: "player" | "enemy";
@@ -37,56 +43,13 @@ type LogEntry = {
   turnNumber: number;
 };
 
-type Phase = "loading" | "ready" | "player-pick" | "player-resolving" | "enemy-resolving" | "complete";
+type Phase = "picking" | "ready" | "player-pick" | "player-resolving" | "enemy-resolving" | "complete";
 
 const SPECIAL_CHARGE_MAX = 3;
-const MAX_TURNS = 30;
-const PLAYER_CRIT_CHANCE = 0.10;
-const ENEMY_CRIT_CHANCE = 0.05;
-const CRIT_MULTIPLIER = 1.6;
-
-function armorMultiplier(slot: WeaponSlot, armor: string): number {
-  switch (armor) {
-    case "I-Field":
-      return slot === "secondary" ? 1.0 : 0.45;
-    case "Phase Shift":
-      return slot === "secondary" ? 0.15 : 1.0;
-    case "Gundanium":
-      return 0.80;
-    case "GN Particle":
-      return slot === "secondary" ? 1.0 : 0.65;
-    case "Luna Titanium":
-      return slot === "secondary" ? 0.60 : 1.0;
-    default:
-      return 1.0;
-  }
-}
-
-function getWeapon(card: Card, slot: WeaponSlot) {
-  switch (slot) {
-    case "primary":
-      return { name: card.primaryWeapon, damage: card.primaryDamage, label: "PRIMARY" };
-    case "secondary":
-      return { name: card.secondaryWeapon, damage: card.secondaryDamage, label: "SECONDARY" };
-    case "tertiary":
-      return { name: card.tertiaryWeapon, damage: card.tertiaryDamage, label: "TERTIARY" };
-    case "special":
-      return { name: card.specialAttack, damage: card.specialDamage, label: "SPECIAL" };
-  }
-}
-
-function rollAttack(attacker: Card, slot: WeaponSlot, defender: Card, critChance: number) {
-  const weapon = getWeapon(attacker, slot);
-  const mult = armorMultiplier(slot, defender.armorType);
-  const isCrit = Math.random() < critChance;
-  const critMult = isCrit ? CRIT_MULTIPLIER : 1;
-  const damage = Math.max(1, Math.round(weapon.damage * mult * critMult));
-  return { damage, isCrit, weaponName: weapon.name };
-}
 
 interface BattleState {
-  player: Card | null;
-  enemy: Card | null;
+  player: Fighter | null;
+  enemy: Fighter | null;
   playerHp: number;
   enemyHp: number;
   playerCharge: number;
@@ -96,6 +59,8 @@ interface BattleState {
   phase: Phase;
   shake: "player" | "enemy" | null;
   flash: "player" | "enemy" | null;
+  seed: number;
+  moves: WeaponSlot[];
 }
 
 const INITIAL: BattleState = {
@@ -107,46 +72,72 @@ const INITIAL: BattleState = {
   log: [],
   turn: 0,
   winner: null,
-  phase: "loading",
+  phase: "picking",
   shake: null,
   flash: null,
+  seed: 0,
+  moves: [],
 };
 
 export default function ArenaPage() {
-  const [cards, setCards] = useState<Card[]>([]);
+  const { isConnected } = useAccount();
+  const { cards: ownedCards, isLoading: collectionLoading } = useCollection();
+  const { cards: npcCards, isLoading: npcLoading, isConfigured: npcConfigured } = useNpcRoster();
+
+  const [playerCardIndex, setPlayerCardIndex] = useState(0);
   const [b, setB] = useState<BattleState>(INITIAL);
 
-  // Mirror state in a ref so timeouts can always read the latest values.
-  // (We only mutate state through setB; this ref is read-only-after-render.)
   const bRef = useRef<BattleState>(INITIAL);
-  bRef.current = b;
+  useEffect(() => {
+    bRef.current = b;
+  }, [b]);
+  const rngRef = useRef<() => number>(mulberry32(0));
+
+  const playerViewerRef = useRef<BattleModel3DHandle>(null);
+  const enemyViewerRef = useRef<BattleModel3DHandle>(null);
+
+  const selectedOwned = ownedCards[playerCardIndex] ?? null;
+  const playerModelStatus = useModelStatus(selectedOwned?.tokenId ?? null);
+
+  const startBattleWith = useCallback(
+    (playerOwned: OwnedCard, enemyOwned: OwnedCard) => {
+      const seed = Math.floor(Math.random() * 0xffffffff);
+      rngRef.current = mulberry32(seed);
+      const player = toFighter(playerOwned);
+      const enemy = toFighter(enemyOwned);
+      setB({
+        ...INITIAL,
+        player,
+        enemy,
+        playerHp: player.hp,
+        enemyHp: enemy.hp,
+        phase: "ready",
+        seed,
+      });
+    },
+    []
+  );
+
+  const pickRandomEnemy = useCallback(() => {
+    if (!selectedOwned || npcCards.length === 0) return;
+    const enemy = npcCards[Math.floor(Math.random() * npcCards.length)];
+    startBattleWith(selectedOwned, enemy);
+  }, [selectedOwned, npcCards, startBattleWith]);
 
   useEffect(() => {
-    fetch("/gallery/cards.json")
-      .then((r) => r.json())
-      .then((data: Card[]) => setCards(data));
-  }, []);
-
-  const pickRandomBattle = useCallback(() => {
-    if (cards.length < 2) return;
-    const shuffled = [...cards].sort(() => Math.random() - 0.5);
-    setB({
-      ...INITIAL,
-      player: shuffled[0],
-      enemy: shuffled[1],
-      playerHp: shuffled[0].hp,
-      enemyHp: shuffled[1].hp,
-      phase: "ready",
-    });
-  }, [cards]);
-
-  useEffect(() => {
-    if (cards.length >= 2 && b.phase === "loading") {
-      pickRandomBattle();
+    if (b.phase === "picking" && selectedOwned && npcCards.length > 0 && playerModelStatus.status === "ready") {
+      // Same shape as the pre-existing setState-in-effect pattern in
+      // useRunnerProfile.ts / useSiweSession.ts — a genuine "sync local
+      // state once an external readiness condition is met" case, not
+      // something derivable during render (pickRandomEnemy also mutates
+      // rngRef, a non-React ref). phase flips away from "picking" on the
+      // same tick this fires, so it can't cascade past one extra render.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      pickRandomEnemy();
     }
-  }, [cards, b.phase, pickRandomBattle]);
+  }, [b.phase, selectedOwned, npcCards, playerModelStatus.status, pickRandomEnemy]);
 
-  // Phase-driven side effects. State updaters stay PURE; all setTimeout calls live here.
+  // Phase-driven side effects — timing + animation triggers.
   useEffect(() => {
     if (b.phase === "player-resolving") {
       const tFlash = setTimeout(() => {
@@ -158,11 +149,11 @@ export default function ArenaPage() {
         if (cur.enemyHp <= 0) {
           setB((prev) => ({ ...prev, winner: "player", phase: "complete" }));
         } else {
-          // Enemy attacks — random weapon (NEVER special, even if conceptually charged)
           if (!cur.player || !cur.enemy) return;
           const slots: WeaponSlot[] = ["primary", "secondary", "tertiary"];
-          const slot = slots[Math.floor(Math.random() * slots.length)];
-          const attack = rollAttack(cur.enemy, slot, cur.player, ENEMY_CRIT_CHANCE);
+          const slot = slots[Math.floor(rngRef.current() * slots.length)];
+          enemyViewerRef.current?.playMove(MOVE_CLIPS[slot]);
+          const attack = rollAttack(cur.enemy, slot, cur.player, ENEMY_CRIT_CHANCE, rngRef.current);
           const newPlayerHp = Math.max(0, cur.playerHp - attack.damage);
           setB((prev) => ({
             ...prev,
@@ -215,6 +206,19 @@ export default function ArenaPage() {
     }
   }, [b.phase]);
 
+  const submittedSeedRef = useRef<number | null>(null);
+  useEffect(() => {
+    if (b.phase !== "complete" || !b.winner || !b.player || !b.enemy) return;
+    if (submittedSeedRef.current === b.seed) return;
+    submittedSeedRef.current = b.seed;
+
+    fetch("/api/federation/submit-battle-receipt", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ seed: b.seed, moves: b.moves, player: b.player, enemy: b.enemy }),
+    }).catch(() => {});
+  }, [b.phase, b.winner, b.player, b.enemy, b.seed, b.moves]);
+
   const startBattle = () => {
     setB((prev) => ({ ...prev, phase: "player-pick", turn: 1 }));
   };
@@ -224,7 +228,8 @@ export default function ArenaPage() {
     if (cur.phase !== "player-pick" || !cur.player || !cur.enemy) return;
     if (slot === "special" && cur.playerCharge < SPECIAL_CHARGE_MAX) return;
 
-    const attack = rollAttack(cur.player, slot, cur.enemy, PLAYER_CRIT_CHANCE);
+    playerViewerRef.current?.playMove(MOVE_CLIPS[slot]);
+    const attack = rollAttack(cur.player, slot, cur.enemy, PLAYER_CRIT_CHANCE, rngRef.current);
     const newEnemyHp = Math.max(0, cur.enemyHp - attack.damage);
     const newCharge = slot === "special" ? 0 : Math.min(SPECIAL_CHARGE_MAX, cur.playerCharge + 1);
 
@@ -232,6 +237,7 @@ export default function ArenaPage() {
       ...prev,
       enemyHp: newEnemyHp,
       playerCharge: newCharge,
+      moves: [...prev.moves, slot],
       log: [
         ...prev.log,
         {
@@ -249,14 +255,61 @@ export default function ArenaPage() {
     }));
   };
 
-  if (!b.player || !b.enemy || b.phase === "loading") {
+  const cycleOwnedCard = () => {
+    if (ownedCards.length === 0) return;
+    setPlayerCardIndex((i) => (i + 1) % ownedCards.length);
+  };
+
+  // ── Gates, in order: wallet -> owns a card -> NPC roster configured -> model ready ──
+
+  if (!isConnected) {
     return (
-      <main className="flex min-h-screen items-center justify-center px-4">
-        <p className="text-[var(--foreground)]/50 font-[family-name:var(--font-orbitron)] text-sm tracking-widest">
-          LOADING ARENA...
-        </p>
-      </main>
+      <GateScreen icon={<Wallet size={40} className="text-[var(--accent)]" />} title="CONNECT YOUR WALLET">
+        Connect the wallet holding your Gundar-Frame to enter the Arena.
+      </GateScreen>
     );
+  }
+
+  if (collectionLoading) {
+    return <LoadingScreen label="READING YOUR COLLECTION..." />;
+  }
+
+  if (ownedCards.length === 0) {
+    return (
+      <GateScreen icon={<Swords size={40} className="text-[var(--accent)]" />} title="NO GUNDAR-FRAME FOUND">
+        You need at least one minted Gundar-Frame to enter the Arena.
+        <div className="mt-6">
+          <Link
+            href="/mint"
+            className="inline-block rounded-full bg-[var(--accent)] px-8 py-3 font-[family-name:var(--font-orbitron)] text-sm font-bold tracking-wider text-black transition-all hover:scale-105"
+          >
+            MINT ONE NOW
+          </Link>
+        </div>
+      </GateScreen>
+    );
+  }
+
+  if (!npcConfigured || (npcLoading && npcCards.length === 0)) {
+    return (
+      <GateScreen icon={<Shield size={40} className="text-[var(--accent)]" />} title="ARENA OPPONENTS LOADING">
+        {npcConfigured ? "Reading the opponent roster..." : "No opponent roster is configured yet."}
+      </GateScreen>
+    );
+  }
+
+  if (playerModelStatus.status !== "ready") {
+    return (
+      <ModelWaitScreen
+        status={playerModelStatus.status}
+        cardName={selectedOwned?.traits.name ?? "your Gundar-Frame"}
+        onSwitch={ownedCards.length > 1 ? cycleOwnedCard : undefined}
+      />
+    );
+  }
+
+  if (!b.player || !b.enemy || b.phase === "picking") {
+    return <LoadingScreen label="ENTERING ARENA..." />;
   }
 
   const playerHpPct = (b.playerHp / b.player.hp) * 100;
@@ -283,7 +336,7 @@ export default function ArenaPage() {
         <div className="mx-auto max-w-5xl">
           <div className="mb-6 text-center">
             <div className="font-[family-name:var(--font-orbitron)] text-xs font-bold tracking-[0.3em] text-[var(--accent)]/60 uppercase">
-              Demo Battle · Sepolia Mints · Turn-Based
+              PVE Arena · Your Gundar-Frame · 3D Turn-Based
             </div>
             <h1 className="mt-2 font-[family-name:var(--font-orbitron)] text-2xl font-black tracking-wider text-white md:text-3xl">
               ARENA
@@ -301,6 +354,7 @@ export default function ArenaPage() {
               shake={b.shake === "player"}
               flash={b.flash === "player"}
               winner={b.winner}
+              viewerRef={playerViewerRef}
             />
             <CardPanel
               card={b.enemy}
@@ -312,6 +366,7 @@ export default function ArenaPage() {
               shake={b.shake === "enemy"}
               flash={b.flash === "enemy"}
               winner={b.winner}
+              viewerRef={enemyViewerRef}
             />
           </div>
 
@@ -319,7 +374,7 @@ export default function ArenaPage() {
             {b.log.length === 0 ? (
               <p className="text-center text-sm text-[var(--foreground)]/40 italic">
                 {b.phase === "ready"
-                  ? "Two random Gundar-Frames have entered the arena. Press BEGIN BATTLE to start."
+                  ? "Your Gundar-Frame has entered the arena. Press BEGIN BATTLE to start."
                   : "Battle log will appear here."}
               </p>
             ) : (
@@ -358,11 +413,19 @@ export default function ArenaPage() {
                 BEGIN BATTLE
               </button>
               <button
-                onClick={pickRandomBattle}
+                onClick={pickRandomEnemy}
                 className="ml-3 rounded-full border border-white/30 bg-[var(--background)]/40 px-6 py-3 font-[family-name:var(--font-orbitron)] text-xs font-bold tracking-wider text-white/80 transition-all hover:bg-white/10"
               >
-                <Dices size={14} className="inline mr-2" /> RESHUFFLE
+                <Dices size={14} className="inline mr-2" /> NEW OPPONENT
               </button>
+              {ownedCards.length > 1 && (
+                <button
+                  onClick={cycleOwnedCard}
+                  className="ml-3 rounded-full border border-white/30 bg-[var(--background)]/40 px-6 py-3 font-[family-name:var(--font-orbitron)] text-xs font-bold tracking-wider text-white/80 transition-all hover:bg-white/10"
+                >
+                  SWITCH MY FRAME
+                </button>
+              )}
             </div>
           )}
 
@@ -381,12 +444,75 @@ export default function ArenaPage() {
               playerName={b.player.name}
               enemyName={b.enemy.name}
               playerHpPct={playerHpPct}
-              onAgain={pickRandomBattle}
+              onAgain={pickRandomEnemy}
             />
           )}
         </div>
       </main>
     </>
+  );
+}
+
+function GateScreen({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
+  return (
+    <main className="flex min-h-screen items-center justify-center px-4">
+      <div className="text-center max-w-md">
+        <div className="mb-4 flex justify-center">{icon}</div>
+        <h1 className="font-[family-name:var(--font-orbitron)] text-lg font-black tracking-wider text-white mb-3">
+          {title}
+        </h1>
+        <p className="text-sm text-[var(--foreground)]/60">{children}</p>
+      </div>
+    </main>
+  );
+}
+
+function LoadingScreen({ label }: { label: string }) {
+  return (
+    <main className="flex min-h-screen items-center justify-center px-4">
+      <p className="text-[var(--foreground)]/50 font-[family-name:var(--font-orbitron)] text-sm tracking-widest">
+        {label}
+      </p>
+    </main>
+  );
+}
+
+function ModelWaitScreen({
+  status,
+  cardName,
+  onSwitch,
+}: {
+  status: ModelStatusValue;
+  cardName: string;
+  onSwitch?: () => void;
+}) {
+  const message =
+    status === "failed"
+      ? "3D generation failed for this Gundar-Frame. Try switching to a different one."
+      : "Every Gundar-Frame gets a real 3D model forged shortly after mint. This usually takes under a minute — the Arena needs it ready before you can fight.";
+  return (
+    <main className="flex min-h-screen items-center justify-center px-4">
+      <div className="text-center max-w-md">
+        <div className="mb-4 flex justify-center">
+          <span className="relative flex h-12 w-12 items-center justify-center">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--accent)]/40" />
+            <Swords size={28} className="relative text-[var(--accent)]" />
+          </span>
+        </div>
+        <h1 className="font-[family-name:var(--font-orbitron)] text-lg font-black tracking-wider text-white mb-3">
+          FORGING {cardName.toUpperCase()}
+        </h1>
+        <p className="text-sm text-[var(--foreground)]/60">{message}</p>
+        {onSwitch && (
+          <button
+            onClick={onSwitch}
+            className="mt-6 rounded-full border border-white/30 bg-[var(--background)]/40 px-6 py-3 font-[family-name:var(--font-orbitron)] text-xs font-bold tracking-wider text-white/80 transition-all hover:bg-white/10"
+          >
+            TRY A DIFFERENT FRAME
+          </button>
+        )}
+      </div>
+    </main>
   );
 }
 
@@ -400,8 +526,9 @@ function CardPanel({
   shake,
   flash,
   winner,
+  viewerRef,
 }: {
-  card: Card;
+  card: Fighter;
   hp: number;
   hpPct: number;
   charge: number;
@@ -410,6 +537,7 @@ function CardPanel({
   shake: boolean;
   flash: boolean;
   winner: "player" | "enemy" | null;
+  viewerRef: React.RefObject<BattleModel3DHandle | null>;
 }) {
   const isWinner = winner === side;
   const isLoser = winner !== null && winner !== side;
@@ -433,13 +561,7 @@ function CardPanel({
       }`}
     >
       <div className="aspect-square relative overflow-hidden bg-[var(--background)]">
-        <Image
-          src={card.image}
-          alt={card.name}
-          fill
-          sizes="(max-width: 768px) 50vw, 33vw"
-          className="object-cover"
-        />
+        <BattleModel3DViewer ref={viewerRef} tokenId={card.tokenId} name={card.name} className="w-full h-full" />
         <div className="absolute top-2 left-2 rounded px-2 py-1 backdrop-blur-sm border bg-[var(--background)]/70 border-[var(--border)]">
           <span className={`font-[family-name:var(--font-orbitron)] text-[9px] font-bold tracking-widest ${sideAccent}`}>
             {side === "player" ? "YOU" : "ENEMY"}
@@ -453,7 +575,7 @@ function CardPanel({
       </div>
       <div className="p-3 md:p-4">
         <div className="font-[family-name:var(--font-orbitron)] text-[9px] font-bold tracking-widest text-[var(--foreground)]/50 uppercase mb-1">
-          {card.faction.replace(/_/g, " ")} · {card.armorType}
+          {card.armorType}
         </div>
         <div className="font-[family-name:var(--font-orbitron)] text-sm font-black text-white truncate mb-2">
           {card.name}
@@ -499,7 +621,7 @@ function WeaponPicker({
   disabled,
   onPick,
 }: {
-  card: Card;
+  card: Fighter;
   charge: number;
   disabled: boolean;
   onPick: (slot: WeaponSlot) => void;
