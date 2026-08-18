@@ -36,6 +36,7 @@ if _SCRIPT_DIR not in sys.path:
     sys.path.insert(0, _SCRIPT_DIR)
 
 from lib import components  # noqa: E402
+from lib import animation  # noqa: E402
 
 
 def _parse_args():
@@ -75,6 +76,16 @@ def assemble(traits: dict):
     for obj in all_objs:
         obj.parent = root
 
+    weapon_names_by_slot = {
+        "primary": traits.get("primaryWeapon"),
+        "secondary": traits.get("secondaryWeapon"),
+        "tertiary": traits.get("tertiaryWeapon"),
+    }
+    animation_names = animation.bake_move_animations(
+        root, weapon_objs, special_objs, weapon_names_by_slot
+    )
+    print(f"Baked animations: {animation_names}")
+
     return root
 
 
@@ -91,6 +102,9 @@ def export_glb(root, out_path: str):
         export_format="GLB",
         use_selection=True,
         export_apply=True,
+        export_animations=True,
+        export_animation_mode="ACTIONS",
+        export_frame_range=False,
     )
 
 

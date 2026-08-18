@@ -150,7 +150,7 @@ export function MintConfirm() {
     if (tokenId !== null) {
       setMintedTokenId(tokenId);
       goTo("success");
-      queueModelGeneration(tokenId, kitbashTraits);
+      queueModelGeneration(tokenId, kitbashTraits, traits.secondaryWeapon, traits.tertiaryWeapon);
     }
   };
 

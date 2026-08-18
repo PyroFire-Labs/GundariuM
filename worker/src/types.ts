@@ -6,6 +6,8 @@ export interface ModelTraits {
   frameType: string;
   head: string;
   primaryWeapon: string;
+  secondaryWeapon: string;
+  tertiaryWeapon: string;
   backpack: string;
   colorway: string;
   special: string;

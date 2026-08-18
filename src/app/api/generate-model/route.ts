@@ -15,9 +15,16 @@ const GEOMETRY_TRAIT_KEYS = [
 export async function POST(req: Request) {
   try {
     const body = await req.json().catch(() => ({}));
-    const { tokenId, kitbashTraits } = body as {
+    const { tokenId, kitbashTraits, secondaryWeapon, tertiaryWeapon } = body as {
       tokenId?: string;
       kitbashTraits?: KitbashTraits;
+      // Not part of KitbashTraits — derived at generate-kitbash time
+      // (deriveSecondaryWeapon) and carried on TraitSet instead. Passed
+      // separately here so per-move battle animations (see worker/blender/
+      // lib/animation.py) have real weapon names for all three attack slots,
+      // not just primary.
+      secondaryWeapon?: string;
+      tertiaryWeapon?: string;
     };
 
     if (!tokenId || !/^\d+$/.test(tokenId)) {
@@ -33,6 +40,12 @@ export async function POST(req: Request) {
           { status: 400 }
         );
       }
+    }
+    if (typeof secondaryWeapon !== "string" || !secondaryWeapon) {
+      return NextResponse.json({ error: "Missing or invalid trait: secondaryWeapon" }, { status: 400 });
+    }
+    if (typeof tertiaryWeapon !== "string" || !tertiaryWeapon) {
+      return NextResponse.json({ error: "Missing or invalid trait: tertiaryWeapon" }, { status: 400 });
     }
 
     // This only ever fires once per real mint from MintConfirm, so the
@@ -58,6 +71,8 @@ export async function POST(req: Request) {
         frameType: kitbashTraits.frameType,
         head: kitbashTraits.head,
         primaryWeapon: kitbashTraits.primaryWeapon,
+        secondaryWeapon,
+        tertiaryWeapon,
         backpack: kitbashTraits.backpack,
         colorway: kitbashTraits.colorway,
         special: kitbashTraits.special,

@@ -9,13 +9,25 @@ import type { KitbashTraits } from "@/types/nft";
  */
 export function queueModelGeneration(
   tokenId: bigint,
-  kitbashTraits: KitbashTraits | null
+  kitbashTraits: KitbashTraits | null,
+  // Not part of KitbashTraits — derived at generate-kitbash time and carried
+  // on TraitSet instead. Pass traits.secondaryWeapon / traits.tertiaryWeapon
+  // from the caller's already-in-scope TraitSet. Needed so the 3D worker can
+  // bake real per-move battle animations for all three attack slots, not
+  // just primary — see worker/blender/lib/animation.py.
+  secondaryWeapon: string,
+  tertiaryWeapon: string
 ): void {
   if (!kitbashTraits) return;
   fetch("/api/generate-model", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ tokenId: tokenId.toString(), kitbashTraits }),
+    body: JSON.stringify({
+      tokenId: tokenId.toString(),
+      kitbashTraits,
+      secondaryWeapon,
+      tertiaryWeapon,
+    }),
   }).catch(() => {
     // Best-effort only — see doc comment above.
   });

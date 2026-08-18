@@ -36,7 +36,14 @@ export interface ModelJob {
   traits: Pick<
     KitbashTraits,
     "frameType" | "head" | "primaryWeapon" | "backpack" | "colorway" | "special"
-  >;
+  > & {
+    // Not part of KitbashTraits (the raw rolled generation-input traits) —
+    // these are derived at generate-kitbash time (deriveSecondaryWeapon) and
+    // live on TraitSet instead. Carried here as plain extra fields rather
+    // than forcing them onto KitbashTraits, which genuinely doesn't have them.
+    secondaryWeapon: string;
+    tertiaryWeapon: string;
+  };
   enqueuedAt: number;
 }
 
