@@ -18,6 +18,7 @@
 
 import { NextResponse } from "next/server";
 import { createPublicClient, http, parseAbiItem } from "viem";
+import { sendAlert } from "@/lib/alert";
 import { base } from "viem/chains";
 import { DAILY_CHECKIN_ABI } from "@/lib/contracts/abis/DailyCheckIn";
 import { GUNPLA_CARD_ABI } from "@/lib/contracts/abis/GunplaCard";
@@ -115,6 +116,18 @@ export async function GET(req: Request) {
   if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
     return new Response("Unauthorized", { status: 401 });
   }
+
+  try {
+    return await runLeaderboardRefresh();
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error("refresh-leaderboard: unhandled error:", err);
+    await sendAlert(`⛔ <b>Leaderboard cron crashed</b>\n<code>${msg}</code>`);
+    return NextResponse.json({ error: "Internal error" }, { status: 500 });
+  }
+}
+
+async function runLeaderboardRefresh() {
 
   const contracts = getContracts(base.id);
   if (isPlaceholder(contracts.dailyCheckIn)) {
@@ -259,14 +272,15 @@ export async function GET(req: Request) {
   // population, purely from the multicall failure mode above — leaving a
   // trail in the logs beats re-diagnosing from scratch next time.
   if (ranked.length === 0 && population.length > 0) {
-    console.error(
-      "refresh-leaderboard: 0 ranked despite non-empty population",
-      JSON.stringify({
-        population: population.length,
-        baseResults: baseResults.length,
-        streakFailures: streakResults.filter((r) => r.status === "failure").length,
-        balanceFailures: balanceResults.filter((r) => r.status === "failure").length,
-      })
+    const detail = JSON.stringify({
+      population: population.length,
+      baseResults: baseResults.length,
+      streakFailures: streakResults.filter((r) => r.status === "failure").length,
+      balanceFailures: balanceResults.filter((r) => r.status === "failure").length,
+    });
+    console.error("refresh-leaderboard: 0 ranked despite non-empty population", detail);
+    await sendAlert(
+      `⚠️ <b>Leaderboard empty</b> — ${population.length} wallets read, 0 scored\n<code>${detail}</code>`
     );
   }
 

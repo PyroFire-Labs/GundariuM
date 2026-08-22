@@ -53,19 +53,16 @@ export async function POST(req: Request) {
     // an abuser — after already paying. The paid ceiling still bounds spend
     // against a compromised or looping wallet.
     //
-    // NOTE: the underlying store is in-memory per Vercel serverless instance,
-    // so the effective ceiling is N × max where N is the active instance
-    // count. Move to Vercel KV / Upstash post-launch for cross-instance
-    // accuracy. Defense-in-depth for now: hard daily budget cap on the
-    // Google AI Studio account bounds total spend even if the limit leaks.
     const ip = req.headers.get("x-forwarded-for") ?? "unknown";
     const isPaidReroll = !!rerollTxHash;
-    const hourly = isPaidReroll
-      ? checkRateLimit(`reroll:hour:${ip}`, 20, 60 * 60 * 1000)
-      : checkRateLimit(`gen:hour:${ip}`, 5, 60 * 60 * 1000);
-    const daily = isPaidReroll
-      ? checkRateLimit(`reroll:day:${ip}`, 100, 24 * 60 * 60 * 1000)
-      : checkRateLimit(`gen:day:${ip}`, 20, 24 * 60 * 60 * 1000);
+    const [hourly, daily] = await Promise.all([
+      isPaidReroll
+        ? checkRateLimit(`reroll:hour:${ip}`, 20, 60 * 60 * 1000)
+        : checkRateLimit(`gen:hour:${ip}`, 5, 60 * 60 * 1000),
+      isPaidReroll
+        ? checkRateLimit(`reroll:day:${ip}`, 100, 24 * 60 * 60 * 1000)
+        : checkRateLimit(`gen:day:${ip}`, 20, 24 * 60 * 60 * 1000),
+    ]);
     if (!hourly.allowed || !daily.allowed) {
       const retryAfterMs = !hourly.allowed
         ? hourly.retryAfterMs

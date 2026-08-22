@@ -4,7 +4,7 @@ import { checkRateLimit } from "@/lib/rateLimit";
 
 export async function GET(req: NextRequest) {
   const ip = req.headers.get("x-forwarded-for") ?? "unknown";
-  const limit = checkRateLimit(`siwe-nonce:${ip}`, 20, 5 * 60 * 1000);
+  const limit = await checkRateLimit(`siwe-nonce:${ip}`, 20, 5 * 60 * 1000);
   if (!limit.allowed) {
     return NextResponse.json(
       { error: "Rate limit exceeded. Try again later." },
