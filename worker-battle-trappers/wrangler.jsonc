@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json.schemastore.org/wrangler.jsonc",
+  "name": "gundarium-battle-trappers",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "vars": {
+    "ENVIRONMENT": "production"
+  },
+  "observability": {
+    "enabled": true
+  },
+  "routes": [
+    { "pattern": "jerry.gundarium.xyz/*", "zone_name": "gundarium.xyz" }
+  ]
+}

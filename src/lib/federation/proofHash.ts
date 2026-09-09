@@ -1,22 +1,28 @@
 import { createHash } from "node:crypto";
 
 /**
- * Deterministic JSON stringification (sorted object keys) so the same
- * logical value always hashes to the same string regardless of property
- * insertion order. Same approach dreamnet-git-grid's own `stableJson` uses
- * for its content hashes — matched deliberately, not reinvented.
+ * Deterministic JSON canonicalization (sorted keys, undefined values
+ * filtered) so the same logical value always hashes to the same string
+ * regardless of property insertion order. Matches the canonicalize()
+ * used by dreamnet-trading-trappers/src/contract.ts, DreamNet Public
+ * Core's canonicalJson, and the Warper Keeper worker's own
+ * canonicalJson — all three filter undefined and sort keys. This was
+ * previously `stableJson` which did NOT filter undefined, causing hash
+ * mismatches against every other DreamNet component.
  */
-function stableJson(value: unknown): string {
+function canonicalize(value: unknown): string {
+  if (value === null || typeof value !== "object") {
+    return JSON.stringify(value);
+  }
   if (Array.isArray(value)) {
-    return `[${value.map(stableJson).join(",")}]`;
+    return `[${value.map(canonicalize).join(",")}]`;
   }
-  if (value && typeof value === "object") {
-    const entries = Object.keys(value as Record<string, unknown>)
-      .sort()
-      .map((key) => `${JSON.stringify(key)}:${stableJson((value as Record<string, unknown>)[key])}`);
-    return `{${entries.join(",")}}`;
-  }
-  return JSON.stringify(value);
+  const record = value as Record<string, unknown>;
+  return `{${Object.keys(record)
+    .sort()
+    .filter((key) => record[key] !== undefined)
+    .map((key) => `${JSON.stringify(key)}:${canonicalize(record[key])}`)
+    .join(",")}}`;
 }
 
 /**
@@ -26,5 +32,5 @@ function stableJson(value: unknown): string {
  * `deterministic: true` a checkable claim instead of a self-assertion.
  */
 export function computeProofHash(replayInputs: unknown): string {
-  return `sha256:${createHash("sha256").update(stableJson(replayInputs)).digest("hex")}`;
+  return `sha256:${createHash("sha256").update(canonicalize(replayInputs)).digest("hex")}`;
 }

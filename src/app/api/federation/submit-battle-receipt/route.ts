@@ -8,17 +8,20 @@ export const maxDuration = 10;
 
 /**
  * Takes a completed Arena battle's replay inputs from the client and
- * forwards it to DreamNet as a Stage 0 `gundarium:battle:submit-readonly`
- * receipt. Deliberately does NOT take `result` from the client — the result
- * is always recomputed here via `replayBattle(seed, moves, player, enemy)`,
- * the same deterministic simulation the live Arena uses. A client can't use
- * this route to assert a fake "deterministic: true"; the server derives the
- * outcome itself from inputs it can independently verify are self-consistent.
+ * forwards it to DreamNet via the gundarium-battle-trappers Worker's
+ * public MCP (build_battle_trapper + to_warper_keeper_bundle).
  *
- * Best-effort by design — this is federation telemetry, not gameplay. A
- * missing Warper Keeper host/token, a DreamNet rejection, or any other
- * failure here should never surface as an error to the player; the arena
- * page fires this and ignores the response entirely.
+ * Deliberately does NOT take `result` from the client — the result is
+ * always recomputed here via `replayBattle(seed, moves, player, enemy)`,
+ * the same deterministic simulation the live Arena uses. A client can't
+ * use this route to assert a fake "deterministic: true"; the server
+ * derives the outcome itself from inputs it can independently verify
+ * are self-consistent.
+ *
+ * Auth: none required for the public worker MCP (paper-only, read-only).
+ *
+ * Best-effort by design — this is federation telemetry, not gameplay.
+ * The arena page fires this and ignores the response entirely.
  */
 export async function POST(req: Request) {
   try {
@@ -54,11 +57,11 @@ export async function POST(req: Request) {
 
     const result = replayBattle(seed, moves, player, enemy);
 
-    const replayInputs = { seed, moves, player, enemy };
+    const replayInputs = { seed, moves: moves as string[], player: player as unknown as Record<string, unknown>, enemy: enemy as unknown as Record<string, unknown> };
     const proofHash = computeProofHash(replayInputs);
     const battleId = `${seed}-${player.name}-${enemy.name}`.replace(/\s+/g, "-").toLowerCase();
 
-    const outcome = await submitBattleReceipt({ battleId, result, proofHash });
+    const outcome = await submitBattleReceipt({ battleId, result, proofHash, replayInputs, chainId: 84532 });
 
     return NextResponse.json({ battleId, result, proofHash, ...outcome });
   } catch (error) {

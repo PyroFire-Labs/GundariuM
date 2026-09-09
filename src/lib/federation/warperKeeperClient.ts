@@ -1,29 +1,21 @@
 /**
- * Warper Keeper client — submits GundariuM PvE battle results to DreamNet
- * via the real, live Warper Keeper Agent Gateway.
+ * GundariuM Battle Trappers client — submits PvE battle results via
+ * the gundarium-battle-trappers Cloudflare Worker's public MCP.
  *
- * Confirmed by calling the gateway directly (2026-08-07), not assumed:
- *   - transport is MCP JSON-RPC at POST /mcp, not a bespoke REST path
- *   - there is no "submit-battle-receipt" tool — the real tool list is
- *     get_assignment, open_trapper, append_context, submit_artifact,
- *     request_approval, close_trapper, release_assignment, verify_proof
- *   - auth is a per-assignment key (a live unauthenticated call returns
- *     {"error":"assignment_key_required","status":401}), not a generic
- *     bearer token — must come from ghostmintops as the gateway operator,
- *     scoped to a GundariuM assignment
- *   - default host: https://warper-keeper-agent-gateway-production.up.railway.app
- *     (public, live — overridable via WARPER_KEEPER_URL for a different
- *     environment, e.g. the NUC deployment)
+ * The worker mirrors the dreamnet-trading-trappers pattern:
+ * - Public, credential-free MCP at /mcp
+ * - Tools: build_battle_trapper, validate_battle_trapper, to_warper_keeper_bundle
+ * - Paper-only, no wallet authority, no auth required for Stage 0
  *
- * Server-side only — WARPER_KEEPER_ASSIGNMENT_KEY from env, not provisioned
- * yet as of 2026-08-07. Missing config is expected right now, not an error;
- * this module fails open (logs, returns unsubmitted) rather than throwing,
- * since federation is best-effort telemetry and must never block a player
+ * Flow per battle:
+ *   1. Build battle trapper via build_battle_trapper (includes proofHash)
+ *   2. Convert to warper-keeper-trapper/1 bundle via to_warper_keeper_bundle
+ *   3. (Optional) Worker can forward to Warper Keeper gateway internally with assignment key
+ *
+ * If BATTLE_TRAPPERS_URL is not set, the federation is inert —
+ * it logs and returns `{ submitted: false, reason: "not_configured" }`.
+ * Federation is best-effort telemetry and must never block a player
  * finishing a battle.
- *
- * See docs/superpowers/plans/2026-08-07-dreamnet-stage0-federation-spike.md
- * and docs/superpowers/plans/2026-08-07-brandonducar-ecosystem-breakdown.md
- * for the full trail.
  */
 
 export interface BattleReceiptResult {
@@ -34,85 +26,126 @@ export interface BattleReceiptResult {
 
 export interface SubmitBattleReceiptOutcome {
   submitted: boolean;
-  receiptId?: string;
+  trapperId?: string;
+  bundleId?: string;
   reason?: string;
 }
 
-const DEFAULT_GATEWAY_URL = "https://warper-keeper-agent-gateway-production.up.railway.app";
-const MCP_PATH = "/mcp";
-const TOOL_NAME = "submit_artifact";
+const DEFAULT_WORKER_URL = "https://jerry.gundarium.xyz";
 
-interface McpToolCallResponse {
-  jsonrpc: "2.0";
-  id: number;
-  result?: {
-    isError?: boolean;
-    structuredContent?: { ok?: boolean; error?: string; receiptId?: string; [key: string]: unknown };
+function idempotencyKey(): string {
+  return `gundarium-battle-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
+async function mcpCall(
+  baseUrl: string,
+  toolName: string,
+  args: Record<string, unknown>
+): Promise<{ ok: boolean; result?: unknown; error?: string }> {
+  const response = await fetch(`${baseUrl}/mcp`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Idempotency-Key": idempotencyKey(),
+    },
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      method: "tools/call",
+      params: {
+        name: toolName,
+        arguments: args,
+      },
+      id: idempotencyKey(),
+    }),
+  });
+
+  if (!response.ok) {
+    return { ok: false, error: `http_${response.status}` };
+  }
+
+  const data = (await response.json()) as {
+    jsonrpc: string;
+    id: string;
+    result?: {
+      isError?: boolean;
+      structuredContent?: { ok: boolean; [key: string]: unknown };
+      content?: Array<{ type: string; text: string }>;
+    };
+    error?: { code: number; message: string };
   };
-  error?: { message?: string };
+
+  if (data.error) {
+    return { ok: false, error: data.error.message };
+  }
+
+  if (data.result?.isError) {
+    const errorText = data.result.content?.[0]?.text ?? "unknown_error";
+    return { ok: false, error: errorText };
+  }
+
+  return { ok: true, result: data.result?.structuredContent };
 }
 
 export async function submitBattleReceipt(payload: {
   battleId: string;
   result: BattleReceiptResult;
   proofHash: string;
+  replayInputs: {
+    seed: number;
+    moves: string[];
+    player: Record<string, unknown>;
+    enemy: Record<string, unknown>;
+  };
+  chainId?: number;
 }): Promise<SubmitBattleReceiptOutcome> {
-  const assignmentKey = process.env.WARPER_KEEPER_ASSIGNMENT_KEY;
+  const baseUrl = process.env.BATTLE_TRAPPERS_URL || DEFAULT_WORKER_URL;
+  const chainId = payload.chainId ?? 84532; // Base Sepolia default
 
-  if (!assignmentKey) {
-    console.error(
-      "WARPER_KEEPER_ASSIGNMENT_KEY not configured — battle receipt not submitted to DreamNet " +
-        "(expected until GundariuM has a real assignment from the Warper Keeper operator, see the federation spike doc)"
-    );
-    return { submitted: false, reason: "not_configured" };
+  // Stage 0: Build the battle trapper via public MCP (no auth)
+  const buildResult = await mcpCall(baseUrl, "build_battle_trapper", {
+    draft: {
+      battleId: payload.battleId,
+      chainId,
+      result: payload.result,
+      proofHash: payload.proofHash,
+      replayInputs: payload.replayInputs,
+    },
+  });
+
+  if (!buildResult.ok) {
+    console.error("Battle trapper build failed:", buildResult.error);
+    return { submitted: false, reason: buildResult.error ?? "build_failed" };
   }
 
-  const baseUrl = process.env.WARPER_KEEPER_URL || DEFAULT_GATEWAY_URL;
-
-  try {
-    const res = await fetch(`${baseUrl}${MCP_PATH}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json, text/event-stream",
-        Authorization: `Bearer ${assignmentKey}`,
-      },
-      body: JSON.stringify({
-        jsonrpc: "2.0",
-        id: Date.now(),
-        method: "tools/call",
-        params: {
-          name: TOOL_NAME,
-          arguments: {
-            payload: {
-              type: "gundarium.battle.result",
-              battleId: payload.battleId,
-              result: payload.result,
-              deterministic: true,
-              proofHash: payload.proofHash,
-            },
-            idempotencyKey: `gundarium-battle-${payload.battleId}`,
-            correlationId: payload.battleId,
-          },
-        },
-      }),
-    });
-
-    if (!res.ok) {
-      console.error(`submit_artifact HTTP failure: ${res.status} ${res.statusText}`);
-      return { submitted: false, reason: `http_${res.status}` };
-    }
-
-    const data = (await res.json()) as McpToolCallResponse;
-    if (data.error || data.result?.isError) {
-      const reason = data.error?.message ?? data.result?.structuredContent?.error ?? "tool_error";
-      console.error(`submit_artifact rejected: ${reason}`);
-      return { submitted: false, reason };
-    }
-
-    return { submitted: true, receiptId: data.result?.structuredContent?.receiptId };
-  } catch (err) {
-    console.error("submit_artifact request failed:", err);
-    return { submitted: false, reason: "network_error" };
+  const trapper = (buildResult.result as { ok: boolean; trapper: unknown })?.trapper;
+  if (!trapper) {
+    return { submitted: false, reason: "no_trapper_returned" };
   }
+
+  const trapperId = (trapper as { id: string }).id;
+
+  // Stage 1: Convert to Warper Keeper bundle (also public MCP, no auth)
+  const bundleResult = await mcpCall(baseUrl, "to_warper_keeper_bundle", {
+    trapper,
+    keeperId: "gundarium",
+  });
+
+  if (!bundleResult.ok) {
+    console.error("Warper Keeper bundle conversion failed:", bundleResult.error);
+    // Still count the trapper as built — bundle conversion is optional
+    return {
+      submitted: true,
+      trapperId,
+      reason: `bundle_failed: ${bundleResult.error}`,
+    };
+  }
+
+  const bundle = (bundleResult.result as { ok: boolean; bundle: unknown })?.bundle;
+  const bundleId = (bundle as { receipt: { id: string } })?.receipt?.id;
+
+  return {
+    submitted: true,
+    trapperId,
+    bundleId,
+  };
 }

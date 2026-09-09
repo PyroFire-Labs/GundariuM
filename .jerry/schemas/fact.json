@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Jerry project fact",
+  "description": "A single verified or inferred fact about GundariuM. Facts live in context.md and state.md as text, but this schema describes the shape when facts are captured in structured form.",
+  "type": "object",
+  "required": ["id", "label", "claim", "source"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Short stable identifier, for example 'contracts.gundanium-game.exists'"
+    },
+    "label": {
+      "type": "string",
+      "enum": ["CONFIRMED", "INFERRED", "UNKNOWN"],
+      "description": "Fact label"
+    },
+    "claim": {
+      "type": "string",
+      "description": "The claim itself in plain English"
+    },
+    "source": {
+      "type": "string",
+      "description": "How this was verified. Example: 'forge test passed', 'addresses.ts line 12', 'live Basescan lookup', 'Vercel deploy confirmed', 'session evidence link'"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional caveats, date observed, or what would move this to a stronger label"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}

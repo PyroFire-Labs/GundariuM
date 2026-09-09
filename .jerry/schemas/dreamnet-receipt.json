@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Jerry session receipt",
+  "description": "A DreamLoops-compatible session receipt describing what one agent session did, what evidence supports it, and what state it left behind.",
+  "type": "object",
+  "required": ["sessionId", "sessionDate", "actor", "repo", "task", "outcome", "evidence"],
+  "properties": {
+    "sessionId": {
+      "type": "string",
+      "description": "Stable session identifier, for example 'session-2026-09-05-t1'"
+    },
+    "sessionDate": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the session ran"
+    },
+    "actor": {
+      "type": "string",
+      "description": "Who or what executed the session, for example 'Jerry'"
+    },
+    "repo": {
+      "type": "string",
+      "description": "Repo this session touched, for example 'GundariuM'"
+    },
+    "task": {
+      "type": "object",
+      "required": ["id", "title", "scope", "constraints", "approval_basis"],
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "scope": { "type": "string" },
+        "constraints": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "approval_basis": { "type": "string" }
+      }
+    },
+    "outcome": {
+      "type": "string",
+      "enum": ["COMPLETE", "BLOCKED", "FAILED", "NEEDS_APPROVAL"],
+      "description": "Session classification"
+    },
+    "facts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "claim", "source"],
+        "properties": {
+          "id": { "type": "string" },
+          "label": {
+            "type": "string",
+            "enum": ["CONFIRMED", "INFERRED", "UNKNOWN"]
+          },
+          "claim": { "type": "string" },
+          "source": { "type": "string" }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "location"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["file", "command", "log", "onchain", "session", "note"]
+          },
+          "location": { "type": "string" },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "carryforward": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "claim"],
+        "properties": {
+          "id": { "type": "string" },
+          "label": {
+            "type": "string",
+            "enum": ["CONFIRMED", "INFERRED", "UNKNOWN"]
+          },
+          "claim": { "type": "string" }
+        }
+      }
+    },
+    "nextTask": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "reason": { "type": "string" }
+      }
+    }
+  },
+  "additionalProperties": false
+}

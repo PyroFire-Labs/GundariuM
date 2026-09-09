@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Jerry task",
+  "description": "A single atomic task in the Jerry project brain",
+  "type": "object",
+  "required": ["id", "title", "status", "owner", "scope", "acceptance_criteria", "verification", "created_at"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Short stable identifier, e.g. 'jerry-init.state-files'"
+    },
+    "title": {
+      "type": "string",
+      "description": "One-line plain-English description"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["TODO", "IN_PROGRESS", "DONE", "BLOCKED", "NEEDS_APPROVAL", "FAILED"],
+      "description": "Task status"
+    },
+    "owner": {
+      "type": "string",
+      "description": "Who is responsible, e.g. 'Jerry' or 'Josh'"
+    },
+    "scope": {
+      "type": "string",
+      "description": "What is included, and explicitly what is not"
+    },
+    "constraints": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Hard limits, e.g. '.jerry/ only', 'no contracts'"
+    },
+    "approval_basis": {
+      "type": "string",
+      "description": "Why this task is allowed to proceed now"
+    },
+    "acceptance_criteria": {
+      "type": "string",
+      "description": "What must be true for this to count as done"
+    },
+    "verification": {
+      "type": "string",
+      "description": "Concrete commands or checks that prove it"
+    },
+    "evidence": {
+      "type": "string",
+      "description": "Where the proof lives"
+    },
+    "labels": {
+      "type": "string",
+      "description": "Any CONFIRMED / INFERRED / UNKNOWN claims involved"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date"
+    }
+  },
+  "additionalProperties": false
+}
