@@ -35,6 +35,17 @@ function toFighter(owned: OwnedCard): Fighter {
   return { ...owned.traits, tokenId: owned.tokenId };
 }
 
+// submit-battle-receipt only ever reads BattleCard fields (see its route) —
+// Fighter's tokenId is a bigint, and bigints throw a hard TypeError out of
+// JSON.stringify with no error boundary to catch it (this crashed every
+// battle that reached "complete", see arena/error.tsx). Strip it here at
+// the one call site that serializes a Fighter, rather than weakening the
+// Fighter/BattleCard type split everywhere else that needs the real tokenId.
+function toBattleCard(fighter: Fighter): BattleCard {
+  const { name, hp, armorType, primaryWeapon, primaryDamage, secondaryWeapon, secondaryDamage, tertiaryWeapon, tertiaryDamage, specialAttack, specialDamage } = fighter;
+  return { name, hp, armorType, primaryWeapon, primaryDamage, secondaryWeapon, secondaryDamage, tertiaryWeapon, tertiaryDamage, specialAttack, specialDamage };
+}
+
 type LogEntry = {
   attacker: "player" | "enemy";
   attackerName: string;
@@ -221,7 +232,7 @@ export default function ArenaPage() {
     fetch("/api/federation/submit-battle-receipt", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ seed: b.seed, moves: b.moves, player: b.player, enemy: b.enemy }),
+      body: JSON.stringify({ seed: b.seed, moves: b.moves, player: toBattleCard(b.player), enemy: toBattleCard(b.enemy) }),
     }).catch(() => {});
   }, [b.phase, b.winner, b.player, b.enemy, b.seed, b.moves]);
 
