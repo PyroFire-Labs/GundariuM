@@ -9,7 +9,12 @@ import { utcMidnightFromBlock } from "./utcDailyWindow";
 const GNRM_ADDRESS = "0x271b01cc11032a4e23f0200f8f57eb45176ab491" as const;
 const GNRM_POOL_ADDRESS = "0x72d3338600cf47766e4f9e435be4879593870181" as const;
 const MIN_DAILY_BUY = 30_000n * 10n ** 18n; // 30,000 GNRM, 18 decimals
-const MAX_LOG_RANGE = 9_000n; // mainnet.base.org's public RPC caps eth_getLogs at 10,000 blocks/call
+// mainnet.base.org's public RPC caps eth_getLogs at 2,000 blocks/call as of
+// 2026-09-23 (confirmed via live "eth_getLogs is limited to a 2,000 range"
+// errors) — this has tightened before without notice (was previously
+// ~10,000), so keep a margin below the observed limit rather than the exact
+// number.
+const MAX_LOG_RANGE = 1_900n;
 
 const TRANSFER_EVENT = parseAbiItem("event Transfer(address indexed from, address indexed to, uint256 value)");
 

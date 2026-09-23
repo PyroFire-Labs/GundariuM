@@ -8,7 +8,7 @@ import { utcMidnightFromBlock } from "./utcDailyWindow";
 
 const STGNRM_ADDRESS = "0x7efdd2724910ed0e0614fa0c084eabd30c644c1d" as const;
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000" as const;
-const MAX_LOG_RANGE = 9_000n; // public RPC eth_getLogs range limit (see useGnrmPurchaseCheck)
+const MAX_LOG_RANGE = 1_900n; // public RPC eth_getLogs range limit (see useGnrmPurchaseCheck)
 
 const TRANSFER_EVENT = parseAbiItem("event Transfer(address indexed from, address indexed to, uint256 value)");
 
