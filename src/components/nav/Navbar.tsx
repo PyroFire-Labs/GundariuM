@@ -16,6 +16,7 @@ const NAV_LINKS = [
   { href: "/tasks", label: "Tasks" },
   { href: "/dossier", label: "Dossier" },
   { href: "/mint", label: "Mint" },
+  { href: "/workshop", label: "Workshop" },
   { href: "/arena", label: "Arena (Demo)" },
   { href: "/battle", label: "Battle" },
   { href: "/collection", label: "Collection" },
