@@ -1,39 +1,44 @@
-import type { WorkshopFrame } from "@/lib/workshop/catalog";
+import type { OwnedCard } from "@/lib/contracts/hooks/useCollection";
+import { OwnedNftArtwork } from "@/components/collection/OwnedNftArtwork";
 
 interface FrameGalleryProps {
-  frames: readonly WorkshopFrame[];
-  selectedFrameId: number;
-  onSelectFrame(id: number): void;
+  cards: readonly OwnedCard[];
+  connected: boolean;
+  count: number;
+  loading: boolean;
+  selectedTokenId: bigint | null;
+  onSelectToken(tokenId: bigint): void;
 }
 
-export function FrameGallery({ frames, selectedFrameId, onSelectFrame }: FrameGalleryProps) {
+export function FrameGallery({ cards, connected, count, loading, selectedTokenId, onSelectToken }: FrameGalleryProps) {
   return (
     <section aria-labelledby="gallery-heading" className="workshop-gallery" id="gallery">
       <div className="workshop-section-heading">
         <div>
-          <p className="workshop-eyebrow">Local / public catalog</p>
-          <h2 id="gallery-heading">Kit gallery</h2>
+          <p className="workshop-eyebrow">Connected wallet / on-chain NFTs</p>
+          <h2 id="gallery-heading">Your Gundar-Frames</h2>
         </div>
-        <span>SELECT A FRAME</span>
+        <span>{connected ? `${count} DETECTED` : "WALLET REQUIRED"}</span>
       </div>
-      <div className="workshop-frame-grid">
-        {frames.map((frame) => (
+      {!connected && <p className="workshop-disclosure">Connect the wallet that owns your Gundar-Frame NFTs to load them here.</p>}
+      {connected && loading && <p className="workshop-disclosure">Reading NFT ownership and on-chain traits…</p>}
+      {connected && !loading && cards.length === 0 && <p className="workshop-disclosure">No Gundar-Frame NFTs were found in this wallet on the connected network.</p>}
+      {cards.length > 0 && <div className="workshop-frame-grid">
+        {cards.map((card) => (
           <button
-            aria-pressed={frame.id === selectedFrameId}
+            aria-pressed={card.tokenId === selectedTokenId}
             className="workshop-frame-card"
-            key={frame.id}
-            onClick={() => onSelectFrame(frame.id)}
+            key={card.tokenId.toString()}
+            onClick={() => onSelectToken(card.tokenId)}
             type="button"
           >
-            {/* The static public gallery is the fallback, not a claim of ownership. */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img alt={`${frame.name} catalog art`} src={frame.image} />
-            <span className="workshop-frame-token">FRAME {String(frame.id).padStart(3, "0")}</span>
-            <strong>{frame.name}</strong>
-            <small>{frame.rarity} / {frame.faction}</small>
+            <OwnedNftArtwork alt={`${card.traits.name} NFT artwork`} className="workshop-owned-thumbnail" imageClassName="workshop-owned-thumbnail-image" tokenUri={card.tokenUri} />
+            <span className="workshop-frame-token">TOKEN #{card.tokenId.toString()}</span>
+            <strong>{card.traits.name}</strong>
+            <small>{card.traits.rarity} / {card.traits.faction}</small>
           </button>
         ))}
-      </div>
+      </div>}
     </section>
   );
 }

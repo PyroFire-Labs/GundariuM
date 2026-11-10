@@ -19,3 +19,11 @@
 .workshop-owned-actions, .workshop-operation-placeholders { display: grid; gap: .45rem; width: 100%; }
 .workshop-owned-actions button, .workshop-operation-placeholders button { background: color-mix(in srgb, var(--surface) 78%, black); border: 1px dashed var(--border); color: color-mix(in srgb, var(--foreground) 50%, transparent); cursor: not-allowed; font-family: var(--font-geist-mono); font-size: .65rem; padding: .65rem; text-align: left; }
 .workshop-operation-placeholders { margin-top: 1rem; }
+
+.owned-nft-artwork { align-items: center; background: var(--surface); display: flex; justify-content: center; overflow: hidden; position: relative; width: 100%; }
+.owned-nft-artwork-state { color: color-mix(in srgb, var(--accent) 70%, var(--foreground)); font-family: var(--font-geist-mono); font-size: .7rem; letter-spacing: .08em; padding: 1rem; text-align: center; }
+.workshop-owned-thumbnail { aspect-ratio: 16 / 10; border-bottom: 1px solid var(--border); }
+.workshop-owned-thumbnail-image { height: 100%; object-fit: cover; width: 100%; }
+.workshop-selected-artwork { aspect-ratio: 4 / 3; margin-top: 1rem; min-height: 22rem; }
+.workshop-selected-artwork-image { height: 100%; max-height: 40rem; object-fit: contain; width: 100%; }
+.workshop-inventory-warning { color: #fbbf24; margin: 1.25rem auto; max-width: 1440px; }

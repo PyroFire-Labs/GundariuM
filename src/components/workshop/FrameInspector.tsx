@@ -15,6 +15,5 @@ export function FrameInspector({ frame, selectedAssembly, isSaved, savedCount, o
     <section className="workshop-selected-assembly" aria-live="polite"><p className="workshop-eyebrow">Selected assembly {selectedAssembly.index}</p><h3>{selectedAssembly.title}</h3><p>{selectedAssembly.detail}</p><span>{selectedAssembly.status}</span></section>
     <button className="workshop-save-button" onClick={onToggleSaved} type="button">{isSaved ? "REMOVE LOCAL KIT" : "SAVE KIT LOCALLY"}</button>
     <p className="workshop-local-note">Local saved kits ({savedCount}). This changes only this open screen—no wallet, server, or on-chain record is created.</p>
-    <div className="workshop-operation-placeholders"><button disabled type="button">REPAIR WITH GNRM — CONTRACT PENDING</button><button disabled type="button">UPGRADE WITH GNRM — CONTRACT PENDING</button></div>
   </aside>;
 }

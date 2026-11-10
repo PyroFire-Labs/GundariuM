@@ -8,7 +8,7 @@ export function WorkshopHeader() {
         <h1>GUNDARIU<span>M</span> WORKSHOP</h1>
       </div>
       <nav aria-label="Workshop destinations" className="workshop-destinations">
-        <a href="#gallery">Gallery</a>
+        <a href="#gallery">My Frames</a>
         <Link href="/arena">Arena</Link>
         <Link href="/mint">Mint</Link>
         <Link href="/collection">Collection</Link>
