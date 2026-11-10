@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { buildWorkshopFrame, type GalleryCard } from "./catalog.ts";
+import { buildWorkshopFrame, toggleSavedFrame, type GalleryCard } from "./catalog.ts";
 
 const cards: GalleryCard[] = [
   { id: 6, image: "/gallery/token-6.png", name: "GNY-508 Gundam", series: "GundariuM Genesis", faction: "EFSF", rarity: "Legendary", hp: 1156, armorType: "Standard", primaryWeapon: "Ship-Cutting Sword", primaryDamage: 180, secondaryWeapon: "Vulcan Pod", secondaryDamage: 372, tertiaryWeapon: "Binder Beam Gun", tertiaryDamage: 92, specialAttack: "Limit Break", specialDamage: 722 },
@@ -45,4 +45,12 @@ test("buildWorkshopFrame supplies explicit fallback labels for blank optional di
   assert.match(frame.assemblies[0].detail, /Unspecified faction/i);
   assert.match(frame.assemblies[3].detail, /Unspecified series/i);
   assert.match(frame.assemblies[4].detail, /Unspecified flight system/i);
+});
+
+test("toggleSavedFrame adds and removes only the selected local frame", () => {
+  const saved = toggleSavedFrame(new Set([6]), 11);
+
+  assert.deepEqual([...saved].sort((a, b) => a - b), [6, 11]);
+  assert.deepEqual([...toggleSavedFrame(saved, 11)], [6]);
+  assert.deepEqual([...saved].sort((a, b) => a - b), [6, 11]);
 });

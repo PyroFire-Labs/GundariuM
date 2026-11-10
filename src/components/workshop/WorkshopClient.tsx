@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import type { WorkshopFrame } from "@/lib/workshop/catalog";
+import { toggleSavedFrame, type WorkshopAssemblyId, type WorkshopFrame } from "@/lib/workshop/catalog";
+import { AssemblyDeck } from "./AssemblyDeck";
 import { FrameGallery } from "./FrameGallery";
+import { FrameInspector } from "./FrameInspector";
 import { WorkshopHeader } from "./WorkshopHeader";
 import "./workshop.css";
 
@@ -12,6 +14,8 @@ interface WorkshopClientProps {
 
 export function WorkshopClient({ frames }: WorkshopClientProps) {
   const [selectedFrameId, setSelectedFrameId] = useState(frames[0]?.id ?? 0);
+  const [selectedAssemblyId, setSelectedAssemblyId] = useState<WorkshopAssemblyId>("head-optics");
+  const [savedFrameIds, setSavedFrameIds] = useState<Set<number>>(new Set());
   const selectedFrame = frames.find((frame) => frame.id === selectedFrameId) ?? frames[0];
 
   if (!selectedFrame) return null;
@@ -35,17 +39,8 @@ export function WorkshopClient({ frames }: WorkshopClientProps) {
           </div>
           <p className="workshop-disclosure">Virtual concept view. This screen makes no wallet, on-chain, server, or model-generation request.</p>
         </section>
-        <aside aria-label="Selected frame simulated specifications" className="workshop-inspector">
-          <p className="workshop-eyebrow">Simulated specs</p>
-          <h2>{selectedFrame.name}</h2>
-          <dl className="workshop-stats">
-            {selectedFrame.stats.map((stat) => <div key={stat.label}><dt>{stat.label}</dt><dd>{stat.value}</dd></div>)}
-          </dl>
-          <div className="workshop-provisional-deck">
-            <h3>Assemblies</h3>
-            <p>{selectedFrame.assemblies.length} virtual assembly records are ready for inspection.</p>
-          </div>
-        </aside>
+        <AssemblyDeck assemblies={selectedFrame.assemblies} onSelectAssembly={setSelectedAssemblyId} selectedAssemblyId={selectedAssemblyId} />
+        <FrameInspector frame={selectedFrame} isSaved={savedFrameIds.has(selectedFrame.id)} onToggleSaved={() => setSavedFrameIds((saved) => toggleSavedFrame(saved, selectedFrame.id))} savedCount={savedFrameIds.size} selectedAssembly={selectedFrame.assemblies.find((assembly) => assembly.id === selectedAssemblyId) ?? selectedFrame.assemblies[0]} />
       </div>
     </main>
   );

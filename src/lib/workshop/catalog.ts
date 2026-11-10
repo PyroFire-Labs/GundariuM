@@ -43,6 +43,13 @@ export interface WorkshopFrame extends GalleryCard {
   stats: readonly WorkshopStat[];
 }
 
+export function toggleSavedFrame(saved: ReadonlySet<number>, id: number): Set<number> {
+  const next = new Set(saved);
+  if (next.has(id)) next.delete(id);
+  else next.add(id);
+  return next;
+}
+
 function display(value: string, fallback: string): string {
   return value.trim() || fallback;
 }
