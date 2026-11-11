@@ -1,0 +1,65 @@
+{
+  "version": "rosco-receipt/1",
+  "id": "rosco-session-loop-portability-2026-11-11",
+  "timestamp": "2026-11-11T02:29:05Z",
+  "actor": "Rosco",
+  "task": {
+    "id": "rosco-session-loop-portability",
+    "title": "Repair and verify Rosco portability lockfile consistency",
+    "scope": "Resolve root lockfile consistency and verify a fresh temporary clean copy without modifying application, contract, worker, Rosco-loop, or deployment code."
+  },
+  "approval": "Josh explicitly authorized npm registry access for root lockfile consistency and requested temporary clean-copy npm ci followed by rosco:verify. No commit or loop promotion was authorized.",
+  "intent": "Make the repository-relative DreamLoops runtime dependency installable from a clean copy and preserve Rosco's manual draft boundary.",
+  "execution": {
+    "status": "EXECUTED",
+    "evidence": [
+      "npm install --ignore-scripts --no-audit --no-fund completed under Node v24.13.0 / npm 11.6.2.",
+      "The final root package-lock.json removes the stale ../../everythingDreamNet/dreamloops/packages/runtime entry, retains vendor/dreamloops-runtime, and records optional bufferutil@4.0.9 with its node-gyp-build dependency. The bufferutil lock record was added after npm install did not add the missing optional peer.",
+      "A fresh temporary clone received the current package.json, package-lock.json, Rosco files, and verifier; no existing node_modules were copied.",
+      "npm ci --ignore-scripts --no-audit --no-fund passed in the temporary copy using Node v24.13.0 / npm 11.6.2: added 758 packages in 4m.",
+      "npm run rosco:verify passed all six acceptance checks in that temporary copy."
+    ]
+  },
+  "verification": {
+    "status": "LOCALLY_VERIFIED",
+    "evidence": [
+      "Fresh temporary clean-copy npm ci completed with exit code 0.",
+      "Rosco verifier completed with exit code 0: Capsule validation, DreamLoop validation, successful local session-start execution, receipt-schema validation, Markdown-link validation, and no-external-action boundary all passed.",
+      "The loop status remains draft; no promotion was performed."
+    ]
+  },
+  "effect": {
+    "status": "NONE",
+    "evidence": [
+      "npm retrieved registry package data and installed dependencies locally in the authorized root and temporary copy.",
+      "No deployment, wallet, contract, production mutation, external communication, or unattended schedule occurred.",
+      "Temporary verification copies were removed after completion."
+    ]
+  },
+  "authority": {
+    "status": "VALID",
+    "basis": "Josh explicitly authorized registry access for lockfile consistency and the specified temporary clean-copy verification; this receipt records only that bounded task."
+  },
+  "outcome": "COMPLETE",
+  "facts": [
+    {
+      "label": "CONFIRMED",
+      "claim": "The vendored DreamLoops runtime resolved from the repository-relative vendor path without a sibling-machine path in the root manifest or lockfile.",
+      "source": "package.json; package-lock.json; rg search"
+    },
+    {
+      "label": "CONFIRMED",
+      "claim": "The fresh temporary clean-copy npm ci and all six Rosco local acceptance checks passed under Node v24.13.0 / npm 11.6.2.",
+      "source": "Temporary clean-copy command output"
+    },
+    {
+      "label": "CONFIRMED",
+      "claim": "The Rosco session-start DreamLoop remains draft and no production or blockchain action occurred.",
+      "source": ".rosco/rosco-session-start.dreamloop.json; temporary verifier output"
+    }
+  ],
+  "handoff": {
+    "next_action": "Keep the loop manual, local-only, and draft; wait for separate Josh approval before any promotion.",
+    "blockers": []
+  }
+}

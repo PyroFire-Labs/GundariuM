@@ -1,0 +1,46 @@
+{
+  "version": "rosco-receipt/1",
+  "id": "rosco-session-loop-setup-2026-10-19",
+  "timestamp": "2026-10-19T00:00:00-05:00",
+  "actor": "Rosco",
+  "task": {
+    "id": "rosco-session-loop-setup",
+    "title": "Implement Rosco's persistent session loop",
+    "scope": "Create and connect .rosco session-loop documentation and handoff records only."
+  },
+  "approval": "Josh explicitly approved session-loop setup and prohibited gameplay, contract, reward, and production-configuration changes.",
+  "intent": "Define the approved ten-step loop and make its state, receipt, and handoff obligations durable in the project brain.",
+  "execution": {
+    "status": "EXECUTED",
+    "evidence": ["Created .rosco/LOOP.md and updated the related Rosco brain records."]
+  },
+  "verification": {
+    "status": "LOCALLY_VERIFIED",
+    "evidence": ["Ran the receipt-schema and local Markdown-link validator in .rosco/VERIFY.md.", "Ran final-newline and trailing-whitespace validation for .rosco files."]
+  },
+  "effect": {
+    "status": "NONE",
+    "evidence": ["The task changed project-brain documentation only; no runtime, deployment, queue, contract, or external-service operation occurred."]
+  },
+  "authority": {
+    "status": "VALID",
+    "basis": "Josh approved this setup task in the active session."
+  },
+  "outcome": "COMPLETE",
+  "facts": [
+    {
+      "label": "CONFIRMED",
+      "claim": "LOOP.md defines all ten requested session steps and requires evidence-gated classification and handoff.",
+      "source": ".rosco/LOOP.md"
+    },
+    {
+      "label": "CONFIRMED",
+      "claim": "No restricted implementation boundary was edited during setup.",
+      "source": "Changed-file inventory for this session"
+    }
+  ],
+  "handoff": {
+    "next_action": "Select one authorized atomic task from .rosco/TASKS.md.",
+    "blockers": ["Receipt truth, model-job recovery, transport durability, and deployment state still need separate evidence."]
+  }
+}

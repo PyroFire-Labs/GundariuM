@@ -84,5 +84,14 @@ gundariumwarptrapper.json
 *.receipt.json
 *.proofdrop.json
 *.capsule.json
+!.rosco/rosco-session.capsule.json
 __pycache__/
 *.pyc
+
+# Jerry project brain — persistent agent context, handoffs, receipts, and history.
+# Not meant for the public site repo.
+.jerry/
+
+# Larry project brain — same as above, senior agent's own context/handoffs/receipts.
+.larry/
+.rosco/runtime-state/

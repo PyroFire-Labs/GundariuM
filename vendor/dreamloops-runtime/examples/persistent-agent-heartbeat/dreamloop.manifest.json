@@ -1,0 +1,44 @@
+{
+  "schema": "dreamnet.dreamloop.v1",
+  "loop_id": "persistent-agent-heartbeat-v1",
+  "title": "Persistent Agent Heartbeat",
+  "version": "1.0.0",
+  "status": "rehearsed",
+  "owner": "persistent-agent-stack-v1",
+  "stewards": ["operator"],
+  "permission_tier": "local_draft_write",
+  "trigger": "scheduled or manual health check",
+  "inputs": ["runtime reference", "storage reference"],
+  "context_sources": ["local health endpoints", "local database integrity check"],
+  "allowed_actions": ["artifact.local.write", "runtime.health.read"],
+  "blocked_actions": ["cloud.mutate", "production.deploy", "social.publish", "wallet.sign"],
+  "checks": ["runtime reachable", "state store healthy", "receipt produced"],
+  "evidence_outputs": ["health snapshot"],
+  "receipt_outputs": ["heartbeat receipt"],
+  "knowledge_state_outputs": ["current runtime health"],
+  "execution_trace_outputs": ["bounded step receipts"],
+  "memory_routes": ["episodic health history"],
+  "cooldown": "minimum 60 seconds",
+  "failure_modes": ["unregistered handler", "permission denied", "timeout", "unhealthy dependency"],
+  "promotion_path": "rehearsed -> active_local -> live_guarded",
+  "last_reviewed": "2026-07-14",
+  "limits": {
+    "max_wall_time_ms": 5000,
+    "max_steps": 4,
+    "max_retries_per_step": 1
+  },
+  "steps": [
+    {
+      "id": "inspect-runtime",
+      "handler": "runtime.health.read",
+      "permission": "runtime.health.read",
+      "with": { "include": ["process", "scheduler", "memory", "storage"] }
+    },
+    {
+      "id": "write-local-evidence",
+      "handler": "artifact.local.write",
+      "permission": "artifact.local.write",
+      "with": { "kind": "heartbeat" }
+    }
+  ]
+}

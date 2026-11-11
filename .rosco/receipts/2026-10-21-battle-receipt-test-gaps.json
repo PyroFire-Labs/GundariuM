@@ -1,0 +1,39 @@
+{
+  "version": "rosco-receipt/1",
+  "id": "rosco-battle-receipt-test-gaps-2026-10-21",
+  "timestamp": "2026-10-21T00:00:00-05:00",
+  "actor": "Rosco",
+  "task": {
+    "id": "battle-receipt-test-gaps",
+    "title": "Close local battle-receipt configuration and failure test gaps",
+    "scope": "Use source-bound baseline fixtures, mocked fetch, and existing project code to harden local boundaries without adding a receiver, queue, persistence, provider call, or production effect."
+  },
+  "approval": "Josh explicitly authorized starting the DreamNet bounded test-gap task.",
+  "intent": "Prove truthful local error and input boundaries while preserving the distinction between stable local request keys and durable delivery/deduplication.",
+  "execution": {
+    "status": "EXECUTED",
+    "evidence": ["Added pre-fetch worker configuration validation, stable local per-stage keys, fetch/JSON error containment, and route-boundary fixtures.", "Compiled the HEAD adapter source into a temporary fixture without resetting the checkout."]
+  },
+  "verification": {
+    "status": "LOCALLY_VERIFIED",
+    "evidence": ["node --test scripts/test-battle-receipt-client.mjs: 9 pass, 0 fail.", "Root TypeScript, targeted ESLint, and git diff --check passed."]
+  },
+  "effect": {
+    "status": "NONE",
+    "evidence": ["All fetch calls were mocked.", "No provider, worker, gateway, deployment, database, credential, or production configuration was contacted or changed."]
+  },
+  "authority": {
+    "status": "VALID",
+    "basis": "Josh authorized the bounded local test-gap work, and no action exceeded the stated no-production/no-provider/no-new-service limits."
+  },
+  "outcome": "COMPLETE",
+  "facts": [
+    {"label": "CONFIRMED", "claim": "Invalid worker configuration now returns before fetch, and malformed/rejected worker responses return truthful local failure outcomes.", "source": "Adapter source and mocked-fetch fixtures"},
+    {"label": "CONFIRMED", "claim": "Repeated local executions reuse stable per-stage request keys but still make separate calls; no durable deduplication exists.", "source": "Duplicate fixture and absence of receiver persistence"},
+    {"label": "UNKNOWN", "claim": "Live receiver behavior, exact-once delivery, restart recovery, deployed configuration, provider cost, and independent verification.", "source": "Offline-only local mission"}
+  ],
+  "handoff": {
+    "next_action": "Send the bounded material result to DreamNet and wait for a material response or owner-authorized task.",
+    "blockers": ["No approved durable receiver, authenticated sender policy, remote readback, retention contract, or retry/reconciliation policy exists."]
+  }
+}
