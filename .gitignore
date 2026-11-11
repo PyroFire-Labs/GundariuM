@@ -84,6 +84,7 @@ gundariumwarptrapper.json
 *.receipt.json
 *.proofdrop.json
 *.capsule.json
+!.rosco/rosco-session.capsule.json
 __pycache__/
 *.pyc
 

@@ -2,6 +2,18 @@
 
 Append one entry per session. State the exact checkout commit and dirty status, files changed, verification commands and results, external-effect status, blockers, and next authorized action. Do not copy secrets or personal data.
 
+## 2026-11-10 — Rosco session-start DreamLoop rehearsal
+
+- **Outcome:** COMPLETE for one manual, local rehearsal and validation.
+- **Checkout:** `main` at `756a3d65f5753eca20c64a1552fc3e72489df217`. The runner captured 109 pre-existing Git status entries before it wrote its session receipt; unrelated dirty files were preserved.
+- **Loop:** `rosco-session-start-v1` and the local Capsule `rosco-gundarium-session-v1` both passed `@dreamloops/runtime` validation. The loop remains `draft`; it allows local context/task/Git reads and local receipt writing only. It has no email action. At the time of this rehearsal, `.gitignore` excluded the Capsule; `package.json` already used the repository-relative `file:vendor/dreamloops-runtime` dependency, while the lockfile retained a stale sibling-path entry.
+- **Execution:** `node scripts/run-rosco-session.mjs` completed all five configured steps with no task supplied. The run stopped at `NEEDS_APPROVAL` for implementation, wrote `.rosco/receipts/2026-11-11T00-50-36-226Z-session-start.json`, and updated local runtime state.
+- **Verification:** The Rosco receipt-schema and Markdown-link validator passed. No independent verifier was used. The DreamLoops runtime receipt reports `authority: UNAUTHORIZED`, `verification: UNVERIFIED`, `effect: UNKNOWN`, and no configured checks; the separate Rosco receipt records no external effect.
+- **External effect:** **CONFIRMED none.** No email, network request, deployment, contract, wallet, provider, or production action occurred.
+- **Changed:** This handoff and Rosco receipts `.rosco/receipts/2026-11-11T00-50-36-226Z-session-start.json` and `.rosco/receipts/2026-11-11-dreamloop-rehearsal.json`; runtime state was written under `.rosco/runtime-state/`. No application source changed.
+- **Current verification update — 2026-11-11:** A narrow ignore exception makes the Capsule trackable, `.rosco/runtime-state/` remains ignored, and `npm ls @dreamloops/runtime` resolves the vendored package. The root lockfile now includes the optional `bufferutil@4.0.9` peer record and has no sibling-machine DreamLoops path. A fresh temporary copy passed `npm ci --ignore-scripts --no-audit --no-fund` with Node `v24.13.0` / npm `11.6.2` (`added 758 packages in 4m`), then `npm run rosco:verify` passed all six checks. npm registry package retrieval was authorized; no deployment, wallet, contract, or production action occurred. Receipt: `.rosco/receipts/2026-11-11-rosco-session-loop-portability.json`.
+- **Next authorized action:** None for the portability acceptance scope. Keep the loop manual, local-only, and `draft`; any promotion requires separate Josh approval.
+
 ## 2026-10-21 — Battle-receipt test gaps
 
 - **Outcome:** COMPLETE for `DN-ROSCOE-OPT-20261021-02-TEST-GAPS` within Josh's authorized local scope.

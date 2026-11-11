@@ -6,7 +6,8 @@
     "dev": "doppler run -- next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "rosco:verify": "node scripts/validate-rosco-session.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
