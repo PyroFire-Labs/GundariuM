@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/BrandonDucar/dreamloops/main/schemas/capsule.schema.json",
+  "title": "DreamLoops Capsule v1",
+  "type": "object",
+  "required": [
+    "schema", "capsule_id", "name", "version", "capsule_type", "status", "purpose",
+    "payload", "permissions", "resource_limits", "activation", "provenance"
+  ],
+  "properties": {
+    "schema": { "const": "dreamnet.synergy_capsule.v1" },
+    "capsule_id": { "type": "string", "minLength": 1 },
+    "name": { "type": "string", "minLength": 1 },
+    "version": { "type": "string", "minLength": 1 },
+    "capsule_type": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["draft", "rehearsed", "active_local", "live_guarded", "certified", "retired"] },
+    "purpose": { "type": "string", "minLength": 1 },
+    "payload": { "type": "object" },
+    "permissions": {
+      "type": "object",
+      "required": ["allowed", "blocked"],
+      "properties": {
+        "allowed": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "blocked": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+      }
+    },
+    "resource_limits": {
+      "type": "object",
+      "required": ["max_wall_time_ms", "max_steps", "max_retries_per_step"],
+      "properties": {
+        "max_wall_time_ms": { "type": "integer", "minimum": 1, "maximum": 86400000 },
+        "max_steps": { "type": "integer", "minimum": 1, "maximum": 1000 },
+        "max_retries_per_step": { "type": "integer", "minimum": 1, "maximum": 10 }
+      }
+    },
+    "activation": {
+      "type": "object",
+      "required": ["mode", "rollback_version"],
+      "properties": {
+        "mode": { "enum": ["manual_review", "quorum_review", "disabled"] },
+        "rollback_version": { "type": "string", "minLength": 1 }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["content_hash"],
+      "properties": {
+        "content_hash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+      }
+    }
+  }
+}

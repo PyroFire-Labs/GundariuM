@@ -1,0 +1,14 @@
+{
+  "name": "@dreamloops/runtime",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Dependency-free Capsule validation, composition, durable state, and bounded DreamLoop execution",
+  "exports": "./src/index.js",
+  "files": ["src", "schemas", "templates", "examples", "README.md"],
+  "repository": { "type": "git", "url": "https://github.com/BrandonDucar/dreamloops.git", "directory": "packages/runtime" },
+  "scripts": {
+    "test": "node --test tests/*.test.js"
+  },
+  "engines": { "node": ">=18.17.0" },
+  "license": "Apache-2.0"
+}

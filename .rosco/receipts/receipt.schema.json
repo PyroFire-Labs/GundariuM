@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Rosco engineering receipt",
+  "type": "object",
+  "required": ["version", "id", "timestamp", "actor", "task", "approval", "intent", "execution", "verification", "effect", "authority", "outcome", "facts", "handoff"],
+  "properties": {
+    "version": { "const": "rosco-receipt/1" },
+    "id": { "type": "string", "minLength": 1 },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "actor": { "type": "string", "const": "Rosco" },
+    "task": {
+      "type": "object",
+      "required": ["id", "title", "scope"],
+      "properties": { "id": { "type": "string" }, "title": { "type": "string" }, "scope": { "type": "string" } },
+      "additionalProperties": false
+    },
+    "approval": { "type": "string" },
+    "intent": { "type": "string" },
+    "execution": { "type": "object", "required": ["status", "evidence"], "properties": { "status": { "enum": ["NOT_STARTED", "EXECUTED", "FAILED", "BLOCKED"] }, "evidence": { "type": "array", "items": { "type": "string" } } }, "additionalProperties": false },
+    "verification": { "type": "object", "required": ["status", "evidence"], "properties": { "status": { "enum": ["UNVERIFIED", "LOCALLY_VERIFIED", "INDEPENDENTLY_VERIFIED", "FAILED"] }, "evidence": { "type": "array", "items": { "type": "string" } } }, "additionalProperties": false },
+    "effect": { "type": "object", "required": ["status", "evidence"], "properties": { "status": { "enum": ["NONE", "UNKNOWN", "OBSERVED", "INDEPENDENTLY_CONFIRMED"] }, "evidence": { "type": "array", "items": { "type": "string" } } }, "additionalProperties": false },
+    "authority": { "type": "object", "required": ["status", "basis"], "properties": { "status": { "enum": ["VALID", "NOT_REQUIRED", "UNKNOWN", "REVOKED"] }, "basis": { "type": "string" } }, "additionalProperties": false },
+    "outcome": { "enum": ["COMPLETE", "BLOCKED", "FAILED", "NEEDS_APPROVAL"] },
+    "facts": { "type": "array", "items": { "type": "object", "required": ["label", "claim", "source"], "properties": { "label": { "enum": ["CONFIRMED", "INFERRED", "UNKNOWN"] }, "claim": { "type": "string" }, "source": { "type": "string" } }, "additionalProperties": false } },
+    "handoff": { "type": "object", "required": ["next_action", "blockers"], "properties": { "next_action": { "type": "string" }, "blockers": { "type": "array", "items": { "type": "string" } } }, "additionalProperties": false }
+  },
+  "additionalProperties": false
+}

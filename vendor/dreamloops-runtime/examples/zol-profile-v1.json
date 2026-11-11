@@ -1,0 +1,24 @@
+{
+  "schema": "dreamnet.agent_profile.v1",
+  "profile_id": "zol-profile-v1",
+  "capsule": {
+    "capsule_id": "persistent-agent-stack-v1",
+    "version": "1.0.0",
+    "content_hash": "sha256:74a4ce66de340650349f65a8872e13538b9fd56e81a758e20baeb5844de2a496"
+  },
+  "identity": {
+    "agent_id": "zol",
+    "owner": "zaal"
+  },
+  "feature_flags": {
+    "persistent_state": false,
+    "memory_governor": false,
+    "component_radar": false,
+    "warper_keeper_remote": false
+  },
+  "permissions": {
+    "allowed": ["artifact.local.write", "runtime.health.read"],
+    "blocked": ["component.install", "production.deploy", "social.publish", "wallet.sign"]
+  },
+  "secrets": "references-only-never-values"
+}

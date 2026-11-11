@@ -1,0 +1,41 @@
+{
+  "version": "rosco-receipt/1",
+  "id": "rosco-farcaster-access-scope-correction-2026-10-19",
+  "timestamp": "2026-10-19T00:00:00-05:00",
+  "actor": "Rosco",
+  "task": {
+    "id": "farcaster-access-scope-correction",
+    "title": "Correct Farcaster removal scope",
+    "scope": "Update Rosco context only after Josh clarified that Base-native behavior and Neynar must remain."
+  },
+  "approval": "Josh clarified the intended scope in the active session.",
+  "intent": "Prevent an overbroad removal from deleting Base-native or Neynar functionality.",
+  "execution": {
+    "status": "EXECUTED",
+    "evidence": ["Updated Rosco state, decision, task, report, and handoff records to preserve Base-native and Neynar behavior."]
+  },
+  "verification": {
+    "status": "LOCALLY_VERIFIED",
+    "evidence": ["Reviewed the correction against Josh's instruction and retained the original scope report as superseded historical evidence."]
+  },
+  "effect": {
+    "status": "NONE",
+    "evidence": ["No application code, package dependency, deployment, manifest, contract, or external-service behavior changed."]
+  },
+  "authority": {
+    "status": "VALID",
+    "basis": "Josh is the authority for product scope and explicitly corrected it."
+  },
+  "outcome": "COMPLETE",
+  "facts": [
+    {
+      "label": "CONFIRMED",
+      "claim": "The active objective is Farcaster/Network School access removal while preserving Base-native app behavior and Neynar integration.",
+      "source": "Josh's active-session instruction"
+    }
+  ],
+  "handoff": {
+    "next_action": "Produce a minimal access-removal proposal after verifying Base-native compatibility boundaries.",
+    "blockers": ["The exact discovery/manifest change set must be verified against Base-native requirements before runtime code is edited."]
+  }
+}

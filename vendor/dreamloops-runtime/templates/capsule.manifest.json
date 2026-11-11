@@ -1,0 +1,29 @@
+{
+  "schema": "dreamnet.synergy_capsule.v1",
+  "capsule_id": "replace-me-v1",
+  "name": "Replace Me",
+  "version": "1.0.0",
+  "capsule_type": "runtime_profile",
+  "status": "draft",
+  "purpose": "Describe the bounded capability carried by this Capsule.",
+  "payload": {
+    "components": [],
+    "dreamloops": []
+  },
+  "permissions": {
+    "allowed": ["runtime.health.read"],
+    "blocked": ["wallet.sign", "social.publish", "production.deploy"]
+  },
+  "resource_limits": {
+    "max_wall_time_ms": 30000,
+    "max_steps": 10,
+    "max_retries_per_step": 2
+  },
+  "activation": {
+    "mode": "manual_review",
+    "rollback_version": "none"
+  },
+  "provenance": {
+    "content_hash": "sha256:replace-with-capsuleContentHash-output"
+  }
+}

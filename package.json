@@ -36,6 +36,7 @@
     "wagmi": "^3.5.0"
   },
   "devDependencies": {
+    "@dreamloops/runtime": "file:vendor/dreamloops-runtime",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

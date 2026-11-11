@@ -1,0 +1,46 @@
+{
+  "version": "rosco-receipt/1",
+  "id": "rosco-farcaster-removal-scope-2026-10-19",
+  "timestamp": "2026-10-19T00:00:00-05:00",
+  "actor": "Rosco",
+  "task": {
+    "id": "farcaster-removal-scope",
+    "title": "Map Farcaster removal scope",
+    "scope": "Read first-party source and manifests; update Rosco records only."
+  },
+  "approval": "Josh identified Farcaster removal as the next objective and asked Rosco to maintain the project context.",
+  "intent": "Classify all runtime Farcaster/Neynar/miniapp paths so removal can preserve independent wallet and game behavior.",
+  "execution": {
+    "status": "EXECUTED",
+    "evidence": ["Searched first-party source and manifests for Farcaster, Neynar, miniapp, connector, and share references.", "Created .rosco/reports/2026-10-19-farcaster-removal-scope.md."]
+  },
+  "verification": {
+    "status": "LOCALLY_VERIFIED",
+    "evidence": ["Confirmed every listed runtime path by direct source inspection.", "Ran Rosco receipt-schema and local Markdown-link validation after writing the scope map."]
+  },
+  "effect": {
+    "status": "NONE",
+    "evidence": ["No Farcaster SDK, profile lookup, manifest, UI, contract, deployment, or external service behavior was changed."]
+  },
+  "authority": {
+    "status": "VALID",
+    "basis": "Josh authorized the next objective and this read-only scope work does not alter the application."
+  },
+  "outcome": "COMPLETE",
+  "facts": [
+    {
+      "label": "CONFIRMED",
+      "claim": "Farcaster is integrated through the miniapp SDK, custom Wagmi connector, initialization provider, metadata/manifest, Neynar identity lookup, and verified-share UI.",
+      "source": "Paths listed in .rosco/reports/2026-10-19-farcaster-removal-scope.md"
+    },
+    {
+      "label": "INFERRED",
+      "claim": "A safe first removal release can preserve generic sharing and address-based dossiers while removing Farcaster-specific behavior.",
+      "source": "Source dependency analysis"
+    }
+  ],
+  "handoff": {
+    "next_action": "Obtain Josh's decision on generic sharing and documentation scope, then implement the bounded Farcaster runtime removal.",
+    "blockers": ["Social-sharing behavior and documentation cleanup scope are not selected; no contract changes are authorized."]
+  }
+}

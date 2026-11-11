@@ -1,0 +1,63 @@
+{
+  "version": "rosco-receipt/1",
+  "id": "rosco-session-start-2026-11-10T23-52-53-310Z",
+  "timestamp": "2026-11-10T23:52:53.471Z",
+  "actor": "Rosco",
+  "task": {
+    "id": "rosco-session-start",
+    "title": "Rosco session start",
+    "scope": "Local context, task-board, and Git-state inspection only."
+  },
+  "approval": "No task was supplied. This session performed read-only startup work only.",
+  "intent": "Load Rosco context, capture local repository state, and stop before implementation or external action.",
+  "execution": {
+    "status": "EXECUTED",
+    "evidence": [
+      "Read Rosco operating-context file summaries.",
+      "Read the Rosco task-board summary.",
+      "Captured Git HEAD: 735dc4ae132beb927e3f4c92fdaa65c3a538fa77.",
+      "Captured 114 Git status entries; snapshot hash: sha256:59471207265a2742c445cce0e711b2940b61789cbfcad1fdbdf08434e9777687."
+    ]
+  },
+  "verification": {
+    "status": "UNVERIFIED",
+    "evidence": [
+      "The session-start runner executed locally.",
+      "No independent verifier or external system was consulted."
+    ]
+  },
+  "effect": {
+    "status": "NONE",
+    "evidence": [
+      "No deployment, contract call, wallet action, API mutation, or external communication was attempted."
+    ]
+  },
+  "authority": {
+    "status": "NOT_REQUIRED",
+    "basis": "This loop performs local read-only inspection and writes local Rosco receipts only."
+  },
+  "outcome": "NEEDS_APPROVAL",
+  "facts": [
+    {
+      "label": "CONFIRMED",
+      "claim": "The local session-start loop captured Git revision 735dc4ae132beb927e3f4c92fdaa65c3a538fa77 and 114 working-tree entries.",
+      "source": "scripts/run-rosco-session.mjs"
+    },
+    {
+      "label": "CONFIRMED",
+      "claim": "No external effect was attempted by this session-start loop.",
+      "source": "Local runner configuration and receipt handler"
+    },
+    {
+      "label": "UNKNOWN",
+      "claim": "No implementation task is authorized merely because this session-start loop executed.",
+      "source": ".rosco/LOOP.md"
+    }
+  ],
+  "handoff": {
+    "next_action": "Josh must explicitly authorize one atomic task before Rosco performs implementation work.",
+    "blockers": [
+      "No implementation authority is established by this local session-start receipt."
+    ]
+  }
+}

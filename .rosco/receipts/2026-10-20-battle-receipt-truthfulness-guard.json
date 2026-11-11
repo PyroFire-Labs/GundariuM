@@ -1,0 +1,39 @@
+{
+  "version": "rosco-receipt/1",
+  "id": "rosco-battle-receipt-truthfulness-guard-2026-10-20",
+  "timestamp": "2026-10-20T00:00:00-05:00",
+  "actor": "Rosco",
+  "task": {
+    "id": "battle-receipt-truthfulness-guard",
+    "title": "Make battle receipt artifact status truthful and opt-in",
+    "scope": "Remove the default artifact-worker call and prevent local artifact construction from being reported as durable receipt submission."
+  },
+  "approval": "Josh authorized beginning the bounded optimization after the DreamNet handoff requested one locally authorized narrow improvement.",
+  "intent": "Eliminate default remote artifact calls and false submission language while preserving the optional configured artifact path and gameplay behavior.",
+  "execution": {
+    "status": "EXECUTED",
+    "evidence": ["The receipt adapter now requires BATTLE_TRAPPERS_URL before it calls fetch.", "All adapter outcomes return submitted: false with an explicit deliveryStatus.", "An offline mocked-fetch test was added for unconfigured, exported-bundle, and failed-build outcomes."]
+  },
+  "verification": {
+    "status": "LOCALLY_VERIFIED",
+    "evidence": ["node --test scripts/test-battle-receipt-client.mjs: 3 pass, 0 fail.", "./node_modules/.bin/tsc --noEmit, targeted ESLint, and git diff --check passed."]
+  },
+  "effect": {
+    "status": "NONE",
+    "evidence": ["No live gateway, provider, deployment, contract, wallet, credential, or production configuration was contacted or changed.", "All HTTP behavior in the focused test was mocked."]
+  },
+  "authority": {
+    "status": "VALID",
+    "basis": "Josh directly authorized the optimization; the work stayed within the pre-existing no-deployment, no-credential, no-production-change boundary."
+  },
+  "outcome": "COMPLETE",
+  "facts": [
+    {"label": "CONFIRMED", "claim": "The adapter can no longer report a locally built or exported artifact as submitted.", "source": "src/lib/federation/warperKeeperClient.ts and focused offline tests"},
+    {"label": "CONFIRMED", "claim": "Without BATTLE_TRAPPERS_URL, the adapter makes no fetch call.", "source": "scripts/test-battle-receipt-client.mjs"},
+    {"label": "UNKNOWN", "claim": "Deployed configuration, live worker behavior, durable delivery, independent verification, provider use, and production savings.", "source": "No secret inspection, live request, deployment, or external readback was performed"}
+  ],
+  "handoff": {
+    "next_action": "Obtain owner-approved durable receiver and retention boundaries before designing authenticated submit/readback work.",
+    "blockers": ["No named durable receiver or independently verifiable readback contract is approved.", "The current artifact worker only builds portable data and cannot establish delivery."]
+  }
+}

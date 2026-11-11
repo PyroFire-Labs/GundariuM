@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/BrandonDucar/dreamloops/main/schemas/dreamloop.schema.json",
+  "title": "DreamLoops DreamLoop v1",
+  "type": "object",
+  "required": [
+    "schema", "loop_id", "title", "version", "status", "owner", "stewards",
+    "permission_tier", "trigger", "inputs", "context_sources", "allowed_actions",
+    "blocked_actions", "checks", "evidence_outputs", "receipt_outputs",
+    "knowledge_state_outputs", "execution_trace_outputs", "memory_routes", "cooldown",
+    "failure_modes", "promotion_path", "last_reviewed", "limits", "steps"
+  ],
+  "properties": {
+    "schema": { "const": "dreamnet.dreamloop.v1" },
+    "loop_id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "version": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["draft", "rehearsed", "active_local", "live_guarded", "certified", "retired"] },
+    "owner": { "type": "string", "minLength": 1 },
+    "stewards": { "type": "array", "items": { "type": "string" } },
+    "permission_tier": {
+      "enum": ["read_only", "local_draft_write", "artifact_draft_write", "private_branch_write_candidate", "live_guarded_action", "production_write"]
+    },
+    "trigger": { "type": "string", "minLength": 1 },
+    "inputs": { "type": "array" },
+    "context_sources": { "type": "array" },
+    "allowed_actions": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "blocked_actions": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "checks": { "type": "array" },
+    "evidence_outputs": { "type": "array" },
+    "receipt_outputs": { "type": "array" },
+    "knowledge_state_outputs": { "type": "array" },
+    "execution_trace_outputs": { "type": "array" },
+    "memory_routes": { "type": "array" },
+    "cooldown": { "type": "string" },
+    "failure_modes": { "type": "array" },
+    "promotion_path": { "type": "string" },
+    "last_reviewed": { "type": "string" },
+    "limits": {
+      "type": "object",
+      "required": ["max_wall_time_ms", "max_steps", "max_retries_per_step"],
+      "properties": {
+        "max_wall_time_ms": { "type": "integer", "minimum": 1, "maximum": 86400000 },
+        "max_steps": { "type": "integer", "minimum": 1, "maximum": 1000 },
+        "max_retries_per_step": { "type": "integer", "minimum": 1, "maximum": 10 }
+      }
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "handler", "permission"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "handler": { "type": "string", "minLength": 1 },
+          "permission": { "type": "string", "minLength": 1 },
+          "with": { "type": "object" },
+          "retry": {
+            "type": "object",
+            "required": ["max_attempts"],
+            "properties": { "max_attempts": { "type": "integer", "minimum": 1, "maximum": 11 } }
+          }
+        }
+      }
+    }
+  }
+}
