@@ -1,0 +1,45 @@
+name: gundarium
+
+services:
+  web:
+    build:
+      context: .
+      target: development
+    ports:
+      - "3000:3000"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      WATCHPACK_POLLING: "true"
+      SSH_AUTH_SOCK: /ssh-agent
+    volumes:
+      - .:/app
+      - web_node_modules:/app/node_modules
+      - web_next:/app/.next
+      - codex_config:/root/.codex
+      - type: bind
+        source: ${SSH_AUTH_SOCK}
+        target: /ssh-agent
+      - type: bind
+        source: ${HOME}/.ssh/known_hosts
+        target: /root/.ssh/known_hosts
+        read_only: true
+
+  model-worker:
+    profiles: ["worker"]
+    build:
+      context: ./worker
+    env_file:
+      - path: .env
+        required: false
+    volumes:
+      - ./worker:/app
+      - worker_node_modules:/app/node_modules
+    restart: unless-stopped
+
+volumes:
+  web_node_modules:
+  web_next:
+  worker_node_modules:
+  codex_config:
