@@ -107,6 +107,31 @@ async function responseTaskCount(store) {
   return (await store.list(0, 50)).length;
 }
 
+test("configuration 503 distinguishes runtime presence using only booleans", async (t) => {
+  for (const [name, config, expected] of [
+    ["both absent", {}, [false, false]],
+    ["secret absent", { inboxId: INBOX_ID }, [false, true]],
+    ["inbox absent", { secret: SIGNING_SECRET }, [true, false]],
+    ["empty strings", { secret: "", inboxId: "" }, [false, false]],
+  ]) {
+    await t.test(name, async () => {
+      const { store } = createStore();
+      const response = await webhookHandler(store, config)(signedRequest(eventPayload()));
+      assert.equal(response.status, 503);
+      assert.equal(response.headers.get("cache-control"), "no-store");
+      const body = await response.json();
+      assert.deepEqual(body, {
+        error: "Webhook is not configured",
+        configuration: {
+          AGENTMAIL_WEBHOOK_SECRET: { present: expected[0] },
+          AGENTMAIL_ROSCO_INBOX_ID: { present: expected[1] },
+        },
+      });
+      assert.equal(await responseTaskCount(store), 0);
+    });
+  }
+});
+
 test("valid raw-body Svix message.received for Rosco queues one sanitized task", async () => {
   const { store } = createStore();
   const rawBody = ` {\n  "event_type": "message.received",\n  "message": ${JSON.stringify(eventPayload().message)}\n} `;
@@ -211,6 +236,50 @@ function ownerRequest(path = "/api/rosco/mail-review") {
     headers: { cookie: "gundarium_session=owner-session" },
   });
 }
+
+test("review configuration 503 returns only address-shape diagnostics", async (t) => {
+  for (const [name, value, expected] of [
+    ["missing", undefined, [false, 0, false, false]],
+    ["empty", "", [false, 0, false, false]],
+    ["whitespace", "   ", [true, 0, false, false]],
+    ["email", " rosco@example.test ", [true, 18, false, false]],
+    ["malformed wallet", " 0x1234 ", [true, 6, true, false]],
+  ]) {
+    await t.test(name, async () => {
+      const authorize = createRoscoOwnerAuthorizer({
+        getOwnerAddress: () => value,
+        getSessionAddress: async () => { throw new Error("must not read session"); },
+        sessionCookieName: "gundarium_session",
+      });
+      const response = await authorize(ownerRequest());
+      assert.equal(response.status, 503);
+      assert.equal(response.headers.get("cache-control"), "no-store");
+      assert.deepEqual(await response.json(), {
+        error: "Rosco review access is not configured",
+        diagnostics: {
+          present: expected[0], trimmedLength: expected[1],
+          startsWith0x: expected[2], validFormat: expected[3],
+        },
+      });
+    });
+  }
+});
+
+test("valid wallet configuration preserves owner and non-owner authorization", async () => {
+  for (const value of [OWNER, ` ${OWNER.toUpperCase()} `]) {
+    const authorize = createRoscoOwnerAuthorizer({
+      getOwnerAddress: () => value,
+      getSessionAddress: async (id) => id === "owner-session" ? OWNER : OTHER,
+      sessionCookieName: "gundarium_session",
+    });
+    assert.equal(await authorize(ownerRequest()), null);
+    for (const headers of [{}, { cookie: "gundarium_session=other-session" }]) {
+      const response = await authorize(new Request("https://gundarium.invalid/api/rosco/mail-review", { headers }));
+      assert.equal(response.status, 401);
+      assert.deepEqual(await response.json(), { error: "Unauthorized" });
+    }
+  }
+});
 
 function taskFixture() {
   return {

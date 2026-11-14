@@ -100,7 +100,16 @@ export function createAgentMailWebhookHandler({
 
     const { secret, inboxId } = getConfig();
     if (!secret || !inboxId) {
-      return new Response("Webhook is not configured", { status: 503 });
+      return Response.json(
+        {
+          error: "Webhook is not configured",
+          configuration: {
+            AGENTMAIL_WEBHOOK_SECRET: { present: Boolean(secret) },
+            AGENTMAIL_ROSCO_INBOX_ID: { present: Boolean(inboxId) },
+          },
+        },
+        { status: 503, headers: { "Cache-Control": "no-store" } },
+      );
     }
 
     const rawBody = await readBodyWithinLimit(request);
