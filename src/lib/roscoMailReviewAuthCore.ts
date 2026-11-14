@@ -28,19 +28,10 @@ export function createRoscoOwnerAuthorizer({
   sessionCookieName,
 }: RoscoOwnerAuthorizerDependencies) {
   return async function authorizeRoscoOwner(request: Request): Promise<Response | null> {
-    const configuredOwnerAddress = getOwnerAddress();
-    const ownerAddress = configuredOwnerAddress?.trim().toLowerCase();
+    const ownerAddress = getOwnerAddress()?.trim().toLowerCase();
     if (!ownerAddress || !ADDRESS_PATTERN.test(ownerAddress)) {
       return Response.json(
-        {
-          error: "Rosco review access is not configured",
-          diagnostics: {
-            present: Boolean(configuredOwnerAddress),
-            trimmedLength: configuredOwnerAddress?.trim().length ?? 0,
-            startsWith0x: ownerAddress?.startsWith("0x") ?? false,
-            validFormat: ADDRESS_PATTERN.test(ownerAddress ?? ""),
-          },
-        },
+        { error: "Rosco review access is not configured" },
         { status: 503, headers: { "Cache-Control": "no-store" } },
       );
     }
