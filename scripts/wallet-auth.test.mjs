@@ -11,6 +11,18 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 let sessionHarness;
 const hookTestUrl = new URL("../src/lib/hooks/useSiweSession.ts?hook-test", import.meta.url).href;
+const chooserTestUrl = new URL("../src/components/wallet/ConnectButton.tsx?chooser-test", import.meta.url).href;
+const chooserMocks = `data:text/javascript,${encodeURIComponent(`
+  export const useState = (...args) => globalThis.__walletChooserHarness.useState(...args);
+  export const useEffect = () => {};
+  export const useAccount = () => ({isConnected: false});
+  export const useAccountEffect = () => {};
+  export const useConnect = () => ({connectAsync: globalThis.__walletChooserHarness.connectAsync, isPending: false});
+  export const useConnectors = () => globalThis.__walletChooserHarness.connectors;
+  export const useDisconnect = () => ({disconnect: () => {}});
+  export const useSiweSignIn = () => ({signIn: globalThis.__walletChooserHarness.signIn, phase: 'idle', error: null, cancel: () => {}});
+  export const useSiweSession = () => ({isSignedIn: false, loading: false, refresh: async () => null, error: null});
+`)}`;
 const hookMocks = `data:text/javascript,${encodeURIComponent(`
   export const useState = (...args) => globalThis.__walletSessionHarness.useState(...args);
   export const useRef = (...args) => globalThis.__walletSessionHarness.useRef(...args);
@@ -21,6 +33,9 @@ const hookMocks = `data:text/javascript,${encodeURIComponent(`
 
 registerHooks({
   resolve(specifier, context, nextResolve) {
+    if (context.parentURL === chooserTestUrl && ["react", "wagmi", "@/lib/hooks/useSiweSignIn", "@/lib/hooks/useSiweSession"].includes(specifier)) {
+      return { url: chooserMocks, shortCircuit: true };
+    }
     if (context.parentURL === hookTestUrl && ["react", "wagmi"].includes(specifier)) {
       return { url: hookMocks, shortCircuit: true };
     }
@@ -196,12 +211,64 @@ test("every authentication error is rendered visibly and escaped", () => {
   assert.match(renderToStaticMarkup(createElement(WalletAuthStatus, { error: null, pending: "Confirming signed-in session…" })), /role="status"/);
 });
 
-test("wallet button renders distinct Coinbase and Other Wallet choices", () => {
+test("wallet button initially renders CONNECT with its chooser closed", () => {
   const config = createConfig({ chains: [base], connectors: [], transports: { [base.id]: http("https://rpc.invalid") } });
   const html = renderToStaticMarkup(createElement(WagmiProvider, { config, reconnectOnMount: false },
     createElement(QueryClientProvider, { client: new QueryClient() }, createElement(ConnectButton))));
-  assert.match(html, /Coinbase Wallet \/ Base Account/);
-  assert.match(html, /Other Wallet/);
+  assert.match(html, />CONNECT<\/button>/);
+  assert.match(html, /aria-expanded="false"/);
+  assert.doesNotMatch(html, /Browser Wallet|WalletConnect QR|Coinbase \/ Base Account/);
+});
+
+test("CONNECT opens the chooser without connecting; each choice uses its registered connector and SIWE", async () => {
+  const connectors = [
+    { id: "baseAccount", type: "baseAccount", uid: "base" },
+    { id: "injected", type: "injected", uid: "browser" },
+    { id: "walletConnect", type: "walletConnect", uid: "qr" },
+  ];
+  const { ConnectButton: Chooser } = await import(chooserTestUrl);
+  const buttons = (node) => {
+    if (!node || typeof node !== "object") return [];
+    return [
+      ...(node.type === "button" ? [node] : []),
+      ...[node.props?.children].flat(Infinity).flatMap(buttons),
+    ];
+  };
+  try {
+    for (const [label, connector] of [
+      ["Browser Wallet", connectors[1]],
+      ["WalletConnect QR", connectors[2]],
+      ["Coinbase / Base Account", connectors[0]],
+    ]) {
+      const slots = [];
+      const calls = [];
+      let cursor = 0;
+      globalThis.__walletChooserHarness = {
+        connectors,
+        useState(initial) {
+          const index = cursor++;
+          if (!(index in slots)) slots[index] = index === 0 ? true : initial;
+          return [slots[index], (value) => { slots[index] = typeof value === "function" ? value(slots[index]) : value; }];
+        },
+        connectAsync: async ({ connector }) => { calls.push(connector); },
+        signIn: async () => { calls.push("siwe"); return true; },
+      };
+      const render = () => { cursor = 0; return Chooser(); };
+      const initial = buttons(render());
+      assert.equal(initial.length, 1);
+      assert.equal(initial[0].props.children, "CONNECT");
+      initial[0].props.onClick();
+      assert.deepEqual(calls, []);
+      const open = buttons(render());
+      assert.deepEqual(open.map((button) => button.props.children), ["CONNECT", "Browser Wallet", "WalletConnect QR", "Coinbase / Base Account"]);
+      await open.find((button) => button.props.children === label).props.onClick();
+      assert.equal(calls[0], connector);
+      assert.equal(calls[1], "siwe");
+      assert.equal(buttons(render()).length, 1);
+    }
+  } finally {
+    delete globalThis.__walletChooserHarness;
+  }
 });
 
 test("session hook clears loading after the active refresh is cancelled", async () => {
