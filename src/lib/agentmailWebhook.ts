@@ -1,3 +1,4 @@
+import { approvedSenders, exactMailbox } from "./roscoAutoMailCore";
 import { Webhook } from "svix";
 import {
   makeRoscoMailTaskId,
@@ -12,11 +13,13 @@ const VERIFY_HEADERS = ["svix-id", "svix-timestamp", "svix-signature"] as const;
 export interface AgentMailWebhookConfig {
   secret?: string;
   inboxId?: string;
+  autoReplyEnabled?: string;
+  approvedSenders?: string;
 }
 
 export interface AgentMailWebhookDependencies {
   getConfig(): AgentMailWebhookConfig;
-  enqueue(task: RoscoMailReviewTask): Promise<unknown>;
+  enqueue(task: RoscoMailReviewTask, autoCandidate: boolean): Promise<unknown>;
 }
 
 async function readBodyWithinLimit(request: Request): Promise<Buffer | null> {
@@ -98,7 +101,8 @@ export function createAgentMailWebhookHandler({
       return new Response("Payload too large", { status: 413 });
     }
 
-    const { secret, inboxId } = getConfig();
+    const config = getConfig();
+    const { secret, inboxId } = config;
     if (!secret || !inboxId) {
       return new Response("Webhook is not configured", { status: 503 });
     }
@@ -144,7 +148,10 @@ export function createAgentMailWebhookHandler({
     if (!task) return new Response("Bad Request", { status: 400 });
 
     try {
-      await enqueue(task);
+      const sender = exactMailbox((message as Record<string, unknown>).from);
+      const autoCandidate = config.autoReplyEnabled?.trim().toLowerCase() === "true" &&
+        sender !== null && approvedSenders(config.approvedSenders).has(sender);
+      await enqueue(task, autoCandidate);
     } catch {
       // A 5xx asks AgentMail to retry; do not acknowledge an event that was not stored.
       return new Response("Temporary storage failure", { status: 503 });

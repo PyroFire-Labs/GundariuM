@@ -42,18 +42,21 @@ function taskKey(taskId: string): string {
 export function createRoscoMailReviewStore(client: RedisLike) {
   return {
     /** Atomically insert a task once for its inbox/message pair and index it. */
-    async enqueue(task: RoscoMailReviewTask): Promise<boolean> {
-      const inserted = await client.eval<[string, string], number>(
+    async enqueue(task: RoscoMailReviewTask, autoCandidate = false): Promise<boolean> {
+      const inserted = await client.eval<[string, string, string], number>(
         `
           if redis.call("EXISTS", KEYS[1]) == 1 then
             return 0
           end
           redis.call("SET", KEYS[1], ARGV[1])
           redis.call("LPUSH", KEYS[2], ARGV[2])
+          if ARGV[3] == "1" then
+            redis.call("ZADD", KEYS[3], 0, ARGV[2])
+          end
           return 1
         `,
-        [taskKey(task.id), QUEUE_KEY],
-        [JSON.stringify(task), task.id],
+        [taskKey(task.id), QUEUE_KEY, "rosco:auto-mail:v1:due"],
+        [JSON.stringify(task), task.id, autoCandidate ? "1" : "0"],
       );
 
       return inserted === 1;

@@ -23,7 +23,7 @@ const { createRoscoMailReviewHandlers } = await import("../src/lib/roscoMailRevi
 const { createRoscoMailReviewStore } = await import("../src/lib/roscoMailReviewStoreCore.ts");
 
 const SIGNING_SECRET = "whsec_c3ludGhldGljLXRlc3Qtc2VjcmV0LW5vdC1hLXJlYWwtY3JlZGVudGlhbA==";
-const INBOX_ID = "agentrosco@agentmail.to";
+const INBOX_ID = "rosco-inbox@example.test";
 const OWNER = "0x1111111111111111111111111111111111111111";
 const OTHER = "0x2222222222222222222222222222222222222222";
 
@@ -162,7 +162,7 @@ test("invalid, stale, and missing Svix signatures are rejected without tasks", a
 test("wrong event type and wrong inbox are rejected without tasks", async (t) => {
   for (const [name, payload, status] of [
     ["wrong event", { ...eventPayload(), event_type: "message.sent" }, 400],
-    ["wrong inbox", eventPayload({ inbox_id: "other@agentmail.to" }), 403],
+    ["wrong inbox", eventPayload({ inbox_id: "other-inbox@example.test" }), 403],
   ]) {
     await t.test(name, async () => {
       const { store } = createStore();
@@ -364,4 +364,27 @@ test("receive and review source paths expose no send, forward, delete, label, or
   assert.match(listRoute, /authorize:\s*requireRoscoOwner/);
   assert.match(messageRoute, /authorize:\s*requireRoscoOwner/);
   assert.match(messageRoute, /handlers\.fetchMessage/);
+});
+
+test('signed webhook automatic candidate prefilter requires enabled flag and exact parsed allowlist match', async () => {
+ for(const [enabled,from,expected] of [
+  [undefined,'Name <approved@example.test>',false],
+  ['false','Name <approved@example.test>',false],
+  ['TRUE-ish','approved@example.test',false],
+  [' TrUe ','Joshua Example <APPROVED@EXAMPLE.TEST>',true],
+  ['true','Other Name <approved@example.test>',true],
+  ['true','approved@example.test',true],
+  ['true','approved@example.test <attacker@evil.test>',false],
+  ['true','Name <approved@example.test>, attacker@evil.test',false],
+  ['true','approved+tag@example.test',false],
+ ]) {
+  let candidate;
+  const {store}=createStore();
+  const handler=createAgentMailWebhookHandler({getConfig:()=>({secret:SIGNING_SECRET,inboxId:INBOX_ID,autoReplyEnabled:enabled,approvedSenders:' approved@example.test '}),enqueue:async(task,autoCandidate)=>{candidate=autoCandidate;return store.enqueue(task,autoCandidate);}});
+  assert.equal((await handler(signedRequest(eventPayload({from})))).status,204);
+  assert.equal(candidate,expected);
+  const [stored]=await store.list(0,10);
+  assert.equal(stored.allowedAction,'human_review_only');
+  assert.equal(JSON.stringify(stored).includes('approved@example.test'),false);
+ }
 });
