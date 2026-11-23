@@ -1,4 +1,4 @@
-import Anthropic from "@anthropic-ai/sdk";
+import { createMailGenerator } from "./roscoOpenAIMail";
 import { Redis } from "@upstash/redis";
 import { randomUUID, timingSafeEqual } from "node:crypto";
 import {
@@ -6,7 +6,6 @@ import {
   approvedSenders,
   exactMailbox,
   processAutoMail,
-  SYSTEM_POLICY,
 } from "./roscoAutoMailCore";
 import { createAutoMailStore } from "./roscoAutoMailStore";
 import { createRoscoMailReviewStore } from "./roscoMailReviewStoreCore";
@@ -25,7 +24,7 @@ export async function handleAutoMail(request: Request): Promise<Response> {
     return new Response(null, { status: 204 });
   const apiKey = process.env.AGENTMAIL_API_KEY;
   const inboxId = process.env.AGENTMAIL_ROSCO_INBOX_ID;
-  if (!apiKey || !inboxId || !process.env.ANTHROPIC_API_KEY)
+  if (!apiKey || !inboxId || !process.env.OPENAI_API_KEY?.trim())
     return new Response("Processor unavailable", { status: 503 });
   try {
     const redis = Redis.fromEnv();
@@ -57,23 +56,10 @@ export async function handleAutoMail(request: Request): Promise<Response> {
           recipient = exactMailbox(message.from);
           return message;
         },
-        generate: async (text) => {
-          const client = new Anthropic({
-            apiKey: process.env.ANTHROPIC_API_KEY,
-            maxRetries: 0,
-            timeout: 25_000,
-          });
-          const result = await client.messages.create({
-            model: "claude-sonnet-4-6",
-            max_tokens: 600,
-            system: SYSTEM_POLICY,
-            messages: [{ role: "user", content: text }],
-          });
-          return result.content
-            .filter((part) => part.type === "text")
-            .map((part) => part.text)
-            .join("\n");
-        },
+        generate: createMailGenerator({
+          apiKey: process.env.OPENAI_API_KEY,
+          model: process.env.ROSCO_OPENAI_MODEL,
+        }),
         deliver: async (_task, text, key) => {
           return recipient
             ? transport.reply(task, text, key, recipient)
