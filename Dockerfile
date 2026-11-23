@@ -13,8 +13,9 @@ RUN npm ci
 # Used by Docker Compose for local development. Source is bind-mounted by
 # compose.yaml, while node_modules remains in a named volume managed by Docker.
 FROM dependencies AS development
+# Redis binaries support isolated development/test fixtures; no Redis service is started.
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends git ca-certificates openssh-client procps curl \
+  && apt-get install -y --no-install-recommends git ca-certificates openssh-client procps curl redis-server redis-tools \
   && npm install --global @openai/codex@latest \
   && install -d -m 700 /root/.ssh \
   && rm -rf /var/lib/apt/lists/*

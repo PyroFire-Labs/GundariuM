@@ -35,7 +35,7 @@ export async function handleAutoMail(request: Request): Promise<Response> {
     if (!claim) return new Response(null, { status: 204 });
     const task = await createRoscoMailReviewStore(redis).get(claim.id);
     const save = (state: Parameters<typeof store.save>[2]) =>
-      store.save(claim.id, token, state);
+      store.save(claim.id, token, state, Date.now(), task ?? undefined);
     if (!task || task.inboxId !== inboxId || claim.state.attempts > 4) {
       await save({ phase: "review_only", attempts: claim.state.attempts });
       return new Response(null, { status: 204 });
@@ -48,6 +48,10 @@ export async function handleAutoMail(request: Request): Promise<Response> {
       approvedSenders(process.env.ROSCO_APPROVED_SENDERS),
       {
         save,
+        fetchInbox: (reference) => transport.fetchInbox(reference),
+        acquireThread: (reference) => store.acquireThread(reference, token),
+        verifyThread: (reference) => store.verifyThread(reference, token),
+        fetchHistory: (reference, inbox, target, approved, lastReplyId) => transport.fetchHistory(reference, inbox, target, approved, lastReplyId),
         fetchMessage: async () => {
           const message = await transport.fetchMessage(task);
           recipient = exactMailbox(message.from);
