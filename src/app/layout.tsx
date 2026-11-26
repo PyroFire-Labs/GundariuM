@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Orbitron } from "next/font/google";
-import { Providers } from "@/components/providers/Providers";
-import { Navbar } from "@/components/nav/Navbar";
+import { LaunchPlaceholder } from "@/components/ui/LaunchPlaceholder";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -28,20 +27,20 @@ const miniAppEmbed = {
 };
 
 export const metadata: Metadata = {
-  title: "GundariuM — Gunpla NFT Battle Game",
-  description: "Mint your Gunpla. Battle on Base. Live now.",
+  title: "GundariuM — Launching Before January 1, 2027",
+  description: "Jim 2.0, GundariuM's integrated 3-D world environment, is in development.",
   metadataBase: new URL("https://gundarium.xyz"),
   openGraph: {
-    title: "GundariuM — Gunpla NFT Battle Game",
-    description: "Mint your Gunpla. Battle on Base. Live now.",
+    title: "GundariuM — Launching Before January 1, 2027",
+    description: "Jim 2.0, GundariuM's integrated 3-D world environment, is in development.",
     url: "https://gundarium.xyz",
     siteName: "GundariuM",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "GundariuM — Gunpla NFT Battle Game",
-    description: "Mint your Gunpla. Battle on Base. Live now.",
+    title: "GundariuM — Launching Before January 1, 2027",
+    description: "Jim 2.0, GundariuM's integrated 3-D world environment, is in development.",
   },
   other: {
     "fc:miniapp": JSON.stringify(miniAppEmbed),
@@ -50,17 +49,14 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-  children,
+  children: _children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} ${orbitron.variable} antialiased`}>
-        <Providers>
-          <Navbar />
-          {children}
-        </Providers>
+        <LaunchPlaceholder />
       </body>
     </html>
   );
