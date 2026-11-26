@@ -28,11 +28,11 @@ const miniAppEmbed = {
 
 export const metadata: Metadata = {
   title: "GundariuM — Launching Before January 1, 2027",
-  description: "Jim 2.0, GundariuM's integrated 3-D world environment, is in development.",
+  description: "GundariuM 2.0, the integrated 3-D world environment, will be launching sometime before January 1, 2027.",
   metadataBase: new URL("https://gundarium.xyz"),
   openGraph: {
     title: "GundariuM — Launching Before January 1, 2027",
-    description: "Jim 2.0, GundariuM's integrated 3-D world environment, is in development.",
+    description: "GundariuM 2.0, the integrated 3-D world environment, will be launching sometime before January 1, 2027.",
     url: "https://gundarium.xyz",
     siteName: "GundariuM",
     type: "website",
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "GundariuM — Launching Before January 1, 2027",
-    description: "Jim 2.0, GundariuM's integrated 3-D world environment, is in development.",
+    description: "GundariuM 2.0, the integrated 3-D world environment, will be launching sometime before January 1, 2027.",
   },
   other: {
     "fc:miniapp": JSON.stringify(miniAppEmbed),

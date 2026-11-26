@@ -13,7 +13,7 @@ export function LaunchPlaceholder() {
         </h1>
         <div className="mx-auto my-9 h-px w-24 bg-gradient-to-r from-transparent via-cyan-300 to-transparent" />
         <p className="text-lg leading-relaxed text-slate-300 sm:text-2xl">
-          Jim 2.0, the integrated 3-D world environment, will be launching sometime before January 1, 2027.
+          GundariuM 2.0, the integrated 3-D world environment, will be launching sometime before January 1, 2027.
         </p>
         <p className="mt-6 text-base leading-relaxed text-slate-400 sm:text-lg">
           GundariuM is temporarily offline while the full experience is completed.
